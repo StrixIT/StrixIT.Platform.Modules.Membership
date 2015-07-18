@@ -1,0 +1,45 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_ItemLayout.cshtml";
+    var cultureData = Newtonsoft.Json.JsonConvert.SerializeObject(StrixPlatform.Cultures.Select(c => new { name = c.Code, value = c.NativeName }));
+}
+<div ng-controller="membershipcontroller" ng-cloak>
+    <h3><span ng-show="isNew(user)">@Interface.CreateUser</span><span ng-show="!isNew(user)" ng-bind-html="'@Interface.EditUser'.replace('{0}', user.name)"></span></h3>
+    <form id="userform" name="userform" kendo-validator="validator" novalidate="novalidate">
+        <strix-cms-editor editor-label="@DefaultInterface.Name">
+            <input type="text" name="name" class="k-textbox" ng-model="user.name" required maxlength="250" data-required-msg="Enter a name" strix-show-html />
+        </strix-cms-editor>
+        <strix-cms-editor editor-label="@Interface.Email">
+            <input type="email" id="email" name="email" class="k-textbox" ng-model="user.email" required maxlength="250" data-required-msg="Enter an e-mail address" data-email-msg="Not a valid email address" data-remote data-remote-url="/admin/membership/user/checkemail" data-remote-msg="This e-mail address is already in use" />
+        </strix-cms-editor>
+        <strix-cms-editor editor-label="@Interface.PreferredCulture">
+            <strix-enum-drop-down name="preferredCulture" ng-model="user.preferredCulture" enum-data="@cultureData"></strix-enum-drop-down>
+        </strix-cms-editor>
+        <strix-cms-editor editor-label="@Interface.LockedOut">
+            <input type="checkbox" name="lockedOut" ng-model="user.lockedOut" ng-disabled="{{ !user.lockedOut }}" />
+        </strix-cms-editor>
+        <strix-cms-editor editor-label="@Interface.Approved">
+            <input type="checkbox" name="approved" ng-model="user.approved" ng-disabled="{{ user.approved }}" />
+        </strix-cms-editor>
+        @{ViewBag.RolesFor = typeof(User);}
+        @Html.Partial("_RolePartial")
+        <kendo-button ng-click="submit(user)" class="k-primary" ng-disabled="savingEntity || remoteValidationInProgress">@DefaultInterface.Save</kendo-button>
+    </form>
+</div>

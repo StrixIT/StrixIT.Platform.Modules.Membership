@@ -1,0 +1,50 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_ItemLayout.cshtml";
+}
+<div ng-controller="membershipcontroller" ng-cloak>
+    <h3 ng-bind-html="'@Interface.ViewGroup'.replace('{0}', group.name)"></h3>
+    <fieldset ng-hide="group.usePermissions">
+        <legend>@Interface.Roles</legend>
+        <div class="display-field" ng-show="!hasRoles(group)">
+            @Interface.NoRoles
+        </div>
+        <ul class="list-unstyled" ng-show="hasRoles(group)" ng-repeat="role in group.roles | filter:{ selected: true }">
+            <li>
+                <span><strong>{{ role.name }}</strong> @Interface.From {{ role.startDate | kendoDate }} <span ng-show="role.endDate">@Interface.To {{ role.endDate | kendoDate }}</span> </span>
+            </li>
+        </ul>
+    </fieldset>
+    <fieldset ng-show="group.usePermissions">
+        <legend>@Interface.Permissions</legend>
+        <div class="display-field" ng-show="!hasPermissions(group)">
+            @Interface.NoPermissions
+        </div>
+        <div ng-show="hasPermissions(group)">
+            <span>@Interface.From {{ group.permissionSetStartDate | kendoDate }} <span ng-show="group.permissionSetEndDate">@Interface.To {{ group.permissionSetEndDate | kendoDate }}</span> </span>
+            <ul class="list-unstyled" ng-repeat="permission in group.permissions | filter:{ selected: true }">
+                <li>
+                    <span>{{ permission.name }}</span>
+                </li>
+            </ul>
+        </div>
+    </fieldset>
+    @Html.Partial("ConfirmationModal", new ConfirmationConfig { Id = "confirmdelete" })
+</div>

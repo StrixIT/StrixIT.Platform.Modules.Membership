@@ -1,0 +1,117 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@using System.Web.Optimization;
+@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+    var showLanguagePicker = StrixPlatform.Cultures.Count > 1;
+    var action = Url.Action(MvcConstants.INDEX, "Home", new { area = string.Empty, language = StrixPlatform.CurrentCultureCode }, null);
+    var adminLink = string.Format("{0}admin", action != "/" ? action + "/" : action).ToLower();
+    var moduleConfigs = ModuleManager.GetObjectList<IWebModuleConfiguration>();
+}
+@section css
+{
+    <link rel="stylesheet" href="~/Styles/Kendo/kendo.moonlight.min.css" />
+    @Styles.Render("~/Styles/fontawesome/css")
+    @Styles.Render("~/Areas/Admin/Styles/css")
+    @foreach (var config in moduleConfigs.Select(m => m.StyleBundles).Where(m => m != null).SelectMany(s => s).Distinct())
+    {
+        @Styles.Render(config)
+    }
+    @RenderSection("css", false)
+}
+@Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
+<div ng-app="strixAdmin">
+    <header>
+        <a href="@adminLink" class="pull-left" title="@Interface.StrixCms"><img src="~/Styles/Images/StrixIT_logo.png" /></a>
+        <ul id="adminmenu" kendo-menu k-orientation="'horizontal'" style="display: none; min-width: 150px;" class="pull-right" ng-cloak>
+            @if (StrixPlatform.User.HasPermission(PlatformPermissions.ViewAdminDashboard))
+            {
+                <li><a href="@adminLink">@Interface.AdminDashboardTitle</a></li>
+            }
+            <li>
+                @Html.ActionLink(Interface.BackToSite, MvcConstants.INDEX, "Home", new { area = string.Empty, language = StrixPlatform.CurrentCultureCode }, new { target = "_self" })
+            </li>
+            @if (showLanguagePicker)
+            {
+                <li id="languagepicker">@Html.Partial("LanguagePicker")</li>
+            }
+            @if (DependencyInjector.TryGet<IAuthenticationService>() != null)
+            {
+                <li>
+                    @Html.Partial("AccountLinks")
+                </li>
+                <li ng-controller="navigationcontroller">
+                    @Html.Partial("GroupSelect")
+                </li>
+            }
+        </ul>
+        <div class="clear-fix"></div>
+    </header>
+    <div id="body" ng-controller="adminshellcontroller">
+        @Html.Partial("Alerts")
+        <div id="loading" ng-show="!templateLoaded || !dataLoaded">
+            <span class="ajaxloader"><img ng-src="{{ getLoadingImage() }}" />@DefaultInterface.Loading</span>
+        </div>
+        <div ng-show="templateLoadError" class="ng-hide">@Interface.ErrorLoadingTemplate</div>
+        <section class="content-wrapper" ng-show="templateLoaded && dataLoaded && !templateLoadError" ng-view></section>
+        @RenderBody()
+    </div>
+    <footer>
+        <div class="pull-right">
+            <p>
+                @Html.Raw(string.Format(Interface.Copyright, DateTime.Now.Year))
+            </p>
+        </div>
+    </footer>
+</div>
+@section javascript
+{
+    @if (File.Exists(StrixPlatform.Environment.MapPath("Areas/Cms/TinyMCE/tiny_mce.js")))
+    {
+        <script type="text/javascript" src="@Url.Content("~/Areas/Cms/TinyMCE/tiny_mce.js")"></script>
+    }
+    @foreach (var config in moduleConfigs.Select(m => m.ScriptBundles).Where(m => m != null).SelectMany(s => s).Distinct())
+    {
+        @Scripts.Render(config)
+    }
+    <script type="text/javascript">
+        var adminModule = angular.module('strixAdmin');
+        adminModule.addRoute({ route: '', templateUrl: 'Index' });
+        @ModuleRoutes()
+    </script>
+    @RenderSection("javascript", false)
+}
+
+@helper ModuleRoutes()
+{
+    var result = new List<string>();
+
+    foreach (var dir in System.IO.Directory.GetDirectories(HttpContext.Current.Server.MapPath("~/Areas")))
+    {
+        var config = System.IO.Path.Combine(dir, "Scripts\\module.routes.js");
+
+        if (System.IO.File.Exists(config))
+        {
+            var contents = System.IO.File.ReadAllText(config);
+            result.Add(contents);
+        }
+    }
+
+    @Html.Raw(string.Join("\r\n", result))
+}

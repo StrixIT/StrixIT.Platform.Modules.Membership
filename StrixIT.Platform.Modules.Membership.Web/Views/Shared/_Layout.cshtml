@@ -1,0 +1,83 @@
+<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@using System.Web.Optimization;
+@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+    var showLanguagePicker = StrixPlatform.Cultures.Count > 1;
+    var moduleConfigs = ModuleManager.GetObjectList<IWebModuleConfiguration>();
+    var hasModuleLinks = moduleConfigs.Any(m => m.ModuleLinks.Any());
+}
+@section css
+{
+    <link rel="stylesheet" href="~/Styles/Kendo/kendo.bootstrap.min.css" />
+    @Styles.Render("~/Styles/fontawesome/css")
+    @foreach (var config in moduleConfigs.Select(m => m.StyleBundles).Where(m => m != null).SelectMany(s => s).Distinct())
+    {
+        @Styles.Render(config)
+    }
+    @Styles.Render("~/Styles/css")
+    @Html.RenderPartialStyleSheets()
+    @RenderSection("CSS", false)
+}
+<div ng-app="strixSite">
+    <header>
+        <nav class="navbar navbar-default navbar-static-top" role="navigation">
+            <a href="@Url.Action(MvcConstants.INDEX, "Home", new { area = string.Empty }, null)" class="navbar-brand" title="@Interface.StrixCms">@StrixPlatform.Configuration.ApplicationName</a>
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink(Interface.Home, MvcConstants.INDEX, "Home", new { area = string.Empty, language = StrixPlatform.CurrentCultureCode }, null)</li>
+                @if (hasModuleLinks && StrixPlatform.User.HasPermission(PlatformPermissions.ViewAdminDashboard))
+                {
+                    <li>@Html.ActionLink(Interface.AdminDashboardTitle, MvcConstants.INDEX, WebConstants.ADMIN, new { area = string.Empty }, null)</li>
+                }
+                @if (showLanguagePicker)
+                {
+                    <li id="languagepicker">@Html.Partial("LanguagePicker")</li>
+                }
+            </ul>
+            @if (DependencyInjector.TryGet<IAuthenticationService>() != null)
+            {
+                <ul class="nav navbar-nav navbar-right account-dropdown">
+                    <li class="dropdown">@Html.Partial("GroupSelect")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right account-dropdown">
+                    <li class="dropdown">@Html.Partial("AccountLinks")</li>
+                </ul>
+            }
+        </nav>
+    </header>
+    <div id="body">
+        @RenderBody()
+    </div>
+    <footer>
+        <div class="pull-right">
+            <p>
+                @Html.Raw(string.Format(Interface.Copyright, DateTime.Now.Year))
+            </p>
+        </div>
+    </footer>
+</div>
+@section Javascript
+{
+    @foreach (var config in moduleConfigs.Select(m => m.ScriptBundles).Where(m => m != null).SelectMany(s => s).Distinct())
+    {
+        @Scripts.Render(config)
+    }
+    @Html.RenderPartialScripts()
+    @RenderSection("Javascript", false)
+}

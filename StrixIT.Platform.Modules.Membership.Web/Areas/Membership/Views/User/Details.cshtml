@@ -1,0 +1,47 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_ItemLayout.cshtml";
+}
+<div ng-controller="membershipcontroller" ng-cloak>
+    <h3 ng-bind-html="'@Interface.ViewUser'.replace('{0}', user.name)"></h3>
+    <p>@Interface.Email {{ user.email }}</p>
+    @if (StrixMembership.Configuration.Registration.UseTerms)
+    {
+        <p>@Interface.DateAcceptedTerms {{ user.dateAcceptedTerms | kendoDate }}</p>
+    }
+    @*<div class="editor-group">
+            @Html.DisplayFor(model => model.LockedOut) @Html.DisplayNameFor(model => model.LockedOut)
+        </div>
+        <div class="editor-group">
+            @Html.DisplayFor(model => model.Approved) @Html.DisplayNameFor(model => model.Approved)
+        </div>*@
+    <fieldset>
+        <legend>@Interface.Roles</legend>
+        <div class="display-field" ng-show="!hasRoles(user)">
+            @Interface.NoRoles
+        </div>
+        <ul class="list-unstyled" ng-show="hasRoles(user)" ng-repeat="role in user.roles | filter:{ selected: true }">
+            <li>
+                <span><strong ng-bind-html="role.name"></strong> @Interface.From {{ role.startDate | kendoDate }} <span ng-show="role.endDate">@Interface.To {{ role.endDate | kendoDate }}</span> </span>
+            </li>
+        </ul>
+    </fieldset>
+    @Html.Partial("ConfirmationModal", new ConfirmationConfig { Id = "confirmdelete" })
+</div>

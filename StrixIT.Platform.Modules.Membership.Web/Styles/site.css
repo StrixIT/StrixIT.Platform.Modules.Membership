@@ -1,0 +1,62 @@
+﻿/* Move to account styling */
+.k-menu .k-item > .k-link {
+    display: inline-block;
+}
+
+.login-form {
+    margin-bottom: 10px;
+}
+
+.cms-languagepicker {
+    margin: 10px 20px 0 0;
+}
+
+.account-dropdown {
+    margin: 0 10px 0 0 !important;
+    padding: 0;
+}
+
+    .account-dropdown .dropdown-menu {
+        top: 49px;
+    }
+
+.account-form {
+    max-width: 500px;
+    margin-bottom: 10px;
+}
+
+    .account-form input[type="submit"] {
+        margin-top: 10px;
+    }
+
+.dropdown ul {
+    list-style: none;
+    display: inline;
+    padding: 0;
+}
+
+    .dropdown ul li {
+        display: inline;
+        margin-left: 10px;
+    }
+
+a.newpagelink {
+    color: Orange;
+}
+
+a.nonexistentpage {
+    color: red;
+}
+
+#languagepicker {
+    overflow: hidden;
+}
+
+#languagepicker span {
+    display: none;
+}
+
+.search-result-list {
+    border: none;
+    line-height: normal;
+}

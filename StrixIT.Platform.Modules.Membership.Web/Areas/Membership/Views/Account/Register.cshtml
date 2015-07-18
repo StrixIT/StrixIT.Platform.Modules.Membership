@@ -1,0 +1,59 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@model RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Interface.CreateNewAccount;
+}
+<h2>
+    @Interface.CreateNewAccount
+</h2>
+<p>
+    @Interface.CreateNewAccountInstructions
+</p>
+@using (Html.BeginForm("Register", MembershipConstants.ACCOUNT, FormMethod.Post, new { @class = "account-form" }))
+{
+    @Html.ValidationSummary(true, Interface.ErrorCreatingAccount)
+    <div>
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Name)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Email)
+    </div>
+    if (StrixMembership.Configuration.Registration.UseRegistrationComment)
+    {
+        <div>
+            @Html.LabelFor(m => m.RegistrationComment)
+            @Html.TextAreaFor(m => m.RegistrationComment, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.RegistrationComment)
+        </div>
+    }
+    if (StrixMembership.Configuration.Registration.UseTerms)
+    {
+        <div class="checkbox">
+            @Html.CheckBoxFor(m => m.AcceptedTerms, new { @class = "checkbox inline" }) @Html.LabelFor(m => m.AcceptedTerms, new { @class = "checkbox-label" })
+            @Html.ValidationMessageFor(m => m.AcceptedTerms)
+        </div>
+    }
+    <input type="submit" value="@Interface.Register" class="btn btn-primary" />
+}

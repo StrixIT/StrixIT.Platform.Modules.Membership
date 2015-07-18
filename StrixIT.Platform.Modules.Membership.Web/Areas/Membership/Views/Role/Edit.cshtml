@@ -1,0 +1,31 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_ItemLayout.cshtml";
+}
+<div ng-controller="membershipcontroller" ng-cloak>
+    <h3><span ng-show="isNew(role)">@Interface.CreateRole</span><span ng-show="!isNew(role)" ng-bind-html="'@Interface.EditRole'.replace('{0}', role.name)"></span></h3>
+    <form id="roleform" name="roleform" kendo-validator="validator" novalidate="novalidate">
+        <strix-cms-editor editor-label="@DefaultInterface.Name">
+            <input type="text" id="name" name="name" class="k-textbox" ng-model="role.name" required maxlength="250" data-required-msg="Enter a name" data-remote data-remote-url="/admin/membership/role/checkname" data-remote-msg="This name is already in use" strix-show-html />
+        </strix-cms-editor>
+        @Html.Partial("_PermissionPartial")
+        <kendo-button ng-click="submit(role)" class="k-primary" ng-disabled="savingEntity || remoteValidationInProgress">@DefaultInterface.Save</kendo-button>
+    </form>
+</div>

@@ -1,0 +1,11 @@
+@{
+    ViewBag.Title = StrixPlatform.Configuration.ApplicationName;
+    var displayOptions = new DisplayOptions("Cms", "Html", null, "Home", null, Interface.HomePageText);
+}
+<div class="content-wrapper">
+    <hgroup class="title">
+        <h1>@ViewBag.Title</h1>
+    </hgroup>
+    <input type="text" class="k-textbox" style="display: none;" strix-search strix-result-url="search" placeholder="Search..." data-field="Name, Summary, Body" />
+    @Html.Content(displayOptions)
+</div>

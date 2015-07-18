@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ChangePasswordError" xml:space="preserve">
+    <value>The current password is incorrect or the new password is invalid.</value>
+  </data>
+  <data name="ChangePasswordInstructionsWithNonAlphaNumeric" xml:space="preserve">
+    <value>Your password must be {0} characters long and contain at least {1} non-alphanumeric characters.</value>
+  </data>
+  <data name="ChangePasswordInstructionsWithoutNonAlphaNumeric" xml:space="preserve">
+    <value>Your password must be {0} characters long.</value>
+  </data>
+  <data name="ChangePasswordLink" xml:space="preserve">
+    <value>{0} if you forgot your password</value>
+  </data>
+  <data name="ErrorSendingVerificationMail" xml:space="preserve">
+    <value>Your account has been succesfully created, but an error occurred while sending your account verification mail. Please use the password reset functionality to request a new password and gain access.</value>
+  </data>
+  <data name="GroupsNotEnabed" xml:space="preserve">
+    <value>Groups not enabled.</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>Invalid e-mail</value>
+  </data>
+  <data name="LoginError" xml:space="preserve">
+    <value>Log in was unsuccessful. Please correct the errors and try again.</value>
+  </data>
+  <data name="LoginFailedContainer" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="LoginInstructions" xml:space="preserve">
+    <value>Enter your e-mail address and password below.</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="LogOff" xml:space="preserve">
+    <value>Log off</value>
+  </data>
+  <data name="LogOn" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="RegisterLink" xml:space="preserve">
+    <value>{0} if you don't have an account</value>
+  </data>
+  <data name="RegisterSuccess" xml:space="preserve">
+    <value>Your account has been created successfully. An e-mail has been sent to the e-mail address you entered. It contains a link to verify your account and select a password.</value>
+  </data>
+  <data name="RequestNewPasswordInstructions" xml:space="preserve">
+    <value>Please enter your e-mail address. An e-mail with instructions on how to unlock your account will be sent to you.</value>
+  </data>
+  <data name="RequestPasswordResetLink" xml:space="preserve">
+    <value>Reset your password</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>Click here</value>
+  </data>
+  <data name="AccountOverviewLink" xml:space="preserve">
+    <value>Account overview</value>
+  </data>
+  <data name="AddGroup" xml:space="preserve">
+    <value>Create new group</value>
+  </data>
+  <data name="AddUser" xml:space="preserve">
+    <value>Create a new user</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="CreateGroup" xml:space="preserve">
+    <value>Create new group</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Create a new user account</value>
+  </data>
+  <data name="CreateNewAccountInstructions" xml:space="preserve">
+    <value>Enter a name and e-mail address for your new account.</value>
+  </data>
+  <data name="CreateUser" xml:space="preserve">
+    <value>Create a new user</value>
+  </data>
+  <data name="EditGroup" xml:space="preserve">
+    <value>Edit group {0}</value>
+  </data>
+  <data name="EditUser" xml:space="preserve">
+    <value>Edit user {0}</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-mail address</value>
+  </data>
+  <data name="EmailConfirmed" xml:space="preserve">
+    <value>Your email address has been confirmed and your account is now active.</value>
+  </data>
+  <data name="ErrorChangingPassword" xml:space="preserve">
+    <value>An error occurred while changing your password.</value>
+  </data>
+  <data name="ErrorCreatingAccount" xml:space="preserve">
+    <value>An error occurred while creating your new account</value>
+  </data>
+  <data name="GroupIndex" xml:space="preserve">
+    <value>Group index</value>
+  </data>
+  <data name="GroupName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="IsLockedOutTooltip" xml:space="preserve">
+    <value>This user account is locked out</value>
+  </data>
+  <data name="IsNotLockedOutTooltip" xml:space="preserve">
+    <value>This account is active</value>
+  </data>
+  <data name="LockedOutStatus" xml:space="preserve">
+    <value>Account locked</value>
+  </data>
+  <data name="NoGroups" xml:space="preserve">
+    <value>No groups available</value>
+  </data>
+  <data name="PasswordChangeSuccess" xml:space="preserve">
+    <value>Your password has been successfully changed.</value>
+  </data>
+  <data name="PasswordResetRequested" xml:space="preserve">
+    <value>An e-mail has been send to the e-mail address you specified. Please click the link in the mail to continue resetting your password.</value>
+  </data>
+  <data name="PasswordResetRequestedTitle" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="SendRequest" xml:space="preserve">
+    <value>Request reset link</value>
+  </data>
+  <data name="UserIndex" xml:space="preserve">
+    <value>User overview</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ViewGroup" xml:space="preserve">
+    <value>Group {0}</value>
+  </data>
+  <data name="ErrorRegisteringUser" xml:space="preserve">
+    <value>An error occurred while registering.</value>
+  </data>
+  <data name="ErrorValidatingAccount" xml:space="preserve">
+    <value>An error occurred while validating your acount.</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Your e-mail and/or password is/are incorrect.</value>
+  </data>
+  <data name="LockedOutExplanation" xml:space="preserve">
+    <value>Your account has been locked out because of too many invalid login attempts. Please contact your administrator.</value>
+  </data>
+  <data name="Unapproved" xml:space="preserve">
+    <value>Your account has not been approved yet. Please contact your administrator.</value>
+  </data>
+  <data name="ErrorSendingPasswordChangedMail" xml:space="preserve">
+    <value>Your password has been changed, but an error occurred sending a confirmation mail to your e-mail address. You can ignore this error and login to the site.</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Confirm new password</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="DuplicateEmail" xml:space="preserve">
+    <value>A user with this e-mail already exists. Please enter a different address.</value>
+  </data>
+  <data name="MaxNumberOfUsersReached" xml:space="preserve">
+    <value>The maximum number of users for this group has been reached.</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordAndConfirmationDoNotMatch" xml:space="preserve">
+    <value>The new password does not match the confirmation</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>{0} is required</value>
+  </data>
+  <data name="TooShort" xml:space="preserve">
+    <value>The password you entered is too short. Please enter at least {0} characters.</value>
+  </data>
+  <data name="IsApprovedTooltip" xml:space="preserve">
+    <value>This account is approved</value>
+  </data>
+  <data name="IsNotApprovedTooltip" xml:space="preserve">
+    <value>This account is not yet approved</value>
+  </data>
+  <data name="NoRoles" xml:space="preserve">
+    <value>This user has no roles</value>
+  </data>
+  <data name="RoleIndex" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="EnterPasswordRequested" xml:space="preserve">
+    <value>An e-mail has been send to your e-mail address. Please click the link in the mail to set your password.</value>
+  </data>
+  <data name="SelectPasswordRequestedTitle" xml:space="preserve">
+    <value>Select password</value>
+  </data>
+  <data name="RoleName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="InvalidPasswordSetKey" xml:space="preserve">
+    <value>Your password set key is invalid. Please request a new one and try again.</value>
+  </data>
+  <data name="UserHasNoRoles" xml:space="preserve">
+    <value>You have no access rights. Please contact your administrator.</value>
+  </data>
+  <data name="AcceptedTerms" xml:space="preserve">
+    <value>I accept the terms</value>
+  </data>
+  <data name="ViewingGroup" xml:space="preserve">
+    <value>Current group</value>
+  </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Approved</value>
+  </data>
+  <data name="DateAcceptedTerms" xml:space="preserve">
+    <value>Date the user accepted the terms</value>
+  </data>
+  <data name="LockedOut" xml:space="preserve">
+    <value>Locked out</value>
+  </data>
+  <data name="PreferredCulture" xml:space="preserve">
+    <value>Preferred culture</value>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>Until</value>
+  </data>
+  <data name="MaxNumberOfUsers" xml:space="preserve">
+    <value>Number of users</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="AddRole" xml:space="preserve">
+    <value>New role</value>
+  </data>
+  <data name="CreateRole" xml:space="preserve">
+    <value>Create role</value>
+  </data>
+  <data name="EditRole" xml:space="preserve">
+    <value>Edit role {0}</value>
+  </data>
+  <data name="NoPermissions" xml:space="preserve">
+    <value>No permissions</value>
+  </data>
+  <data name="ViewRole" xml:space="preserve">
+    <value>View role {0}</value>
+  </data>
+  <data name="PermissionSet" xml:space="preserve">
+    <value>Permission set</value>
+  </data>
+  <data name="UsePermissions" xml:space="preserve">
+    <value>Use permissions</value>
+  </data>
+  <data name="PermissionsNotEnabed" xml:space="preserve">
+    <value>Permissions not enabled</value>
+  </data>
+  <data name="SetPassword" xml:space="preserve">
+    <value>Set password</value>
+  </data>
+  <data name="RegistrationComment" xml:space="preserve">
+    <value>Reason for registration</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>from</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>to</value>
+  </data>
+  <data name="ViewUser" xml:space="preserve">
+    <value>View user {0}</value>
+  </data>
+  <data name="ErrorSendingApprovedAccountMail" xml:space="preserve">
+    <value>An error occurred while sending the approved account mail.</value>
+  </data>
+  <data name="ErrorSendingPasswordResetLink" xml:space="preserve">
+    <value>An error occurred while sending your password reset link.</value>
+  </data>
+  <data name="ErrorSendingUnapprovedAccountMail" xml:space="preserve">
+    <value>An error occurred while sending the unapproved account mail.</value>
+  </data>
+  <data name="DuplicateName" xml:space="preserve">
+    <value>This name is in use. Please choose another one.</value>
+  </data>
+  <data name="StopViewAs" xml:space="preserve">
+    <value>Stop view as</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PasswordSetSuccess" xml:space="preserve">
+    <value>Your password has been saved. You can now log in using your new password.</value>
+  </data>
+</root>

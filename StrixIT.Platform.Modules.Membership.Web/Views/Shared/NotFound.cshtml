@@ -1,0 +1,7 @@
+﻿@{
+    ViewBag.Title = Interface.NotFoundTitle;
+    var url = Request.Path.Replace(string.Format("/{0}/", StrixPlatform.CurrentCultureCode), string.Empty);
+}
+
+<h2>@Interface.NotFoundTitle</h2>
+<p>@string.Format(Interface.NotFoundBody, url)</p>

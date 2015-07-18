@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{63CBF5F3-8D3B-4B3D-A4BA-F1C932736DEA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StrixIT.Platform.Modules.Membership</RootNamespace>
+    <AssemblyName>StrixIT.Platform.Modules.Membership</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StrixIT.Platform.Core">
+      <HintPath>..\StrixIT.Platform.Modules.Membership.Web\Libraries\StrixIT.Platform.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="StrixIT.Platform.Web">
+      <HintPath>..\StrixIT.Platform.Modules.Membership.Web\Libraries\StrixIT.Platform.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\packages\structuremap.3.1.5.154\lib\net40\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap.Web">
+      <HintPath>..\packages\structuremap.web.3.1.5.154\lib\net40\StructureMap.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActiveUser.cs" />
+    <Compile Include="Application.cs" />
+    <Compile Include="ApplicationHelper.cs" />
+    <Compile Include="Areas\MembershipAreaRegistration.cs" />
+    <Compile Include="AuditLogType.cs" />
+    <Compile Include="Data Access\IMembershipDataSource.cs" />
+    <Compile Include="Data Access\MembershipDataSource.cs" />
+    <Compile Include="Groups\Group.cs" />
+    <Compile Include="Groups\GroupInRole.cs" />
+    <Compile Include="Groups\GroupListConfiguration.cs" />
+    <Compile Include="Groups\GroupListModel.cs" />
+    <Compile Include="Groups\GroupManager.cs" />
+    <Compile Include="Groups\GroupService.cs" />
+    <Compile Include="Groups\GroupViewModel.cs" />
+    <Compile Include="Groups\IGroupManager.cs" />
+    <Compile Include="Groups\IGroupService.cs" />
+    <Compile Include="Mailing\IMembershipMailer.cs" />
+    <Compile Include="MembershipCacheAndSessionKeys.cs" />
+    <Compile Include="MembershipConstants.cs" />
+    <Compile Include="MembershipService.cs" />
+    <Compile Include="Migrations\201505211323541_UpdateStringPropertyLengths.cs" />
+    <Compile Include="Migrations\201505211323541_UpdateStringPropertyLengths.Designer.cs">
+      <DependentUpon>201505211323541_UpdateStringPropertyLengths.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506251121242_initial.cs" />
+    <Compile Include="Migrations\201506251121242_initial.Designer.cs">
+      <DependentUpon>201506251121242_initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Permissions\AssignPermissionModel.cs" />
+    <Compile Include="Permissions\MembershipPermissions.cs" />
+    <Compile Include="Permissions\Permission.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\DefaultValues.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DefaultValues.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Interface.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Interface.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Interface.nl.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Interface.nl.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\InterfaceClient.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InterfaceClient.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\InterfaceClient.nl.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InterfaceClient.nl.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Roles\AssignRoleModel.cs" />
+    <Compile Include="Roles\IRoleManager.cs" />
+    <Compile Include="Roles\IRoleService.cs" />
+    <Compile Include="Roles\Role.cs" />
+    <Compile Include="Roles\RoleListConfiguration.cs" />
+    <Compile Include="Roles\RoleManager.cs" />
+    <Compile Include="Roles\RoleService.cs" />
+    <Compile Include="Roles\RoleViewModel.cs" />
+    <Compile Include="Security\Account\AccountService.cs" />
+    <Compile Include="Security\Account\AccountStatus.cs" />
+    <Compile Include="Security\Account\IAccountService.cs" />
+    <Compile Include="Security\IAuthenticationCookieService.cs" />
+    <Compile Include="Security\ISecurityManager.cs" />
+    <Compile Include="Security\SecurityManager.cs" />
+    <Compile Include="Security\UserSecurity.cs" />
+    <Compile Include="Security\ValidateUserResult.cs" />
+    <Compile Include="Startup and Configuration\MembershipConfiguration.cs" />
+    <Compile Include="Startup and Configuration\MembershipInitializer.cs" />
+    <Compile Include="Startup and Configuration\PasswordConfiguration.cs" />
+    <Compile Include="Startup and Configuration\RegistrationConfiguration.cs" />
+    <Compile Include="StrixMembership.cs" />
+    <Compile Include="StrixMembershipException.cs" />
+    <Compile Include="UserContext.cs" />
+    <Compile Include="Users\IUserManager.cs" />
+    <Compile Include="Users\IUserService.cs" />
+    <Compile Include="Users\User.cs" />
+    <Compile Include="Users\UserInRole.cs" />
+    <Compile Include="Users\UserListConfiguration.cs" />
+    <Compile Include="Users\UserListModel.cs" />
+    <Compile Include="Users\UserManager.cs" />
+    <Compile Include="Users\UserProfileField.cs" />
+    <Compile Include="Users\UserProfileValue.cs" />
+    <Compile Include="Users\UserService.cs" />
+    <Compile Include="Users\UserSessionStorage.cs" />
+    <Compile Include="Users\UserViewModel.cs" />
+    <Compile Include="Web\AuthenticationCookieService.cs" />
+    <Compile Include="Web\AuthenticationService.cs" />
+    <Compile Include="Web\Controllers\AccountController.cs" />
+    <Compile Include="Web\Controllers\GroupController.cs" />
+    <Compile Include="Web\Controllers\RoleController.cs" />
+    <Compile Include="Web\Controllers\UserController.cs" />
+    <Compile Include="Web\MembershipMailer.cs" />
+    <Compile Include="Web\MembershipModuleConfiguration.cs" />
+    <Compile Include="Web\MembershipRegistry.cs" />
+    <Compile Include="Web\ViewModels\LoginViewModel.cs" />
+    <Compile Include="Web\ViewModels\RegisterViewModel.cs" />
+    <Compile Include="Web\ViewModels\SetPasswordViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Migrations\Scripts\Create database 1.0.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201505211323541_UpdateStringPropertyLengths.resx">
+      <DependentUpon>201505211323541_UpdateStringPropertyLengths.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506251121242_initial.resx">
+      <DependentUpon>201506251121242_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultValues.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DefaultValues.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Interface.nl.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Interface.nl.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Interface.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Interface.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\InterfaceClient.nl.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InterfaceClient.nl.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\InterfaceClient.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InterfaceClient.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y /E /F /I "$(TargetPath)" "$(TargetPath)\..\..\..\..\StrixIT.Platform.Modules.Membership.Web\Areas\Membership\bin"
+xcopy /Y /E /F /I "$(TargetPath)\..\nl\StrixIT.Platform.Modules.Membership.resources.dll" "$(TargetPath)\..\..\..\..\StrixIT.Platform.Modules.Membership.Web\Areas\Membership\bin\nl"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

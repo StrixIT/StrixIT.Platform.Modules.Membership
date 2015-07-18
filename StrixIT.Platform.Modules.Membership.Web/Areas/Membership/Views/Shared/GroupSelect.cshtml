@@ -1,0 +1,50 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@if (StrixMembership.Configuration.UseGroups)
+{
+    List<SelectListItem> groupSelectlist = null;
+    bool showDropDown = false;
+
+    if (Request.IsAuthenticated && StrixMembership.Configuration.UseGroups)
+    {
+        groupSelectlist = new List<SelectListItem>();
+        var currentId = StrixPlatform.User.GroupId;
+
+        foreach (var group in StrixPlatform.User.Groups)
+        {
+            groupSelectlist.Add(new SelectListItem { Value = group.Key.ToString(), Text = group.Value, Selected = currentId == group.Key });
+        }
+
+        showDropDown = groupSelectlist.Count() > 0;
+    }
+
+    if (showDropDown)
+    {
+        <span id="groupname">
+            <i class="fa fa-group fa-lg fa-fw"></i>
+            @Html.RenderEscapedHtml(StrixPlatform.User.GroupName)
+        </span>
+        <ul>
+            @foreach (var item in groupSelectlist)
+            {
+                <li ng-click="changeGroup('@item.Value')">@Html.RenderEscapedHtml(item.Text)</li>
+            }
+        </ul>
+    }
+}

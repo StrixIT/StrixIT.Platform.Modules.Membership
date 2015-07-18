@@ -1,0 +1,56 @@
+﻿<!-- #region Apache License -->
+@*
+    Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*@
+<!-- #endregion -->
+
+@{
+    var type = (Type)ViewBag.ModelType;
+    string typeName = "model", editText = string.Empty, url = "id";
+    bool isEntityType = false;
+
+    if (type != null)
+    {
+        typeName = type.Name.ToLower().Replace("viewmodel", string.Empty);
+        var entityType = ModuleManager.GetObjectTypeByName("EntityViewModel");
+        isEntityType = entityType != null && entityType.IsAssignableFrom(type);
+        editText = ResourceHelper.GetResource(typeof(Interface), string.Format("Edit{0}", typeName)) ?? DefaultInterface.Edit;
+        url = isEntityType ? "url" : "id";
+    }
+}
+@RenderSection("css", false)
+@RenderSection("JavaScript", false)
+<div ng-controller="itemcontroller">
+    <div class="pull-right">
+        @RenderSection("Navigation", false)
+        @if (!IsSectionDefined("Navigation"))
+        {
+            <div class="inline" ng-show="showEdit()">
+                <a ng-href="{{ getLink('@Url.AdminLink(MvcConstants.EDIT)', '@url') }}">@editText</a>
+                |
+            </div>
+            <div class="inline" ng-show="showCancel()">
+                <a ng-href="{{ getLink('@Url.AdminLink(MvcConstants.DETAILS)', '@url') }}">@DefaultInterface.Cancel</a>
+                |
+            </div>
+            <div class="inline" ng-show="showDelete()">
+                <kendo-button ng-click="delete(@typeName)">@DefaultInterface.Delete</kendo-button>
+                |
+            </div>
+            <a href="@string.Format("{0}/", Url.AdminLink(MvcConstants.INDEX)).Replace("/index/", string.Empty)">@DefaultInterface.BackToList</a>
+        }
+    </div>
+    @RenderBody()
+</div>

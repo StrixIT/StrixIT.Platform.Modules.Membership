@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ChangePasswordError" xml:space="preserve">
+    <value>Het huidige of het nieuwe wachtwoord is onjuist.</value>
+  </data>
+  <data name="ChangePasswordInstructionsWithNonAlphaNumeric" xml:space="preserve">
+    <value>Het wachtwoord moet minimaal {0} tekens lang zijn en tenminste {1} niet-alfanumerieke tekens bevatten (geen letter of cijfer, bijvoorbeeld '#' of '!').</value>
+  </data>
+  <data name="ChangePasswordInstructionsWithoutNonAlphaNumeric" xml:space="preserve">
+    <value>Het wachtwoord moet minimaal {0} tekens lang zijn.</value>
+  </data>
+  <data name="ChangePasswordLink" xml:space="preserve">
+    <value>{0} als u uw wachtwoord vergeten bent</value>
+  </data>
+  <data name="ErrorSendingVerificationMail" xml:space="preserve">
+    <value>Uw account is aangemaakt, maar er is een fout opgetreden bij het versturen van een bevestiging naar uw e-mail adres. Gebruik a.u.b. de wachtwoord reset functionaliteit om een nieuw wachtwoord aan te vragen en toegang te krijgen.</value>
+  </data>
+  <data name="GroupsNotEnabed" xml:space="preserve">
+    <value>Groepen zijn uitgeschakeld</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>Ongeldig e-mail adres</value>
+  </data>
+  <data name="LoginError" xml:space="preserve">
+    <value>Het inloggen is niet gelukt. Herstel a.u.b. de fouten en probeer het nogmaals.</value>
+  </data>
+  <data name="LoginFailedContainer" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="LoginInstructions" xml:space="preserve">
+    <value>Voer uw e-mail adres en wachtwoord in.</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="LogOff" xml:space="preserve">
+    <value>Log uit</value>
+  </data>
+  <data name="LogOn" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registreren</value>
+  </data>
+  <data name="RegisterLink" xml:space="preserve">
+    <value>{0} als u geen account heeft</value>
+  </data>
+  <data name="RegisterSuccess" xml:space="preserve">
+    <value>Uw account is aangemaakt. Er is een bericht gestuurd naar het e-mail adres dat u heeft ingevoerd. Hierin staat een link waarmee u uw account kunt verifiëren en een wachtwoord kunt kiezen.</value>
+  </data>
+  <data name="RequestNewPasswordInstructions" xml:space="preserve">
+    <value>Voer a.u.b. uw e-mail adres in. U ontvangt een e-mail met instructies hoe u uw account kunt ontgrendelen.</value>
+  </data>
+  <data name="RequestPasswordResetLink" xml:space="preserve">
+    <value>Reset uw wachtwoord</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>Klik hier</value>
+  </data>
+  <data name="AccountOverviewLink" xml:space="preserve">
+    <value>Account gegevens</value>
+  </data>
+  <data name="AddGroup" xml:space="preserve">
+    <value>Nieuwe groep toevoegen</value>
+  </data>
+  <data name="AddUser" xml:space="preserve">
+    <value>Nieuwe gebruiker toevoegen</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Wachtwoord wijzigen</value>
+  </data>
+  <data name="CreateGroup" xml:space="preserve">
+    <value>Nieuwe groep toevoegen</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Nieuw account aanmaken</value>
+  </data>
+  <data name="CreateNewAccountInstructions" xml:space="preserve">
+    <value>Voer een naam en e-mail adres in voor uw nieuwe account.</value>
+  </data>
+  <data name="CreateUser" xml:space="preserve">
+    <value>Nieuwe gebruiker toevoegen</value>
+  </data>
+  <data name="EditGroup" xml:space="preserve">
+    <value>Bewerk groep {0}</value>
+  </data>
+  <data name="EditUser" xml:space="preserve">
+    <value>Bewerk gebruiker {0}</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-mail adres</value>
+  </data>
+  <data name="EmailConfirmed" xml:space="preserve">
+    <value>Uw e-mail adres is bevestigd en uw account is geactiveerd.</value>
+  </data>
+  <data name="ErrorChangingPassword" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het wijzigen van uw wachtwoord.</value>
+  </data>
+  <data name="ErrorCreatingAccount" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het aanmaken van uw nieuwe account</value>
+  </data>
+  <data name="GroupIndex" xml:space="preserve">
+    <value>Groepenoverzicht</value>
+  </data>
+  <data name="GroupName" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="IsLockedOutTooltip" xml:space="preserve">
+    <value>Dit account is afgesloten</value>
+  </data>
+  <data name="IsNotLockedOutTooltip" xml:space="preserve">
+    <value>Dit account is actief</value>
+  </data>
+  <data name="LockedOutStatus" xml:space="preserve">
+    <value>Account afgesloten</value>
+  </data>
+  <data name="NoGroups" xml:space="preserve">
+    <value>Geen groepen beschikbaar</value>
+  </data>
+  <data name="PasswordChangeSuccess" xml:space="preserve">
+    <value>Uw wachtwoord is gewijzigd.</value>
+  </data>
+  <data name="PasswordResetRequested" xml:space="preserve">
+    <value>Er is een e-mail verstuurd naar het door u opgegeven adres. Klik a.u.b. op de link in de mail om een nieuw wachtwoord te kiezen.</value>
+  </data>
+  <data name="PasswordResetRequestedTitle" xml:space="preserve">
+    <value>Wachtwoord resetten</value>
+  </data>
+  <data name="SendRequest" xml:space="preserve">
+    <value>Reset link aanvragen</value>
+  </data>
+  <data name="UserIndex" xml:space="preserve">
+    <value>Gebruikersoverzicht</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="ViewGroup" xml:space="preserve">
+    <value>Group {0}</value>
+  </data>
+  <data name="ErrorRegisteringUser" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het registreren.</value>
+  </data>
+  <data name="ErrorValidatingAccount" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het valideren van uw account</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Uw e-mail adres en/of wachtwoord is/zijn ongeldig.</value>
+  </data>
+  <data name="LockedOutExplanation" xml:space="preserve">
+    <value>Uw account is afgesloten omdat er te vaak een onjuist wachtwoord is opgegeven. Gebruik a.u.b. de wachtwoord reset functie om een nieuw wachtwoord aan te vragen.</value>
+  </data>
+  <data name="Unapproved" xml:space="preserve">
+    <value>Uw account is nog niet goedgekeurd. Neem a.u.b. contact op met uw beheerder.</value>
+  </data>
+  <data name="ErrorSendingPasswordChangedMail" xml:space="preserve">
+    <value>Uw wachtwoord is gewijzigd, maar er is een fout opgetreden bij het versturen van een bevestiging naar uw e-mail adres. U kunt deze fout negeren en inloggen.</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Nieuw wachtwoord bevestigen</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Wachtwoord bevestigen</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Huidig wachtwoord</value>
+  </data>
+  <data name="DuplicateEmail" xml:space="preserve">
+    <value>Er bestaat al een gebruiker met dit e-mail adres. Voer a.u.b. een ander adres in.</value>
+  </data>
+  <data name="MaxNumberOfUsersReached" xml:space="preserve">
+    <value>Het maximale aantal gebruikers voor deze groep is bereikt.</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Nieuw wachtwoord</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Wachtwoord</value>
+  </data>
+  <data name="PasswordAndConfirmationDoNotMatch" xml:space="preserve">
+    <value>Het nieuwe wachtwoord komt niet overeen met de bevestiging</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>{0} is verplicht.</value>
+  </data>
+  <data name="TooShort" xml:space="preserve">
+    <value>Het wachtwoord wat u heeft ingevoerd is te kort. Gebruik tenminste {0} tekens.</value>
+  </data>
+  <data name="IsApprovedTooltip" xml:space="preserve">
+    <value>Dit account is goedgekeurd</value>
+  </data>
+  <data name="IsNotApprovedTooltip" xml:space="preserve">
+    <value>Dit account is nog niet goedgekeurd</value>
+  </data>
+  <data name="NoRoles" xml:space="preserve">
+    <value>Deze gebruiker heeft geen toegangsrechten</value>
+  </data>
+  <data name="RoleIndex" xml:space="preserve">
+    <value>Rollenoverzicht</value>
+  </data>
+  <data name="EnterPasswordRequested" xml:space="preserve">
+    <value>Er is een e-mail verstuurd naar uw adres. Klik a.u.b. op de link in de mail om uw wachtwoord in te stellen.</value>
+  </data>
+  <data name="SelectPasswordRequestedTitle" xml:space="preserve">
+    <value>Wachtwoord kiezen</value>
+  </data>
+  <data name="RoleName" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="InvalidPasswordSetKey" xml:space="preserve">
+    <value>Uw wachtwoord reset sleutel is ongeldig. Vraag a.u.b. een nieuwe aan en probeer het nogmaals.</value>
+  </data>
+  <data name="UserHasNoRoles" xml:space="preserve">
+    <value>U heeft geen toegangsrechten. Neem a.u.b. contact op met uw systeembeheerder.</value>
+  </data>
+  <data name="AcceptedTerms" xml:space="preserve">
+    <value>Ik accepteer de voorwaarden</value>
+  </data>
+  <data name="ViewingGroup" xml:space="preserve">
+    <value>Huidige groep</value>
+  </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Goedgekeurd</value>
+  </data>
+  <data name="DateAcceptedTerms" xml:space="preserve">
+    <value>Datum waarop de gebruiker de voorwaarden geaccepteerd heeft</value>
+  </data>
+  <data name="LockedOut" xml:space="preserve">
+    <value>Afgesloten</value>
+  </data>
+  <data name="PreferredCulture" xml:space="preserve">
+    <value>Gewenste taal</value>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>Tot</value>
+  </data>
+  <data name="MaxNumberOfUsers" xml:space="preserve">
+    <value>Aantal gebruikers</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Van</value>
+  </data>
+  <data name="AddRole" xml:space="preserve">
+    <value>Nieuwe rol</value>
+  </data>
+  <data name="CreateRole" xml:space="preserve">
+    <value>Nieuwe rol toevoegen</value>
+  </data>
+  <data name="EditRole" xml:space="preserve">
+    <value>Bewerk rol {0}</value>
+  </data>
+  <data name="NoPermissions" xml:space="preserve">
+    <value>Geen rechten</value>
+  </data>
+  <data name="PermissionSet" xml:space="preserve">
+    <value>Rechtenset</value>
+  </data>
+  <data name="UsePermissions" xml:space="preserve">
+    <value>Rechten gebruiken</value>
+  </data>
+  <data name="PermissionsNotEnabed" xml:space="preserve">
+    <value>Rechten niet actief</value>
+  </data>
+  <data name="SetPassword" xml:space="preserve">
+    <value>Wachtwoord instellen</value>
+  </data>
+  <data name="RegistrationComment" xml:space="preserve">
+    <value>Reden voor aanmelding</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Rechten</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Rollen</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Van</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>tot</value>
+  </data>
+  <data name="ViewRole" xml:space="preserve">
+    <value>Rol {0}</value>
+  </data>
+  <data name="ViewUser" xml:space="preserve">
+    <value>Gebruiker {0}</value>
+  </data>
+  <data name="ErrorSendingApprovedAccountMail" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het versturen van het bericht account goedgekeurd.</value>
+  </data>
+  <data name="ErrorSendingPasswordResetLink" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het versturen van de wachtwoord reset link.</value>
+  </data>
+  <data name="ErrorSendingUnapprovedAccountMail" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het versturen van de niet-goedgekeurde account mail.</value>
+  </data>
+  <data name="DuplicateName" xml:space="preserve">
+    <value>Deze naam is al in gebruik. Kies a.u.b. een andere.</value>
+  </data>
+  <data name="StopViewAs" xml:space="preserve">
+    <value>Stop bekijken als</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="PasswordSetSuccess" xml:space="preserve">
+    <value>Uw wachtwoord is opgeslagen. U kunt nu inloggen met uw nieuwe wachtwoord.</value>
+  </data>
+</root>
