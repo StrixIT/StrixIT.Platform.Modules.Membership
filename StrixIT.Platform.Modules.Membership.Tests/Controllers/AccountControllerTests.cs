@@ -23,7 +23,13 @@ namespace StrixIT.Platform.Modules.Membership.Tests.Controllers
         public static void Init(TestContext context)
         {
             DataMapper.CreateMap<User, UserViewModel>();
-            DataMapper.CreateMap<UserInRole, AssignRoleModel>().ForMember(ar => ar.Id, c => c.MapFrom(ur => ur.UserId));
+
+            var roleMap = DataMapper.CreateMap<UserInRole, AssignRoleModel>();
+
+            if (roleMap != null)
+            {
+                roleMap.ForMember(ar => ar.Id, c => c.MapFrom(ur => ur.UserId));
+            }
         }
 
         [TestInitialize]
