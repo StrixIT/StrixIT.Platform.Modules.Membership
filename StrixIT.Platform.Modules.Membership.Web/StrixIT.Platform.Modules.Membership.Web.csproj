@@ -412,7 +412,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y /E /F /I "$(TargetPath)\..\..\Areas\Membership" "c:\builds\Membership\"</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y /E /F /I "$(TargetPath)\..\..\Areas\Membership" "c:\builds\Modules\Membership\Membership\"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
