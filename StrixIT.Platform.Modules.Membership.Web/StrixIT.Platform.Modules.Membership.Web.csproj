@@ -164,6 +164,7 @@
     <Content Include="Libraries\nl\StrixIT.Platform.Core.resources.dll" />
     <Content Include="Libraries\nl\StrixIT.Platform.Web.resources.dll" />
     <Content Include="Libraries\StrixIT.Platform.Core.dll" />
+    <Content Include="Libraries\StrixIT.Platform.Testing.dll" />
     <Content Include="Libraries\StrixIT.Platform.Web.dll" />
     <Content Include="License.txt" />
     <Content Include="ReadMe.txt" />
