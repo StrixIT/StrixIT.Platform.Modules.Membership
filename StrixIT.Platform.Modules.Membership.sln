@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrixIT.Platform.Modules.Membership", "StrixIT.Platform.Modules.Membership\StrixIT.Platform.Modules.Membership.csproj", "{63CBF5F3-8D3B-4B3D-A4BA-F1C932736DEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrixIT.Platform.Modules.Membership.Web", "StrixIT.Platform.Modules.Membership.Web\StrixIT.Platform.Modules.Membership.Web.csproj", "{589131D5-B87F-4D5F-8EEC-C2E3EBF61ECE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrixIT.Platform.Modules.Membership.WebClient", "StrixIT.Platform.Modules.Membership.WebClient\StrixIT.Platform.Modules.Membership.WebClient.csproj", "{589131D5-B87F-4D5F-8EEC-C2E3EBF61ECE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrixIT.Platform.Modules.Membership.Tests", "StrixIT.Platform.Modules.Membership.Tests\StrixIT.Platform.Modules.Membership.Tests.csproj", "{FF294B0F-A657-4DCC-B209-361AA51AA348}"
 EndProject

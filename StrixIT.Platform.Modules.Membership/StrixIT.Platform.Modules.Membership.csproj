@@ -40,10 +40,10 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="StrixIT.Platform.Core">
-      <HintPath>..\StrixIT.Platform.Modules.Membership.Web\Libraries\StrixIT.Platform.Core.dll</HintPath>
+      <HintPath>..\StrixIT.Platform.Modules.Membership.WebClient\Libraries\StrixIT.Platform.Core.dll</HintPath>
     </Reference>
     <Reference Include="StrixIT.Platform.Web">
-      <HintPath>..\StrixIT.Platform.Modules.Membership.Web\Libraries\StrixIT.Platform.Web.dll</HintPath>
+      <HintPath>..\StrixIT.Platform.Modules.Membership.WebClient\Libraries\StrixIT.Platform.Web.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\packages\structuremap.3.1.5.154\lib\net40\StructureMap.dll</HintPath>
@@ -211,8 +211,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y /E /F /I "$(TargetPath)\..\..\..\Migrations\Scripts\*.*" "c:\builds\Modules\Membership\SQL Scripts\"
-xcopy /Y /E /F /I "$(TargetPath)" "$(TargetPath)\..\..\..\..\StrixIT.Platform.Modules.Membership.Web\Areas\Membership\bin"
-xcopy /Y /E /F /I "$(TargetPath)\..\nl\StrixIT.Platform.Modules.Membership.resources.dll" "$(TargetPath)\..\..\..\..\StrixIT.Platform.Modules.Membership.Web\Areas\Membership\bin\nl"</PostBuildEvent>
+xcopy /Y /E /F /I "$(TargetPath)" "$(TargetPath)\..\..\..\..\StrixIT.Platform.Modules.Membership.WebClient\Areas\Membership\bin"
+xcopy /Y /E /F /I "$(TargetPath)\..\nl\StrixIT.Platform.Modules.Membership.resources.dll" "$(TargetPath)\..\..\..\..\StrixIT.Platform.Modules.Membership.WebClient\Areas\Membership\bin\nl"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

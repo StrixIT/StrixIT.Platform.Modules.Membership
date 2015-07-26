@@ -45,10 +45,10 @@
       <HintPath>..\packages\StoryQ.2.0.5\lib\StoryQ.dll</HintPath>
     </Reference>
     <Reference Include="StrixIT.Platform.Core">
-      <HintPath>..\StrixIT.Platform.Modules.Membership.Web\Libraries\StrixIT.Platform.Core.dll</HintPath>
+      <HintPath>..\StrixIT.Platform.Modules.Membership.WebClient\Libraries\StrixIT.Platform.Core.dll</HintPath>
     </Reference>
     <Reference Include="StrixIT.Platform.Testing">
-      <HintPath>..\StrixIT.Platform.Modules.Membership.Web\Libraries\StrixIT.Platform.Testing.dll</HintPath>
+      <HintPath>..\StrixIT.Platform.Modules.Membership.WebClient\Libraries\StrixIT.Platform.Testing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />

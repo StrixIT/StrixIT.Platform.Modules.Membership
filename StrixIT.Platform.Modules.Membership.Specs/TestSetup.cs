@@ -32,7 +32,7 @@ namespace StrixIT.Platform.Modules.Membership.Specs
             TestManager.UseDataContext(new MembershipDataSource());
             TestManager.AuthenticationEmail = Resources.DefaultValues.AdministratorEmail;
             TestManager.AuthenticationPassword = Resources.DefaultValues.AdministratorPassword;
-            TestManager.SetupTestRun("StrixIT.Platform.Modules.Membership.Web", TestBrowser.Chrome);
+            TestManager.SetupTestRun("StrixIT.Platform.Modules.Membership.WebClient", TestBrowser.Chrome);
         }
 
         [AssemblyCleanup]
