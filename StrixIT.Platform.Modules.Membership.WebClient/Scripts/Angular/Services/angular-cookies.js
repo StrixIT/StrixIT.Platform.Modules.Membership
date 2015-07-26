@@ -22,7 +22,6 @@
      * {@link ngCookies.$cookieStore `$cookieStore`} for usage.
      */
 
-
     angular.module('ngCookies', ['ng']).
       /**
        * @ngdoc service
@@ -77,7 +76,6 @@
 
            return cookies;
 
-
            /**
             * Pushes all the cookies from the service to the browser and verifies if all cookies were
             * stored.
@@ -128,7 +126,6 @@
            }
        }]).
 
-
       /**
        * @ngdoc service
        * @name $cookieStore
@@ -156,7 +153,6 @@
        * ```
        */
        factory('$cookieStore', ['$cookies', function ($cookies) {
-
            return {
                /**
                 * @ngdoc method
@@ -200,8 +196,5 @@
                    delete $cookies[key];
                }
            };
-
        }]);
-
-
 })(window, window.angular);

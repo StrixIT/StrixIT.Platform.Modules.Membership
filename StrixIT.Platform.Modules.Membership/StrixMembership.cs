@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="StrixMembership.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -25,7 +27,13 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public static class StrixMembership
     {
+        #region Private Fields
+
         private static MembershipConfiguration _config = new MembershipConfiguration();
+
+        #endregion Private Fields
+
+        #region Public Properties
 
         /// <summary>
         /// Gets the membership configuration.
@@ -37,5 +45,7 @@ namespace StrixIT.Platform.Modules.Membership
                 return _config;
             }
         }
+
+        #endregion Public Properties
     }
 }

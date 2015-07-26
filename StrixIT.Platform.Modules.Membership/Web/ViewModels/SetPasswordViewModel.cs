@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="SetPasswordViewModel.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,11 +17,12 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Modules.Membership.Resources;
 using System;
 using System.ComponentModel.DataAnnotations;
-using StrixIT.Platform.Modules.Membership.Resources;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -29,13 +31,15 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class SetPasswordViewModel
     {
+        #region Public Properties
+
         /// <summary>
-        /// Gets or sets the old password.
+        /// Gets or sets the confirmation of the new password.
         /// </summary>
-        [Required(ErrorMessageResourceType = typeof(Resources.Interface), ErrorMessageResourceName = "Required")]
         [DataType(DataType.Password)]
-        [Display(ResourceType = typeof(Interface), Name = "CurrentPassword")]
-        public string OldPassword { get; set; }
+        [Display(ResourceType = typeof(Interface), Name = "ConfirmNewPassword")]
+        [Compare("NewPassword", ErrorMessageResourceType = typeof(Resources.Interface), ErrorMessageResourceName = "PasswordAndConfirmationDoNotMatch")]
+        public string ConfirmPassword { get; set; }
 
         /// <summary>
         /// Gets or sets the new password.
@@ -47,12 +51,12 @@ namespace StrixIT.Platform.Modules.Membership
         public string NewPassword { get; set; }
 
         /// <summary>
-        /// Gets or sets the confirmation of the new password.
+        /// Gets or sets the old password.
         /// </summary>
+        [Required(ErrorMessageResourceType = typeof(Resources.Interface), ErrorMessageResourceName = "Required")]
         [DataType(DataType.Password)]
-        [Display(ResourceType = typeof(Interface), Name = "ConfirmNewPassword")]
-        [Compare("NewPassword", ErrorMessageResourceType = typeof(Resources.Interface), ErrorMessageResourceName = "PasswordAndConfirmationDoNotMatch")]
-        public string ConfirmPassword { get; set; }
+        [Display(ResourceType = typeof(Interface), Name = "CurrentPassword")]
+        public string OldPassword { get; set; }
 
         /// <summary>
         /// Gets or sets the password reset key. Used for password resets.
@@ -63,5 +67,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// Gets or sets the url to return to after changing the password.
         /// </summary>
         public string ReturnUrl { get; set; }
+
+        #endregion Public Properties
     }
 }

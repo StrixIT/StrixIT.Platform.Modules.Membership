@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="RoleListConfiguration.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using StrixIT.Platform.Core;
 
@@ -24,6 +26,8 @@ namespace StrixIT.Platform.Modules.Membership
 {
     public class RoleListConfiguration : ListConfiguration
     {
+        #region Public Constructors
+
         public RoleListConfiguration(IUserContext userContext) : base(typeof(RoleViewModel), null)
         {
             this.InterfaceResourceType = typeof(Resources.Interface);
@@ -31,5 +35,7 @@ namespace StrixIT.Platform.Modules.Membership
             this.CanEdit = userContext.HasPermission(MembershipPermissions.EditRole);
             this.CanDelete = userContext.HasPermission(MembershipPermissions.DeleteRole);
         }
+
+        #endregion Public Constructors
     }
 }

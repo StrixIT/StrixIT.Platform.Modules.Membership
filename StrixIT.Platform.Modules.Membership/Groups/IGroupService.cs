@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IGroupService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,12 +17,11 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
-using System.Collections.Generic;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
-using StrixIT.Platform.Web;
+using System;
 
 namespace StrixIT.Platform.Modules.Membership
 {

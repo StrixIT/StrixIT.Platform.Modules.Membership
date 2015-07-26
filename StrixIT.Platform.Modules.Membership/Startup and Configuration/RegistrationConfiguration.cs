@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="RegistrationConfiguration.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,16 +17,23 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System.Collections.Generic;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using System.Collections.Generic;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class RegistrationConfiguration
     {
+        #region Private Fields
+
         private static IDictionary<string, string> _settings = ModuleManager.AppSettings.ContainsKey(MembershipConstants.MEMBERSHIP) ? ModuleManager.AppSettings[MembershipConstants.MEMBERSHIP] : ModuleManager.AppSettings[PlatformConstants.PLATFORM];
+
+        #endregion Private Fields
+
+        #region Public Properties
 
         public bool AllowUserRegistration
         {
@@ -43,6 +51,14 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
+        public bool UseRegistrationComment
+        {
+            get
+            {
+                return bool.Parse(_settings["useRegistrationComment"]);
+            }
+        }
+
         public bool UseTerms
         {
             get
@@ -51,12 +67,6 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        public bool UseRegistrationComment
-        {
-            get
-            {
-                return bool.Parse(_settings["useRegistrationComment"]);
-            }
-        }
+        #endregion Public Properties
     }
 }

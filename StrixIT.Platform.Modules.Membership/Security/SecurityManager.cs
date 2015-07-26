@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="SecurityManager.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,24 +17,33 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Helpers;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class SecurityManager : ISecurityManager
     {
+        #region Private Fields
+
         private IMembershipDataSource _dataSource;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public SecurityManager(IMembershipDataSource dataSource)
         {
             this._dataSource = dataSource;
         }
+
+        #endregion Public Constructors
 
         #region Validate
 
@@ -78,20 +88,9 @@ namespace StrixIT.Platform.Modules.Membership
             return ValidateUserResult.Valid;
         }
 
-        #endregion
+        #endregion Validate
 
         #region Password
-
-        public string EncodePassword(string password)
-        {
-            if (password == null)
-            {
-                throw new ArgumentNullException("password");
-            }
-
-            // Todo: use numberOfIterations.
-            return Crypto.HashPassword(password);
-        }
 
         public bool ChangePassword(Guid userId, string oldPassword, string newPassword, Guid? resetKey = null)
         {
@@ -152,12 +151,25 @@ namespace StrixIT.Platform.Modules.Membership
             return true;
         }
 
+        public string EncodePassword(string password)
+        {
+            if (password == null)
+            {
+                throw new ArgumentNullException("password");
+            }
+
+            // Todo: use numberOfIterations.
+            return Crypto.HashPassword(password);
+        }
+
         public string GeneratePassword()
         {
             return System.Web.Security.Membership.GeneratePassword(StrixMembership.Configuration.Password.MinRequiredPasswordLength, StrixMembership.Configuration.Password.MinRequiredNonAlphanumericCharacters);
         }
 
-        #endregion
+        #endregion Password
+
+        #region Public Methods
 
         public bool ApproveUser(Guid id)
         {
@@ -177,25 +189,36 @@ namespace StrixIT.Platform.Modules.Membership
             return true;
         }
 
-        public bool UnlockUser(Guid id)
+        public bool CheckVerificationId(Guid verificationId)
         {
-            if (id == Guid.Empty)
+            if (verificationId == Guid.Empty)
             {
                 return false;
             }
 
-            var security = this.GetSecurity(id);
+            var validWindow = StrixMembership.Configuration.Password.VerificationIdValidWindow;
+            var start = this._dataSource.Query<UserSecurity>().Where(s => s.VerificationId == verificationId && s.VerificationWindowStart.HasValue).Select(s => s.VerificationWindowStart).FirstOrDefault();
+            return start.HasValue && start.Value.AddMinutes(validWindow) >= DateTime.Now;
+        }
 
-            if (security == null)
+        public IList<AccountStatus> GetAccountStatusData(Guid[] userIds)
+        {
+            if (userIds.IsEmpty())
             {
-                return false;
+                return new List<AccountStatus>();
             }
 
-            security.LockedOut = false;
-            security.FailedPasswordAttemptCount = 0;
-            security.FailedPasswordAttemptWindowStart = null;
+            return this._dataSource.Query<UserSecurity>().Where(s => userIds.Contains(s.Id)).Select(s => new AccountStatus { Id = s.Id, LockedOut = s.LockedOut, Approved = s.Approved }).ToList();
+        }
 
-            return true;
+        public User GetUserByResetKey(Guid key)
+        {
+            if (this.CheckVerificationId(key))
+            {
+                return this._dataSource.Query<UserSecurity>().Where(s => s.VerificationId == key).Select(s => s.User).FirstOrDefault();
+            }
+
+            return null;
         }
 
         public void SetVerificationId(Guid userId, Guid? verificationId)
@@ -226,52 +249,30 @@ namespace StrixIT.Platform.Modules.Membership
             this._dataSource.SaveChanges();
         }
 
-        public IList<AccountStatus> GetAccountStatusData(Guid[] userIds)
+        public bool UnlockUser(Guid id)
         {
-            if (userIds.IsEmpty())
-            {
-                return new List<AccountStatus>();
-            }
-
-            return this._dataSource.Query<UserSecurity>().Where(s => userIds.Contains(s.Id)).Select(s => new AccountStatus { Id = s.Id, LockedOut = s.LockedOut, Approved = s.Approved }).ToList();
-        }
-
-        public bool CheckVerificationId(Guid verificationId)
-        {
-            if (verificationId == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return false;
             }
 
-            var validWindow = StrixMembership.Configuration.Password.VerificationIdValidWindow;
-            var start = this._dataSource.Query<UserSecurity>().Where(s => s.VerificationId == verificationId && s.VerificationWindowStart.HasValue).Select(s => s.VerificationWindowStart).FirstOrDefault();
-            return start.HasValue && start.Value.AddMinutes(validWindow) >= DateTime.Now;
-        }
-
-        public User GetUserByResetKey(Guid key)
-        {
-            if (this.CheckVerificationId(key))
-            {
-                return this._dataSource.Query<UserSecurity>().Where(s => s.VerificationId == key).Select(s => s.User).FirstOrDefault();
-            }
-
-            return null;
-        }
-
-        #region Private Methods
-
-        private UserSecurity GetSecurity(Guid userId)
-        {
-            var security = this._dataSource.Find<UserSecurity>(new object[] { userId });
+            var security = this.GetSecurity(id);
 
             if (security == null)
             {
-                var message = string.Format("No security record found for user id {0}", userId);
-                Logger.Log(message, LogLevel.Error);
+                return false;
             }
 
-            return security;
+            security.LockedOut = false;
+            security.FailedPasswordAttemptCount = 0;
+            security.FailedPasswordAttemptWindowStart = null;
+
+            return true;
         }
+
+        #endregion Public Methods
+
+        #region Private Methods
 
         private bool CheckPassword(UserSecurity security, string password)
         {
@@ -313,6 +314,19 @@ namespace StrixIT.Platform.Modules.Membership
             return match;
         }
 
-        #endregion
+        private UserSecurity GetSecurity(Guid userId)
+        {
+            var security = this._dataSource.Find<UserSecurity>(new object[] { userId });
+
+            if (security == null)
+            {
+                var message = string.Format("No security record found for user id {0}", userId);
+                Logger.Log(message, LogLevel.Error);
+            }
+
+            return security;
+        }
+
+        #endregion Private Methods
     }
 }

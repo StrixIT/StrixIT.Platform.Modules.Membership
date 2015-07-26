@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="GroupService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,22 +17,29 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class GroupService : IGroupService
     {
+        #region Private Fields
+
         private IMembershipDataSource _dataSource;
         private IGroupManager _groupManager;
-        private IUserManager _userManager;
         private IRoleManager _roleManager;
+        private IUserManager _userManager;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public GroupService(IMembershipDataSource dataSource, IGroupManager groupManager, IUserManager userManager, IRoleManager roleManager)
         {
@@ -44,6 +52,25 @@ namespace StrixIT.Platform.Modules.Membership
             this._groupManager = groupManager;
             this._userManager = userManager;
             this._roleManager = roleManager;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public void Delete(Guid id)
+        {
+            this.Delete(id, true);
+        }
+
+        public void Delete(Guid id, bool saveChanges)
+        {
+            this._groupManager.Delete(id);
+
+            if (saveChanges)
+            {
+                this._dataSource.SaveChanges();
+            }
         }
 
         public bool Exists(string name, Guid? id)
@@ -128,22 +155,40 @@ namespace StrixIT.Platform.Modules.Membership
             return new SaveResult<GroupViewModel>(true, group.Map<GroupViewModel>());
         }
 
-        public void Delete(Guid id)
-        {
-            this.Delete(id, true);
-        }
-
-        public void Delete(Guid id, bool saveChanges)
-        {
-            this._groupManager.Delete(id);
-
-            if (saveChanges)
-            {
-                this._dataSource.SaveChanges();
-            }
-        }
+        #endregion Public Methods
 
         #region Private Methods
+
+        private void CleanupAssignments(GroupViewModel model)
+        {
+            var group = this._groupManager.Get(model.Id);
+            var changedUsePermissions = group.UsePermissions != model.UsePermissions;
+
+            // If changing from using permissions to roles or vice versa, do some cleaning up.
+            if (changedUsePermissions)
+            {
+                if (!model.UsePermissions)
+                {
+                    // Change from using permissions to using roles. Remove all custom roles
+                    // (including the permission set) and associated user assignments.
+                    var roles = this._roleManager.Query().Where(r => r.GroupId == model.Id).ToList();
+                    var roleNames = roles.Select(r => r.Name).ToArray();
+                    this._roleManager.RemoveGroupFromRoles(model.Id, roleNames);
+
+                    foreach (var role in roles)
+                    {
+                        this._roleManager.Delete(role.Id);
+                    }
+                }
+                else
+                {
+                    // Change from using roles to using permissions. Remove all group and user role assignments.
+                    var roles = this._groupManager.Query().SelectMany(g => g.Roles.Where(r => r.GroupId == model.Id)).Select(r => r.Role).ToList();
+                    var roleNames = roles.Select(r => r.Name).ToArray();
+                    this._roleManager.RemoveGroupFromRoles(model.Id, roleNames);
+                }
+            }
+        }
 
         private void FillRoleData(GroupViewModel model)
         {
@@ -206,36 +251,6 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        private void CleanupAssignments(GroupViewModel model)
-        {
-            var group = this._groupManager.Get(model.Id);
-            var changedUsePermissions = group.UsePermissions != model.UsePermissions;
-
-            // If changing from using permissions to roles or vice versa, do some cleaning up.
-            if (changedUsePermissions)
-            {
-                if (!model.UsePermissions)
-                {
-                    // Change from using permissions to using roles. Remove all custom roles (including the permission set) and associated user assignments.
-                    var roles = this._roleManager.Query().Where(r => r.GroupId == model.Id).ToList();
-                    var roleNames = roles.Select(r => r.Name).ToArray();
-                    this._roleManager.RemoveGroupFromRoles(model.Id, roleNames);
-
-                    foreach (var role in roles)
-                    {
-                        this._roleManager.Delete(role.Id);
-                    }
-                }
-                else
-                {
-                    // Change from using roles to using permissions. Remove all group and user role assignments.
-                    var roles = this._groupManager.Query().SelectMany(g => g.Roles.Where(r => r.GroupId == model.Id)).Select(r => r.Role).ToList();
-                    var roleNames = roles.Select(r => r.Name).ToArray();
-                    this._roleManager.RemoveGroupFromRoles(model.Id, roleNames);
-                }
-            }
-        }
-
         private void UpdatePermissionSet(GroupViewModel model)
         {
             var permissionAssignment = this._roleManager.GetPermissionSetForGroup(model.Id);
@@ -293,6 +308,6 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

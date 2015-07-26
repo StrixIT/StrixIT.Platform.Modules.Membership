@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IAccountService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,10 +17,11 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using System;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -28,19 +30,33 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public interface IAccountService
     {
+        #region Public Methods
+
+        /// <summary>
+        /// Changes the password for a user.
+        /// </summary>
+        /// <param name="email">The user's e-mail</param>
+        /// <param name="oldPassword">The user's old password, or null if a reset key is used</param>
+        /// <param name="newPassword">The user's new password</param>
+        /// <param name="resetKey">The password reset key, if available</param>
+        /// <returns>An update user result holding the data on the password change</returns>
+        SaveResult<UserViewModel> ChangePassword(string email, string oldPassword, string newPassword, Guid? resetKey = null);
+
+        /// <summary>
+        /// Gets a user using the password reset key supplied.
+        /// </summary>
+        /// <param name="key">The password reset key</param>
+        /// <returns>
+        /// The user, if a user with a valid key with the specified id was found, or NULL
+        /// </returns>
+        UserViewModel GetUserByResetKey(Guid key);
+
         /// <summary>
         /// Registers a new user account.
         /// </summary>
         /// <param name="model">The data for the new account</param>
         /// <returns>An update user result holding the data on account creation</returns>
         SaveResult<UserViewModel> RegisterAccount(RegisterViewModel model);
-
-        /// <summary>
-        /// Updates a user account.
-        /// </summary>
-        /// <param name="model">The account data</param>
-        /// <returns>An update user result holding the data on the update</returns>
-        SaveResult<UserViewModel> UpdateAccount(UserViewModel model);
 
         /// <summary>
         /// Sends a password reset link to the user.
@@ -57,27 +73,19 @@ namespace StrixIT.Platform.Modules.Membership
         SaveResult<UserViewModel> SendPasswordResetLink(Guid userId);
 
         /// <summary>
+        /// Updates a user account.
+        /// </summary>
+        /// <param name="model">The account data</param>
+        /// <returns>An update user result holding the data on the update</returns>
+        SaveResult<UserViewModel> UpdateAccount(UserViewModel model);
+
+        /// <summary>
         /// Validates the reset key for a user.
         /// </summary>
         /// <param name="resetKey">The reset key</param>
         /// <returns>True if the key is valid, false otherwise</returns>
         bool ValidateResetKey(Guid resetKey);
 
-        /// <summary>
-        /// Changes the password for a user.
-        /// </summary>
-        /// <param name="email">The user's e-mail</param>
-        /// <param name="oldPassword">The user's old password, or null if a reset key is used</param>
-        /// <param name="newPassword">The user's new password</param>
-        /// <param name="resetKey">The password reset key, if available</param>
-        /// <returns>An update user result holding the data on the password change</returns>
-        SaveResult<UserViewModel> ChangePassword(string email, string oldPassword, string newPassword, Guid? resetKey = null);
-
-        /// <summary>
-        /// Gets a user using the password reset key supplied.
-        /// </summary>
-        /// <param name="key">The password reset key</param>
-        /// <returns>The user, if a user with a valid key with the specified id was found, or NULL</returns>
-        UserViewModel GetUserByResetKey(Guid key);
+        #endregion Public Methods
     }
 }

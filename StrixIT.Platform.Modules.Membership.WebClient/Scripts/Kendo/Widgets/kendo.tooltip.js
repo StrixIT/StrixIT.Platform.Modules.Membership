@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.popup" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         Widget = kendo.ui.Widget,
@@ -444,5 +443,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

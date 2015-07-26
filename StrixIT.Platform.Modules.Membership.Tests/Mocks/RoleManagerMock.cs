@@ -4,19 +4,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
-using StrixIT.Platform.Core;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Security.Principal;
+using System.Linq;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public class RoleManagerMock
     {
-        private IRoleManager _roleManager;
+        #region Private Fields
+
         private DataSourceMock _dataSourceMock = new DataSourceMock();
         private Mock<IRoleManager> _managerMock = new Mock<IRoleManager>();
+        private IRoleManager _roleManager;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RoleManagerMock()
         {
@@ -33,21 +37,23 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _roleManager = new RoleManager(_dataSourceMock.Mock.Object);
         }
 
-        #region Properties
+        #endregion Public Constructors
 
-        public IRoleManager RoleManager
-        {
-            get
-            {
-                return _roleManager;
-            }
-        }
+        #region Properties
 
         public Mock<IRoleManager> Mock
         {
             get
             {
                 return _managerMock;
+            }
+        }
+
+        public IRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager;
             }
         }
 
@@ -59,7 +65,9 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        #endregion
+        #endregion Properties
+
+        #region Public Methods
 
         public void FixRelations()
         {
@@ -83,5 +91,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
                 }
             }
         }
+
+        #endregion Public Methods
     }
 }

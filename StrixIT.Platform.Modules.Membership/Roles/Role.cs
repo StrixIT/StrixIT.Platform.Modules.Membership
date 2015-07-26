@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="Role.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,12 +17,13 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -30,8 +32,10 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class Role
     {
+        #region Public Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="Role" /> class.
+        /// Initializes a new instance of the <see cref="Role"/> class.
         /// </summary>
         /// <param name="id">The role id</param>
         /// <param name="groupId">The id of the group this role is for</param>
@@ -43,12 +47,28 @@ namespace StrixIT.Platform.Modules.Membership
             this.Name = name;
         }
 
-        private Role() { }
+        #endregion Public Constructors
+
+        #region Private Constructors
+
+        private Role()
+        {
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         /// <summary>
-        /// Gets the role id.
+        /// Gets or sets the description for the role.
         /// </summary>
-        public Guid Id { get; private set; }
+        [StringLength(500)]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets the group the role was created by.
+        /// </summary>
+        public Group Group { get; private set; }
 
         /// <summary>
         /// Gets the id of the group the role was created by.
@@ -57,9 +77,14 @@ namespace StrixIT.Platform.Modules.Membership
         public Guid GroupId { get; private set; }
 
         /// <summary>
-        /// Gets the group the role was created by.
+        /// Gets or sets the groups that are a member of this role.
         /// </summary>
-        public Group Group { get; private set; }
+        public ICollection<GroupInRole> Groups { get; set; }
+
+        /// <summary>
+        /// Gets the role id.
+        /// </summary>
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Gets or sets the name of the role.
@@ -69,19 +94,10 @@ namespace StrixIT.Platform.Modules.Membership
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the description for the role.
-        /// </summary>
-        [StringLength(500)]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets the groups that are a member of this role.
-        /// </summary>
-        public ICollection<GroupInRole> Groups { get; set; }
-
-        /// <summary>
         /// Gets or sets the permissions this role has.
         /// </summary>
         public ICollection<Permission> Permissions { get; set; }
+
+        #endregion Public Properties
     }
 }

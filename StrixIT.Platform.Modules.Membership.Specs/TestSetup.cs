@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="TestSetup.cs" company="StrixIT">
 // Copyright 2015 StrixIT, author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StrixIT.Platform.Testing;
@@ -26,6 +28,8 @@ namespace StrixIT.Platform.Modules.Membership.Specs
     [TestClass]
     public class TestSetup
     {
+        #region Public Methods
+
         [AssemblyInitialize]
         public static void Setup(TestContext context)
         {
@@ -40,5 +44,7 @@ namespace StrixIT.Platform.Modules.Membership.Specs
         {
             TestManager.TearDownTestRun();
         }
+
+        #endregion Public Methods
     }
 }

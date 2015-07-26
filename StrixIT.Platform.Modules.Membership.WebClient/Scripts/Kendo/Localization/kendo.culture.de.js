@@ -16,7 +16,6 @@
 (function(f, define){
     define([], f);
 })(function(){
-
 (function( window, undefined ) {
     var kendo = window.kendo || (window.kendo = { cultures: {} });
     kendo.cultures["de"] = {
@@ -80,7 +79,5 @@
     }
 })(this);
 
-
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

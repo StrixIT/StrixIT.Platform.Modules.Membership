@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserListConfiguration.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using StrixIT.Platform.Core;
 
@@ -24,6 +26,8 @@ namespace StrixIT.Platform.Modules.Membership
 {
     public class UserListConfiguration : ListConfiguration
     {
+        #region Public Constructors
+
         public UserListConfiguration(IUserContext userContext) : base(typeof(UserListModel), new string[] { "Email" })
         {
             this.InterfaceResourceType = typeof(Resources.Interface);
@@ -34,5 +38,7 @@ namespace StrixIT.Platform.Modules.Membership
             this.CanEdit = userContext.HasPermission(MembershipPermissions.EditUser);
             this.CanDelete = userContext.HasPermission(MembershipPermissions.DeleteUser);
         }
+
+        #endregion Public Constructors
     }
 }

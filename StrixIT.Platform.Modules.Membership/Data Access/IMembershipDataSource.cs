@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IMembershipDataSource.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,11 +17,11 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
-using System.Linq;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using System.Linq;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -29,13 +30,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public interface IMembershipDataSource : IDataSource
     {
-        /// <summary>
-        /// Gets a query for the specified object type with the specified includes.
-        /// </summary>
-        /// <typeparam name="T">The type of the object to get the query for</typeparam>
-        /// <param name="includes">The includes</param>
-        /// <returns>The query</returns>
-        IQueryable<T> Query<T>(string includes) where T : class;
+        #region Public Methods
 
         /// <summary>
         /// Finds an object in memory or the data source using its key values.
@@ -44,5 +39,15 @@ namespace StrixIT.Platform.Modules.Membership
         /// <param name="keys">The object's key values</param>
         /// <returns>The object</returns>
         T Find<T>(object[] keys) where T : class;
+
+        /// <summary>
+        /// Gets a query for the specified object type with the specified includes.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to get the query for</typeparam>
+        /// <param name="includes">The includes</param>
+        /// <returns>The query</returns>
+        IQueryable<T> Query<T>(string includes) where T : class;
+
+        #endregion Public Methods
     }
 }

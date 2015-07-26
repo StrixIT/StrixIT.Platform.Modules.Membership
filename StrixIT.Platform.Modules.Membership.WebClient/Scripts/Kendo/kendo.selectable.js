@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.userevents" ], f);
 })(function(){
-
 (function ($, undefined) {
     var kendo = window.kendo,
         Widget = kendo.ui.Widget,
@@ -222,7 +221,6 @@
                 .find(that.options.filter + "." + UNSELECTING))
                 .removeClass(UNSELECTING);
 
-
             var target = that.element.find(that.options.filter + "." + ACTIVE);
             target = target.add(that.relatedTarget(target));
 
@@ -424,9 +422,7 @@
     }
 
     kendo.ui.plugin(Selectable);
-
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

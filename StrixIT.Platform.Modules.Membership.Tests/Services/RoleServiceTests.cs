@@ -5,30 +5,27 @@
 //------------------------------------------------------------------------------
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using StrixIT.Platform.Core;
+using System;
+using System.Linq;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     [TestClass]
     public class RoleServiceTests
     {
+        #region Private Fields
+
         private Mock<IUserContext> _userContextMock;
+
+        #endregion Private Fields
+
+        #region Public Methods
 
         [ClassInitialize]
         public static void Init(TestContext context)
         {
             DataMapper.CreateMap<Permission, AssignPermissionModel>();
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            _userContextMock = TestHelpers.MockUserContext();
         }
 
         [TestMethod()]
@@ -55,5 +52,13 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             Assert.AreEqual(3, result.Permissions.Last().Index);
             Assert.AreEqual(true, result.Permissions.ElementAt(1).Selected);
         }
+
+        [TestInitialize]
+        public void Init()
+        {
+            _userContextMock = TestHelpers.MockUserContext();
+        }
+
+        #endregion Public Methods
     }
 }

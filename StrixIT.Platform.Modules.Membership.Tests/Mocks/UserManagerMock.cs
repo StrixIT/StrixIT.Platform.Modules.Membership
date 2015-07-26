@@ -4,19 +4,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
-using StrixIT.Platform.Core;
-using System.Collections.Generic;
-using System.Security.Principal;
 using System.Linq;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public class UserManagerMock
     {
-        private IUserManager _userManager;
+        #region Private Fields
+
         private DataSourceMock _dataSourceMock = new DataSourceMock();
-        private Mock<IUserManager> _userManagerMock = new Mock<IUserManager>();
         private Mock<ISecurityManager> _securityManagerMock = new Mock<ISecurityManager>();
+        private IUserManager _userManager;
+        private Mock<IUserManager> _userManagerMock = new Mock<IUserManager>();
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public UserManagerMock()
         {
@@ -31,21 +34,23 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _userManager = new UserManager(_dataSourceMock.Mock.Object, _securityManagerMock.Object);
         }
 
-        #region Properties
+        #endregion Public Constructors
 
-        public IUserManager UserManager
-        {
-            get
-            {
-                return _userManager;
-            }
-        }
+        #region Properties
 
         public Mock<IUserManager> Mock
         {
             get
             {
                 return _userManagerMock;
+            }
+        }
+
+        public IUserManager UserManager
+        {
+            get
+            {
+                return _userManager;
             }
         }
 
@@ -57,6 +62,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

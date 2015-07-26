@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IGroupManager.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,12 +17,11 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -40,7 +40,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// <returns>True if a group with the name already exists, false otherwise</returns>
         bool Exists(string name, Guid? id);
 
-        #endregion
+        #endregion Exists
 
         #region Get
 
@@ -58,13 +58,17 @@ namespace StrixIT.Platform.Modules.Membership
         /// <returns>The group</returns>
         Group Get(string name);
 
-        #endregion
+        #endregion Get
+
+        #region Public Methods
 
         /// <summary>
         /// Gets a query for all groups.
         /// </summary>
         /// <returns>The group query</returns>
         IQueryable<Group> Query();
+
+        #endregion Public Methods
 
         #region Save
 
@@ -85,7 +89,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// <returns>The updated group</returns>
         Group Update(Guid id, string name, bool usePermissions);
 
-        #endregion
+        #endregion Save
 
         #region Delete
 
@@ -95,6 +99,6 @@ namespace StrixIT.Platform.Modules.Membership
         /// <param name="id">The group id</param>
         void Delete(Guid id);
 
-        #endregion
+        #endregion Delete
     }
 }

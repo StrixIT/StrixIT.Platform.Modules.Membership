@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="LogOffTests.cs" company="StrixIT">
 // Copyright 2015 StrixIT, author R.G. Schurgers MA MSc.
@@ -16,18 +17,21 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System.Web.Security;
+#endregion Apache License
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoryQ;
 using StrixIT.Platform.Testing;
+using System.Web.Security;
 
 namespace StrixIT.Platform.Modules.Membership.Specs
 {
     [TestClass]
     public class LogOffTests
     {
+        #region Public Methods
+
         [TestMethod]
         public void SecureUserLogOff()
         {
@@ -44,14 +48,23 @@ namespace StrixIT.Platform.Modules.Membership.Specs
              .Execute();
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private void LoggingTheUserOff()
+        {
+            TestManager.Browser.LogOff();
+        }
+
         private void TheUserIsLoggedIn()
         {
             TestManager.Browser.LogOn();
         }
 
-        private void LoggingTheUserOff()
+        private void TheUserIsRedirectedToTheHomePage()
         {
-            TestManager.Browser.LogOff();
+            Assert.IsTrue(TestManager.Browser.IsAt("/"));
         }
 
         private void TheUsersAuthenticationCookieIsInvalidatedAndHisSessionAbandoned()
@@ -60,9 +73,6 @@ namespace StrixIT.Platform.Modules.Membership.Specs
             Assert.IsNull(cookie);
         }
 
-        private void TheUserIsRedirectedToTheHomePage()
-        {
-            Assert.IsTrue(TestManager.Browser.IsAt("/"));
-        }
+        #endregion Private Methods
     }
 }

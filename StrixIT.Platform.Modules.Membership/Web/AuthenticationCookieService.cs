@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="AuthenticationCookieService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,17 +17,18 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
+#endregion Apache License
+
 using System.Web;
 using System.Web.Security;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class AuthenticationCookieService : IAuthenticationCookieService
     {
+        #region Public Methods
+
         public void SetAuthCookie(string userName)
         {
             if (HttpContext.Current != null)
@@ -43,5 +45,7 @@ namespace StrixIT.Platform.Modules.Membership
                 FormsAuthentication.SignOut();
             }
         }
+
+        #endregion Public Methods
     }
 }

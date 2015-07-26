@@ -5,24 +5,36 @@
 //------------------------------------------------------------------------------
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using StrixIT.Platform.Core;
+using StrixIT.Platform.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using StructureMap;
-using System;
-using StrixIT.Platform.Core;
-using StrixIT.Platform.Web;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     [TestClass]
     public class LinkAuthenticationToSessionAttributeTests
     {
-        private Mock<IUserContext> _userContextMock;
+        #region Private Fields
+
         private static Mock<IAuthenticationService> _authService = new Mock<IAuthenticationService>();
+        private Mock<IUserContext> _userContextMock;
+
+        #endregion Private Fields
+
+        #region Public Methods
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            DependencyInjector.Injector = null;
+            StrixPlatform.Environment = null;
+        }
 
         [TestInitialize]
         public void Init()
@@ -32,13 +44,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             injectorMock.Setup(i => i.TryGet<IAuthenticationService>()).Returns(_authService.Object);
             DependencyInjector.Injector = injectorMock.Object;
             StrixPlatform.Environment = new DefaultEnvironment();
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            DependencyInjector.Injector = null;
-            StrixPlatform.Environment = null;
         }
 
         [TestMethod]
@@ -58,6 +63,10 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             Assert.AreEqual("login", result.RouteValues["action"]);
             Assert.AreEqual("/membership/user", result.RouteValues["returnurl"]);
         }
+
+        #endregion Public Methods
+
+        #region Private Methods
 
         private ActionExecutingContext GetAuthorizationContext(out List<Mock> mocks)
         {
@@ -99,5 +108,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var context = new ActionExecutingContext(controllerContext, actionDescriptor.Object, new Dictionary<string, object>());
             return context;
         }
+
+        #endregion Private Methods
     }
 }

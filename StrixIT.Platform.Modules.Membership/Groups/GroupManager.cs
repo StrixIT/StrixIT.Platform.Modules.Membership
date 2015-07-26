@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="GroupManager.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,23 +17,83 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class GroupManager : IGroupManager
     {
+        #region Private Fields
+
         private IMembershipDataSource _dataSource;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public GroupManager(IMembershipDataSource dataSource)
         {
             this._dataSource = dataSource;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public Group Create(string name, bool usePermissions)
+        {
+            if (this.Exists(name, null))
+            {
+                var ex = new StrixMembershipException(string.Format("A group with name {0} already exists", name));
+                Logger.Log(ex.Message, ex, LogLevel.Fatal);
+                throw ex;
+            }
+
+            var currentUserId = StrixPlatform.User.Id;
+
+            if (currentUserId == null)
+            {
+                throw new StrixMembershipException("No active user");
+            }
+
+            var group = new Group(Guid.NewGuid(), name);
+            group.UsePermissions = usePermissions;
+            group = this._dataSource.Save(group);
+
+            if (group == null)
+            {
+                Logger.Log(string.Format("An error occurred while creating group {0}", group.Name), LogLevel.Error);
+            }
+            else
+            {
+                var args = new Dictionary<string, object>();
+                args.Add("Id", group.Id);
+                args.Add("GroupName", group.Name);
+                StrixPlatform.RaiseEvent<GeneralEvent>(new GeneralEvent("GroupCreateEvent", args));
+            }
+
+            return group;
+        }
+
+        public void Delete(Guid id)
+        {
+            var group = this._dataSource.Query<Group>().Include(g => g.Roles).FirstOrDefault(g => g.Id == id);
+
+            if (group == null)
+            {
+                return;
+            }
+
+            this._dataSource.Delete(group.Roles);
+            group.Roles.Clear();
+            this._dataSource.Delete(group);
         }
 
         public bool Exists(string name, Guid? id)
@@ -68,41 +129,6 @@ namespace StrixIT.Platform.Modules.Membership
         public IQueryable<Group> Query()
         {
             return this._dataSource.Query<Group>();
-        }
-
-        public Group Create(string name, bool usePermissions)
-        {
-            if (this.Exists(name, null))
-            {
-                var ex = new StrixMembershipException(string.Format("A group with name {0} already exists", name));
-                Logger.Log(ex.Message, ex, LogLevel.Fatal);
-                throw ex;
-            }
-
-            var currentUserId = StrixPlatform.User.Id;
-
-            if (currentUserId == null)
-            {
-                throw new StrixMembershipException("No active user");
-            }
-
-            var group = new Group(Guid.NewGuid(), name);
-            group.UsePermissions = usePermissions;
-            group = this._dataSource.Save(group);
-
-            if (group == null)
-            {
-                Logger.Log(string.Format("An error occurred while creating group {0}", group.Name), LogLevel.Error);
-            }
-            else
-            {
-                var args = new Dictionary<string, object>();
-                args.Add("Id", group.Id);
-                args.Add("GroupName", group.Name);
-                StrixPlatform.RaiseEvent<GeneralEvent>(new GeneralEvent("GroupCreateEvent", args));
-            }
-
-            return group;
         }
 
         public Group Update(Guid id, string name, bool usePermissions)
@@ -141,18 +167,6 @@ namespace StrixIT.Platform.Modules.Membership
             return group;
         }
 
-        public void Delete(Guid id)
-        {
-            var group = this._dataSource.Query<Group>().Include(g => g.Roles).FirstOrDefault(g => g.Id == id);
-
-            if (group == null)
-            {
-                return;
-            }
-
-            this._dataSource.Delete(group.Roles);
-            group.Roles.Clear();
-            this._dataSource.Delete(group);
-        }
+        #endregion Public Methods
     }
 }

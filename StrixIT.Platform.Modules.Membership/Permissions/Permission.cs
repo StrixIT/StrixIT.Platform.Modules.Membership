@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="Permission.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,12 +17,13 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -30,14 +32,18 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class Permission
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Permission" /> class.
-        /// </summary>
-        /// <param name="name">The permission name</param>
-        public Permission(string name) : this(Guid.Empty, Guid.Empty, name) { }
+        #region Public Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Permission" /> class.
+        /// Initializes a new instance of the <see cref="Permission"/> class.
+        /// </summary>
+        /// <param name="name">The permission name</param>
+        public Permission(string name) : this(Guid.Empty, Guid.Empty, name)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Permission"/> class.
         /// </summary>
         /// <param name="id">The permission id</param>
         /// <param name="applicationId">The id of the application the permission belongs to</param>
@@ -49,15 +55,25 @@ namespace StrixIT.Platform.Modules.Membership
             this.Name = name;
         }
 
-        /// <summary>
-        /// Prevents a default instance of the <see cref="Permission" /> class from being created.
-        /// </summary>
-        private Permission() { }
+        #endregion Public Constructors
+
+        #region Private Constructors
 
         /// <summary>
-        /// Gets the id of the permission.
+        /// Prevents a default instance of the <see cref="Permission"/> class from being created.
         /// </summary>
-        public Guid Id { get; private set; }
+        private Permission()
+        {
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets the application the permission is for.
+        /// </summary>
+        public Application Application { get; private set; }
 
         /// <summary>
         /// Gets the id of the application the permission is for.
@@ -66,9 +82,9 @@ namespace StrixIT.Platform.Modules.Membership
         public Guid ApplicationId { get; private set; }
 
         /// <summary>
-        /// Gets the application the permission is for.
+        /// Gets the id of the permission.
         /// </summary>
-        public Application Application { get; private set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Gets the permission name.
@@ -81,5 +97,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// Gets or sets the roles that have this permission.
         /// </summary>
         public ICollection<Role> Roles { get; set; }
+
+        #endregion Public Properties
     }
 }

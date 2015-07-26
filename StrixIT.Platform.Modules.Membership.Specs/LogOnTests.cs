@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="LogOnTests.cs" company="StrixIT">
 // Copyright 2015 StrixIT, author R.G. Schurgers MA MSc.
@@ -16,23 +17,30 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
-using System.Linq;
-using System.Web.Security;
+#endregion Apache License
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoryQ;
 using StrixIT.Platform.Core;
 using StrixIT.Platform.Testing;
+using System;
+using System.Linq;
+using System.Web.Security;
 
 namespace StrixIT.Platform.Modules.Membership.Specs
 {
     [TestClass]
     public class LogOnTests
     {
+        #region Private Fields
+
         private string _email;
         private string _password;
+
+        #endregion Private Fields
+
+        #region Public Methods
 
         [TestMethod]
         public void SecureUserLogon()
@@ -72,87 +80,9 @@ namespace StrixIT.Platform.Modules.Membership.Specs
                 .Execute();
         }
 
-        private void TheUserHasValidCredentialsAndAValidAccount()
-        {
-            this._email = Resources.DefaultValues.AdministratorEmail;
-            this._password = Resources.DefaultValues.AdministratorPassword;
-        }
+        #endregion Public Methods
 
-        private void ValidatingTheCredentialsSupplied()
-        {
-            TestManager.Browser.LogOn(this._email, this._password);
-        }
-
-        private void TheUserRecievesAnAuthenticationCookie()
-        {
-            var cookie = TestManager.Browser.Manage().Cookies.GetCookieNamed(FormsAuthentication.FormsCookieName);
-            Assert.IsNotNull(cookie);
-        }
-
-        private void TheUserIsRedirectedToTheHomePageForHisCulture()
-        {
-            TestManager.Browser.IsAt("/");
-        }
-
-        private void TheUsersNameIsShown()
-        {
-            Assert.AreEqual(Resources.DefaultValues.AdministratorName, TestManager.Browser.FindElementById("username").Text);
-        }
-
-        private void TheUserHasSuppliedInvalidCredentials()
-        {
-            this._email = Resources.DefaultValues.AdministratorEmail;
-            this._password = "Test invalid";
-        }
-
-        private void TheUserRecievesAnInvalidCredentialsErrorMessageOnTheSamePage()
-        {
-            TestManager.Browser.IsAt("/account/login");
-            var expected = this.GetExpectedMessage(Resources.Interface.InvalidCredentials);
-            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
-        }
-
-        private void TheUserHasSuppliedValidCredentialsButHasNoRoles()
-        {
-            this.CreateUser("noroles@strixit.com", "No Roles", "no_roles", true, false, false);
-            this._email = "noroles@strixit.com";
-            this._password = "no_roles";
-        }
-
-        private void TheUserRecievesANoRolesErrorMessageOnTheSamePage()
-        {
-            TestManager.Browser.IsAt("/account/login");
-            var expected = this.GetExpectedMessage(Resources.Interface.UserHasNoRoles);
-            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
-        }
-
-        private void TheUserHasSuppliedValidCredentialsButIsNotYetApproved()
-        {
-            this.CreateUser("notapproved@strixit.com", "Not Approved", "not_approved", false, false, true);
-            this._email = "notapproved@strixit.com";
-            this._password = "not_approved";
-        }
-
-        private void TheUserRecievesANotApprovedErrorMessageOnTheSamePage()
-        {
-            TestManager.Browser.IsAt("/account/login");
-            var expected = this.GetExpectedMessage(Resources.Interface.Unapproved);
-            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
-        }
-
-        private void TheUserHasSuppliedValidCredentialsButIsLockedOut()
-        {
-            this.CreateUser("lockedout@strixit.com", "Locked out", "lockedout", true, true, true);
-            this._email = "lockedout@strixit.com";
-            this._password = "lockedout";
-        }
-
-        private void TheUserRecievesALockedOutErrorMessageOnTheSamePage()
-        {
-            TestManager.Browser.IsAt("/account/login");
-            var expected = this.GetExpectedMessage(Resources.Interface.LockedOut);
-            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
-        }
+        #region Private Methods
 
         private void CreateUser(string email, string name, string password, bool isApproved, bool isLockedOut, bool createRoles)
         {
@@ -187,5 +117,89 @@ namespace StrixIT.Platform.Modules.Membership.Specs
             string summary = Resources.Interface.LoginError;
             return string.Format("{0}\r\n{1}", summary, message);
         }
+
+        private void TheUserHasSuppliedInvalidCredentials()
+        {
+            this._email = Resources.DefaultValues.AdministratorEmail;
+            this._password = "Test invalid";
+        }
+
+        private void TheUserHasSuppliedValidCredentialsButHasNoRoles()
+        {
+            this.CreateUser("noroles@strixit.com", "No Roles", "no_roles", true, false, false);
+            this._email = "noroles@strixit.com";
+            this._password = "no_roles";
+        }
+
+        private void TheUserHasSuppliedValidCredentialsButIsLockedOut()
+        {
+            this.CreateUser("lockedout@strixit.com", "Locked out", "lockedout", true, true, true);
+            this._email = "lockedout@strixit.com";
+            this._password = "lockedout";
+        }
+
+        private void TheUserHasSuppliedValidCredentialsButIsNotYetApproved()
+        {
+            this.CreateUser("notapproved@strixit.com", "Not Approved", "not_approved", false, false, true);
+            this._email = "notapproved@strixit.com";
+            this._password = "not_approved";
+        }
+
+        private void TheUserHasValidCredentialsAndAValidAccount()
+        {
+            this._email = Resources.DefaultValues.AdministratorEmail;
+            this._password = Resources.DefaultValues.AdministratorPassword;
+        }
+
+        private void TheUserIsRedirectedToTheHomePageForHisCulture()
+        {
+            TestManager.Browser.IsAt("/");
+        }
+
+        private void TheUserRecievesALockedOutErrorMessageOnTheSamePage()
+        {
+            TestManager.Browser.IsAt("/account/login");
+            var expected = this.GetExpectedMessage(Resources.Interface.LockedOut);
+            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
+        }
+
+        private void TheUserRecievesAnAuthenticationCookie()
+        {
+            var cookie = TestManager.Browser.Manage().Cookies.GetCookieNamed(FormsAuthentication.FormsCookieName);
+            Assert.IsNotNull(cookie);
+        }
+
+        private void TheUserRecievesAnInvalidCredentialsErrorMessageOnTheSamePage()
+        {
+            TestManager.Browser.IsAt("/account/login");
+            var expected = this.GetExpectedMessage(Resources.Interface.InvalidCredentials);
+            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
+        }
+
+        private void TheUserRecievesANoRolesErrorMessageOnTheSamePage()
+        {
+            TestManager.Browser.IsAt("/account/login");
+            var expected = this.GetExpectedMessage(Resources.Interface.UserHasNoRoles);
+            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
+        }
+
+        private void TheUserRecievesANotApprovedErrorMessageOnTheSamePage()
+        {
+            TestManager.Browser.IsAt("/account/login");
+            var expected = this.GetExpectedMessage(Resources.Interface.Unapproved);
+            Assert.AreEqual(expected, TestManager.Browser.FindElementById("loginerrorcontainer").Text);
+        }
+
+        private void TheUsersNameIsShown()
+        {
+            Assert.AreEqual(Resources.DefaultValues.AdministratorName, TestManager.Browser.FindElementById("username").Text);
+        }
+
+        private void ValidatingTheCredentialsSupplied()
+        {
+            TestManager.Browser.LogOn(this._email, this._password);
+        }
+
+        #endregion Private Methods
     }
 }

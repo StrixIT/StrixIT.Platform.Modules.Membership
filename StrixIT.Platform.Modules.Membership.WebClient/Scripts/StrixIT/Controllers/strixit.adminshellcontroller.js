@@ -149,7 +149,5 @@
                 function ajaxError(event, data) {
                     $scope.notify.show(data, "error")
                 }
-
             }]);
-
 })();

@@ -247,7 +247,6 @@
             return this;
         };
 
-
         this.$get = ['$rootScope',
                      '$location',
                      '$routeParams',
@@ -256,7 +255,6 @@
                      '$templateRequest',
                      '$sce',
             function ($rootScope, $location, $routeParams, $q, $injector, $templateRequest, $sce) {
-
                 /**
                  * @ngdoc service
                  * @name $route
@@ -624,7 +622,6 @@
                     }
                 }
 
-
                 /**
                  * @returns {Object} the current active route, by matching it against the URL
                  */
@@ -667,7 +664,6 @@
 
     ngRouteModule.provider('$routeParams', $RouteParamsProvider);
 
-
     /**
      * @ngdoc service
      * @name $routeParams
@@ -707,7 +703,6 @@
 
     ngRouteModule.directive('ngView', ngViewFactory);
     ngRouteModule.directive('ngView', ngViewFillContentFactory);
-
 
     /**
      * @ngdoc directive
@@ -752,26 +747,26 @@
               <a href="Book/Gatsby">Gatsby</a> |
               <a href="Book/Gatsby/ch/4?key=value">Gatsby: Ch4</a> |
               <a href="Book/Scarlet">Scarlet Letter</a><br/>
-    
+
               <div class="view-animate-container">
                 <div ng-view class="view-animate"></div>
               </div>
               <hr />
-    
+
               <pre>$location.path() = {{main.$location.path()}}</pre>
               <pre>$route.current.templateUrl = {{main.$route.current.templateUrl}}</pre>
               <pre>$route.current.params = {{main.$route.current.params}}</pre>
               <pre>$routeParams = {{main.$routeParams}}</pre>
             </div>
           </file>
-    
+
           <file name="book.html">
             <div>
               controller: {{book.name}}<br />
               Book Id: {{book.params.bookId}}<br />
             </div>
           </file>
-    
+
           <file name="chapter.html">
             <div>
               controller: {{chapter.name}}<br />
@@ -779,7 +774,7 @@
               Chapter Id: {{chapter.params.chapterId}}
             </div>
           </file>
-    
+
           <file name="animations.css">
             .view-animate-container {
               position:relative;
@@ -789,19 +784,19 @@
               height:40px;
               overflow:hidden;
             }
-    
+
             .view-animate {
               padding:10px;
             }
-    
+
             .view-animate.ng-enter, .view-animate.ng-leave {
               -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
               transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.5s;
-    
+
               display:block;
               width:100%;
               border-left:1px solid black;
-    
+
               position:absolute;
               top:0;
               left:0;
@@ -809,7 +804,7 @@
               bottom:0;
               padding:10px;
             }
-    
+
             .view-animate.ng-enter {
               left:100%;
             }
@@ -820,7 +815,7 @@
               left:-100%;
             }
           </file>
-    
+
           <file name="script.js">
             angular.module('ngViewExample', ['ngRoute', 'ngAnimate'])
               .config(['$routeProvider', '$locationProvider',
@@ -836,7 +831,7 @@
                       controller: 'ChapterCtrl',
                       controllerAs: 'chapter'
                     });
-    
+
                   $locationProvider.html5Mode(true);
               }])
               .controller('MainCtrl', ['$route', '$routeParams', '$location',
@@ -853,9 +848,9 @@
                 this.name = "ChapterCtrl";
                 this.params = $routeParams;
               }]);
-    
+
           </file>
-    
+
           <file name="protractor.js" type="protractor">
             it('should load and compile correct template', function() {
               element(by.linkText('Moby: Ch1')).click();
@@ -863,9 +858,9 @@
               expect(content).toMatch(/controller\: ChapterCtrl/);
               expect(content).toMatch(/Book Id\: Moby/);
               expect(content).toMatch(/Chapter Id\: 1/);
-    
+
               element(by.partialLinkText('Scarlet')).click();
-    
+
               content = element(by.css('[ng-view]')).getText();
               expect(content).toMatch(/controller\: BookCtrl/);
               expect(content).toMatch(/Book Id\: Scarlet/);
@@ -873,7 +868,6 @@
           </file>
         </example>
      */
-
 
     /**
      * @ngdoc event
@@ -986,6 +980,4 @@
             }
         };
     }
-
-
 })(window, window.angular);

@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipDataSource.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,58 +17,60 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Data.Entity;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     internal class MembershipDataSource : EntityFrameworkDataSource, IMembershipDataSource
     {
+        #region Public Constructors
+
         public MembershipDataSource() : base(MembershipConstants.MEMBERSHIP)
         {
             this.Configuration.ValidateOnSaveEnabled = false;
             this.Configuration.LazyLoadingEnabled = false;
         }
 
+        #endregion Public Constructors
+
         #region DbSets
 
         public DbSet<Application> Applications { get; set; }
 
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupInRole> GroupsInRoles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserProfileField> UserProfileFields { get; set; }
+        public DbSet<UserProfileValue> UserProfileFieldValues { get; set; }
         public DbSet<User> Users { get; set; }
 
         public DbSet<UserSecurity> UserSecurity { get; set; }
 
         public DbSet<UserSessionStorage> UserSessions { get; set; }
-
-        public DbSet<Group> Groups { get; set; }
-
-        public DbSet<Role> Roles { get; set; }
-
-        public DbSet<Permission> Permissions { get; set; }
-
         public DbSet<UserInRole> UsersInRoles { get; set; }
 
-        public DbSet<GroupInRole> GroupsInRoles { get; set; }
+        #endregion DbSets
 
-        public DbSet<UserProfileField> UserProfileFields { get; set; }
+        #region Public Methods
 
-        public DbSet<UserProfileValue> UserProfileFieldValues { get; set; }
-
-        #endregion
+        public T Find<T>(object[] keys) where T : class
+        {
+            return this.Set<T>().Find(keys);
+        }
 
         public IQueryable<T> Query<T>(string includes) where T : class
         {
             return this.Query<T>().Include(includes);
         }
 
-        public T Find<T>(object[] keys) where T : class
-        {
-            return this.Set<T>().Find(keys);
-        }
+        #endregion Public Methods
 
         #region Model Builder
 
@@ -96,6 +99,6 @@ namespace StrixIT.Platform.Modules.Membership
             base.OnModelCreating(modelBuilder);
         }
 
-        #endregion
+        #endregion Model Builder
     }
 }

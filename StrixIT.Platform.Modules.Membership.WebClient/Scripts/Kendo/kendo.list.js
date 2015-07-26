@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.data", "./kendo.popup" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         ui = kendo.ui,
@@ -1022,7 +1021,6 @@
                         that.first("dataBound", handler);
 
                         that.dataSource.filter(filters);
-
                     } else {
                         that.enable(false);
                         that._clearSelection(parent);
@@ -1057,7 +1055,6 @@
                         .on("click" + STATIC_LIST_NS, "li", proxy(this._click, this))
                         .on("mouseenter" + STATIC_LIST_NS, "li", function() { $(this).addClass(HOVER); })
                         .on("mouseleave" + STATIC_LIST_NS, "li", function() { $(this).removeClass(HOVER); });
-
 
             this.header = this.element.before('<div class="k-static-header" style="display:none"></div>').prev();
 
@@ -1133,7 +1130,6 @@
             if (options.dataSource) {
                 this.setDataSource(options.dataSource);
             }
-
 
             this._fixedHeader();
             this._getter();
@@ -1791,5 +1787,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.calendar", "./kendo.popup" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
     ui = kendo.ui,
@@ -308,7 +307,6 @@
                         div.attr(ARIA_HIDDEN, false);
 
                         that._updateARIA(date);
-
                     }
                 }
             }));
@@ -672,9 +670,7 @@
     });
 
     ui.plugin(DatePicker);
-
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

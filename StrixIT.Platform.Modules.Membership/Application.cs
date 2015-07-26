@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="Application.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,22 +17,25 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     /// <summary>
-    /// The application for users and entities. Used to allow multiple applications to use the same database with or without sharing data.
+    /// The application for users and entities. Used to allow multiple applications to use the same
+    /// database with or without sharing data.
     /// </summary>
     public class Application : ValidationBase
     {
+        #region Public Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="Application" /> class.
+        /// Initializes a new instance of the <see cref="Application"/> class.
         /// </summary>
         /// <param name="id">The id of the application</param>
         /// <param name="name">The name of the application</param>
@@ -41,7 +45,17 @@ namespace StrixIT.Platform.Modules.Membership
             this.Name = name;
         }
 
-        private Application() { }
+        #endregion Public Constructors
+
+        #region Private Constructors
+
+        private Application()
+        {
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         /// <summary>
         /// Gets the application id.
@@ -54,5 +68,7 @@ namespace StrixIT.Platform.Modules.Membership
         [StrixRequired]
         [StringLength(250)]
         public string Name { get; private set; }
+
+        #endregion Public Properties
     }
 }

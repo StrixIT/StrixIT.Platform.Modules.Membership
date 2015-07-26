@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipMailer.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,22 +17,29 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Configuration;
 using System.Web;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class MembershipMailer : IMembershipMailer
     {
+        #region Private Fields
+
         private IFileSystemWrapper _fileSystemWrapper;
-        private IMailer _mailer;
         private HttpContextBase _httpContext;
+        private IMailer _mailer;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public MembershipMailer(IFileSystemWrapper fileSystemWrapper, IMailer mailer, HttpContextBase httpContext)
         {
@@ -40,7 +48,17 @@ namespace StrixIT.Platform.Modules.Membership
             this._httpContext = httpContext;
         }
 
+        #endregion Public Constructors
+
         #region Send Mails
+
+        public bool SendAccountApprovedMail(string culture, string userName, string email)
+        {
+            var tokens = new Dictionary<string, string>();
+            tokens.Add("[[USERNAME]]", userName);
+            var result = this.SendMail(culture, "AccountApprovedMail", email, tokens);
+            return result;
+        }
 
         public bool SendAccountInformationMail(string culture, string userName, string email, Guid userId)
         {
@@ -60,23 +78,6 @@ namespace StrixIT.Platform.Modules.Membership
             return result;
         }
 
-        public bool SendUnapprovedAccountMail(string culture, string userName, string email, Guid passwordVerificationId)
-        {
-            var tokens = new Dictionary<string, string>();
-            tokens.Add("[[USERNAME]]", userName);
-            tokens.Add("[[VERIFICATIONID]]", passwordVerificationId.ToString());
-            var result = this.SendMail(culture, "UnapprovedAccountMail", email, tokens);
-            return result;
-        }
-
-        public bool SendAccountApprovedMail(string culture, string userName, string email)
-        {
-            var tokens = new Dictionary<string, string>();
-            tokens.Add("[[USERNAME]]", userName);
-            var result = this.SendMail(culture, "AccountApprovedMail", email, tokens);
-            return result;
-        }
-
         public bool SendEmailChangedMail(string culture, string userName, string newEmail, string oldEmail)
         {
             var tokens = new Dictionary<string, string>();
@@ -84,6 +85,14 @@ namespace StrixIT.Platform.Modules.Membership
             tokens.Add("[[OLDEMAIL]]", oldEmail);
             tokens.Add("[[NEWEMAIL]]", newEmail);
             var result = this.SendMail(culture, "EmailChangedMail", newEmail, tokens);
+            return result;
+        }
+
+        public bool SendPasswordSetMail(string culture, string userName, string email)
+        {
+            var tokens = new Dictionary<string, string>();
+            tokens.Add("[[USERNAME]]", userName);
+            var result = this.SendMail(culture, "PasswordSetMail", email, tokens);
             return result;
         }
 
@@ -96,17 +105,36 @@ namespace StrixIT.Platform.Modules.Membership
             return result;
         }
 
-        public bool SendPasswordSetMail(string culture, string userName, string email)
+        public bool SendUnapprovedAccountMail(string culture, string userName, string email, Guid passwordVerificationId)
         {
             var tokens = new Dictionary<string, string>();
             tokens.Add("[[USERNAME]]", userName);
-            var result = this.SendMail(culture, "PasswordSetMail", email, tokens);
+            tokens.Add("[[VERIFICATIONID]]", passwordVerificationId.ToString());
+            var result = this.SendMail(culture, "UnapprovedAccountMail", email, tokens);
             return result;
         }
 
-        #endregion
+        #endregion Send Mails
 
         #region Private Methods
+
+        private string GetBaseUrl(string cultureCode)
+        {
+            string url = null;
+            var baseUrl = this._httpContext.Request.Url.AbsoluteUri;
+            var separator = "://";
+
+            if (baseUrl.Contains(separator))
+            {
+                var index = baseUrl.IndexOf(separator) + 3;
+                url = baseUrl.Substring(index, baseUrl.Length - index);
+                url = url.Replace(this._httpContext.Request.Url.PathAndQuery, string.Empty);
+                url = baseUrl.Substring(0, index) + url;
+            }
+
+            var cultureAddition = cultureCode.ToLower() != StrixPlatform.DefaultCultureCode.ToLower() ? string.Format("/{0}", cultureCode) : string.Empty;
+            return url + cultureAddition;
+        }
 
         private bool SendMail(string culture, string message, string email, Dictionary<string, string> tokens)
         {
@@ -147,23 +175,6 @@ namespace StrixIT.Platform.Modules.Membership
             return this._mailer.SendMail(from, email, mail.Subject, template.Body);
         }
 
-        private string GetBaseUrl(string cultureCode)
-        {
-            string url = null;
-            var baseUrl = this._httpContext.Request.Url.AbsoluteUri;
-            var separator = "://";
-
-            if (baseUrl.Contains(separator))
-            {
-                var index = baseUrl.IndexOf(separator) + 3;
-                url = baseUrl.Substring(index, baseUrl.Length - index);
-                url = url.Replace(this._httpContext.Request.Url.PathAndQuery, string.Empty);
-                url = baseUrl.Substring(0, index) + url;
-            }
-
-            var cultureAddition = cultureCode.ToLower() != StrixPlatform.DefaultCultureCode.ToLower() ? string.Format("/{0}", cultureCode) : string.Empty;
-            return url + cultureAddition;
-        }
-        #endregion
+        #endregion Private Methods
     }
 }

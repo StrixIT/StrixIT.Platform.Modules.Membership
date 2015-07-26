@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipPermissions.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,27 +17,28 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System.Collections.Generic;
+#endregion Apache License
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public static class MembershipPermissions
     {
-        public const string ViewUsers = "StrixIT.Membership.ViewUsers";
-        public const string AddUser = "StrixIT.Membership.AddUser";
-        public const string EditUser = "StrixIT.Membership.EditUser";
-        public const string DeleteUser = "StrixIT.Membership.DeleteUser";
+        #region Public Fields
 
-        public const string ViewGroups = "StrixIT.Membership.ViewGroups";
         public const string AddGroup = "StrixIT.Membership.AddGroup";
-        public const string EditGroup = "StrixIT.Membership.EditGroup";
-        public const string DeleteGroup = "StrixIT.Membership.DeleteGroup";
-
-        public const string ViewRoles = "StrixIT.Membership.ViewRoles";
         public const string AddRole = "StrixIT.Membership.AddRole";
-        public const string EditRole = "StrixIT.Membership.EditRole";
+        public const string AddUser = "StrixIT.Membership.AddUser";
+        public const string DeleteGroup = "StrixIT.Membership.DeleteGroup";
         public const string DeleteRole = "StrixIT.Membership.DeleteRole";
+        public const string DeleteUser = "StrixIT.Membership.DeleteUser";
+        public const string EditGroup = "StrixIT.Membership.EditGroup";
+        public const string EditRole = "StrixIT.Membership.EditRole";
+        public const string EditUser = "StrixIT.Membership.EditUser";
+        public const string ViewGroups = "StrixIT.Membership.ViewGroups";
+        public const string ViewRoles = "StrixIT.Membership.ViewRoles";
+        public const string ViewUsers = "StrixIT.Membership.ViewUsers";
+
+        #endregion Public Fields
     }
 }

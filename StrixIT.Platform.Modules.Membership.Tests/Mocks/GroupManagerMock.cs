@@ -4,18 +4,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
-using System.Linq;
-using System.Collections.Generic;
-using System.Security.Principal;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public class GroupManagerMock
     {
-        private IGroupManager _groupManager;
+        #region Private Fields
+
         private DataSourceMock _dataSourceMock = new DataSourceMock();
+        private IGroupManager _groupManager;
         private Mock<IGroupManager> _groupManagerMock = new Mock<IGroupManager>();
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public GroupManagerMock()
         {
@@ -25,6 +27,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
             _groupManager = new GroupManager(_dataSourceMock.Mock.Object);
         }
+
+        #endregion Public Constructors
 
         #region Properties
 
@@ -52,6 +56,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

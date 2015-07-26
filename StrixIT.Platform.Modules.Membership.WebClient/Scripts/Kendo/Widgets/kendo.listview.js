@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.data", "./kendo.editable", "./kendo.selectable" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         CHANGE = "change",
@@ -368,7 +367,6 @@
             }
 
             var scrollDirectionFunc = function(direction, dimension) {
-
                 var elementOffset = UseJQueryoffset ? $(element).offset()[direction.toLowerCase()] : element["offset" + direction],
                     elementDimension = element["client" + dimension],
                     containerScrollAmount = $(container)[SCROLL + direction](),
@@ -700,5 +698,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

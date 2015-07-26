@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="PasswordConfiguration.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,22 +17,29 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System.Collections.Generic;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using System.Collections.Generic;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class PasswordConfiguration
     {
+        #region Private Fields
+
         private static IDictionary<string, string> _settings = ModuleManager.AppSettings.ContainsKey(MembershipConstants.MEMBERSHIP) ? ModuleManager.AppSettings[MembershipConstants.MEMBERSHIP] : ModuleManager.AppSettings[PlatformConstants.PLATFORM];
-        
-        public int MinRequiredPasswordLength
+
+        #endregion Private Fields
+
+        #region Public Properties
+
+        public int MaxInvalidPasswordAttempts
         {
             get
             {
-                return int.Parse(_settings["minRequiredPasswordLength"]);
+                return int.Parse(_settings["maxInvalidPasswordAttempts"]);
             }
         }
 
@@ -43,20 +51,11 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        public int PasswordHashIterations
+        public int MinRequiredPasswordLength
         {
             get
             {
-                // todo: actually use this setting.
-                return int.Parse(_settings["passwordHashIterations"]);
-            }
-        }
-
-        public int MaxInvalidPasswordAttempts
-        {
-            get
-            {
-                return int.Parse(_settings["maxInvalidPasswordAttempts"]);
+                return int.Parse(_settings["minRequiredPasswordLength"]);
             }
         }
 
@@ -71,6 +70,15 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
+        public int PasswordHashIterations
+        {
+            get
+            {
+                // todo: actually use this setting.
+                return int.Parse(_settings["passwordHashIterations"]);
+            }
+        }
+
         /// <summary>
         /// Gets the window in minutes in which the set password verification id is valid.
         /// </summary>
@@ -81,5 +89,7 @@ namespace StrixIT.Platform.Modules.Membership
                 return int.Parse(_settings["verificationIdValidWindow"]);
             }
         }
+
+        #endregion Public Properties
     }
 }

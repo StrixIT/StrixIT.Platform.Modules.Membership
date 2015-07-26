@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="ApplicationHelper.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,18 +17,25 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public static class ApplicationHelper
     {
+        #region Private Fields
+
         private static Guid _appId;
         private static Guid _mainGroupId;
+
+        #endregion Private Fields
+
+        #region Public Methods
 
         public static Guid GetApplicationId(IMembershipDataSource dataSource)
         {
@@ -49,5 +57,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
             return _mainGroupId;
         }
+
+        #endregion Public Methods
     }
 }

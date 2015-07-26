@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="RoleViewModel.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,11 +17,12 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -29,30 +31,38 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class RoleViewModel : BaseCrudDto
     {
-        public RoleViewModel() : base(typeof(Role)) 
+        #region Public Constructors
+
+        public RoleViewModel() : base(typeof(Role))
         {
             this.CanEdit = StrixPlatform.User.HasPermission(MembershipPermissions.EditRole);
             this.CanDelete = StrixPlatform.User.HasPermission(MembershipPermissions.DeleteRole);
         }
 
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets or sets the role description.
+        /// </summary>
+        public string Description { get; set; }
+
         /// <summary>
         /// Gets or sets the role id.
-        /// </summary> 
+        /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the role name.
-        /// </summary> 
+        /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the role description.
-        /// </summary> 
-        public string Description { get; set; }
-
-        /// <summary>
         /// Gets or sets the role's permissions.
-        /// </summary> 
+        /// </summary>
         public IList<AssignPermissionModel> Permissions { get; set; }
+
+        #endregion Public Properties
     }
 }

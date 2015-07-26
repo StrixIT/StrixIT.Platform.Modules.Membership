@@ -71,5 +71,4 @@
             return $filter(filterName)(item[fieldName]);
         }
     }]);
-
 })();

@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         extend = $.extend,
@@ -113,7 +112,6 @@
                         if (ignoreCase === true) {
                             field = "tolower(" + field + ")";
                         }
-
                     } else if (type === "date") {
                         if (useOdataFour) {
                             format = "{1:yyyy-MM-ddTHH:mm:ss+00:00}";
@@ -303,9 +301,7 @@
             }
         }
     });
-
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

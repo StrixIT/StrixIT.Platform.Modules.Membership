@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipRegistry.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,21 +17,25 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System.Security.Principal;
-using StructureMap.Configuration.DSL;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using StructureMap.Configuration.DSL;
 using StructureMap.Web.Pipeline;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class MembershipRegistry : Registry
     {
+        #region Public Constructors
+
         public MembershipRegistry()
         {
             For<IMembershipDataSource>().Use<MembershipDataSource>();
             For<IUserContext>().LifecycleIs(new HybridLifecycle());
         }
+
+        #endregion Public Constructors
     }
 }

@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         fx = kendo.effects,
@@ -635,7 +634,6 @@
 
                                         params = currentValue.match(cssParamsRegExp);
                                         if (params) {
-
                                             var dX = value == TRANSLATE + "y" ? +null : +params[1],
                                                 dY = value == TRANSLATE + "y" ? +params[1] : +params[2];
 
@@ -1128,7 +1126,6 @@
         }
     });
 
-
     var CLIPS = {
         top: "rect(auto auto $size auto)",
         bottom: "rect($size auto auto auto)",
@@ -1586,5 +1583,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

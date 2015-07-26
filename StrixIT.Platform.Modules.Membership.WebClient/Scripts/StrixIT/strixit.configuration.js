@@ -140,5 +140,4 @@
             var userAgent = window.navigator.userAgent;
             return userAgent.indexOf('MSIE ') > 0 || userAgent.indexOf('Trident/') > 0 || userAgent.indexOf('Edge/') > 0;
     }
-
 })(window);

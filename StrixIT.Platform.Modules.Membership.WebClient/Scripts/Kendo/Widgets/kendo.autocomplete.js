@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.list", "./kendo.mobile.scroller" ], f);
 })(function(){
-
 (function ($, undefined) {
     var kendo = window.kendo,
         support = kendo.support,
@@ -318,7 +317,6 @@
                 if (separator && words[words.length - 1] !== "") {
                     words.push("");
                 }
-
             }
 
             words[wordIndex] = value;
@@ -521,7 +519,6 @@
                 }
                 e.preventDefault();
             } else if (key === keys.ENTER || key === keys.TAB) {
-
                 if (key === keys.ENTER && visible) {
                     e.preventDefault();
                 }
@@ -668,5 +665,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

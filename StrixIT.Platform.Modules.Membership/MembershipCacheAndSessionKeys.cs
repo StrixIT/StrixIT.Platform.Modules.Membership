@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipCacheAndSessionKeys.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,14 +17,20 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public static class MembershipCacheAndSessionKeys
     {
+        #region Public Fields
+
         // Todo: is this key still used?
         public static readonly string CurrentGroupId = "CurrentGroupId";
+
         public static readonly string LinkAuthenticationToSession = "LinkAuthenticationToSession";
+
+        #endregion Public Fields
     }
 }

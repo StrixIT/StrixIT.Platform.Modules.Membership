@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="Group.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,12 +17,13 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -30,8 +32,10 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class Group : ValidationBase
     {
+        #region Public Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="Group" /> class.
+        /// Initializes a new instance of the <see cref="Group"/> class.
         /// </summary>
         /// <param name="id">The id of the group</param>
         /// <param name="name">The name of the group</param>
@@ -41,7 +45,22 @@ namespace StrixIT.Platform.Modules.Membership
             this.Name = name;
         }
 
-        private Group() { }
+        #endregion Public Constructors
+
+        #region Private Constructors
+
+        private Group()
+        {
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets or sets the roles the group has created.
+        /// </summary>
+        public ICollection<Role> CustomRoles { get; set; }
 
         /// <summary>
         /// Gets the group Id.
@@ -56,18 +75,15 @@ namespace StrixIT.Platform.Modules.Membership
         public string Name { get; internal set; }
 
         /// <summary>
-        /// Gets a value indicating whether the group uses permissions or not. If not, roles are used.
-        /// </summary>
-        public bool UsePermissions { get; internal set; }
-
-        /// <summary>
         /// Gets or sets the roles of the group.
         /// </summary>
         public ICollection<GroupInRole> Roles { get; set; }
 
         /// <summary>
-        /// Gets or sets the roles the group has created.
+        /// Gets a value indicating whether the group uses permissions or not. If not, roles are used.
         /// </summary>
-        public ICollection<Role> CustomRoles { get; set; }
+        public bool UsePermissions { get; internal set; }
+
+        #endregion Public Properties
     }
 }

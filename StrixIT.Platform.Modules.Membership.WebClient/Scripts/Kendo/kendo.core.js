@@ -16,7 +16,6 @@
 (function(f, define){
     define([], f);
 })(function(){
-
 /*jshint eqnull: true, loopfunc: true, evil: true, boss: true, freeze: false*/
 (function($, window, undefined) {
     var kendo = window.kendo = window.kendo || { cultures: {} },
@@ -215,7 +214,6 @@
         }
     });
 
-
      function compilePart(part, stringPart) {
          if (stringPart) {
              return "'" +
@@ -334,9 +332,7 @@ function pad(number, digits, end) {
         rep,
         toString = {}.toString;
 
-
     if (typeof Date.prototype.toJSON !== FUNCTION) {
-
         Date.prototype.toJSON = function () {
             var that = this;
 
@@ -445,7 +441,6 @@ function pad(number, digits, end) {
                 for (i = 0; i < space; i += 1) {
                     indent += " ";
                 }
-
             } else if (typeof space === STRING) {
                 indent = space;
             }
@@ -537,7 +532,6 @@ function pad(number, digits, end) {
         }
     };
 
-
      function findCulture(culture) {
         if (culture) {
             if (culture.numberFormat) {
@@ -580,7 +574,6 @@ function pad(number, digits, end) {
             if (globalize && !globalize.load) {
                 expandNumberFormat(culture.numberFormat);
             }
-
         } else {
             return cultures.current;
         }
@@ -1105,7 +1098,6 @@ function pad(number, digits, end) {
     kendo.toString = toString;
 })();
 
-
 (function() {
     var nonBreakingSpaceRegExp = /\u00A0/g,
         exponentRegExp = /[eE][\-+]?[0-9]+/,
@@ -1350,7 +1342,6 @@ function pad(number, digits, end) {
                     if (milliseconds === null || outOfRange(milliseconds, 0, 999)) {
                         return null;
                     }
-
                 } else if (ch === "t") {
                     count = lookAhead("t");
                     amDesignators = calendar.AM;
@@ -1769,7 +1760,6 @@ function pad(number, digits, end) {
             if (propInit &&
                 propInit !== Array && propInit !== ObservableArray && propInit !== LazyObservableArray &&
                 propInit !== DataSource && propInit !== HierarchicalDataSource) {
-
                 if (propValue instanceof Date) {
                     destination[property] = new Date(propValue.getTime());
                 } else if (isFunction(propValue.clone)) {
@@ -2155,7 +2145,6 @@ function pad(number, digits, end) {
         support.hashChange = ("onhashchange" in window) && !(support.browser.msie && (!documentMode || documentMode <= 8)); // old IE detection
     })();
 
-
     function size(obj) {
         var result = 0, key;
         for (key in obj) {
@@ -2288,7 +2277,6 @@ function pad(number, digits, end) {
             teardown: noop,
             hide: false
         }, options, { completeCallback: options.complete, complete: noop }); // Move external complete callback, so deferred.resolve can be always executed.
-
     }
 
     function animate(element, options, duration, reverse, complete) {
@@ -2355,7 +2343,6 @@ function pad(number, digits, end) {
     };
 
     if (support.touch) {
-
         eventTarget = function(e) {
             var touches = "originalEvent" in e ? e.originalEvent.changedTouches : "changedTouches" in e ? e.changedTouches : null;
 
@@ -2767,7 +2754,6 @@ function pad(number, digits, end) {
             value = parseOption(element, option);
 
             if (value !== undefined) {
-
                 if (templateRegExp.test(option)) {
                     value = kendo.template($("#" + value).html());
                 }
@@ -3321,7 +3307,6 @@ function pad(number, digits, end) {
         });
     }
 
-
     var getEventMap = function(e) { return (eventMap[e] || e); },
         eventRegEx = /([^ ]+)/g;
 
@@ -3807,7 +3792,6 @@ function pad(number, digits, end) {
         };
     })();
 
-
     kendo.stripWhitespace = function(element) {
         if (document.createNodeIterator) {
             var iterator = document.createNodeIterator(element, NodeFilter.SHOW_TEXT, function(node) {
@@ -3942,7 +3926,6 @@ function pad(number, digits, end) {
 
         return throttled;
     };
-
 
     kendo.caret = function (element, start, end) {
         var rangeElement;
@@ -4118,5 +4101,4 @@ function pad(number, digits, end) {
 })(jQuery, window);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

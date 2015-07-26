@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserManager.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,25 +17,29 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using Newtonsoft.Json;
+using StrixIT.Platform.Core;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using StrixIT.Platform.Core;
-using Newtonsoft.Json;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class UserManager : IUserManager
     {
+        #region Private Fields
+
         private static List<User> _loggedInUsers = new List<User>();
         private IMembershipDataSource _dataSource;
         private ISecurityManager _securityManager;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public UserManager(IMembershipDataSource dataSource, ISecurityManager securityManager)
         {
@@ -42,16 +47,19 @@ namespace StrixIT.Platform.Modules.Membership
             this._securityManager = securityManager;
         }
 
+        #endregion Public Constructors
+
         #region LoggedInUsers
 
-        public void UpdateLoggedInUser(User user)
+        public int GetNumberOfUsersOnline(Guid? groupId = null)
         {
-            // Get the user's entry from the list if it exists already.
-            var userEntry = _loggedInUsers.Where(u => u.Email.ToLower() == user.Email.ToLower()).FirstOrDefault();
-
-            if (userEntry == null)
+            if (groupId.HasValue)
             {
-                _loggedInUsers.Add(user);
+                return _loggedInUsers.Where(u => u.Roles.Any(r => r.GroupRoleGroupId == groupId.Value)).Count();
+            }
+            else
+            {
+                return _loggedInUsers.Count();
             }
         }
 
@@ -66,51 +74,20 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        public int GetNumberOfUsersOnline(Guid? groupId = null)
+        public void UpdateLoggedInUser(User user)
         {
-            if (groupId.HasValue)
+            // Get the user's entry from the list if it exists already.
+            var userEntry = _loggedInUsers.Where(u => u.Email.ToLower() == user.Email.ToLower()).FirstOrDefault();
+
+            if (userEntry == null)
             {
-                return _loggedInUsers.Where(u => u.Roles.Any(r => r.GroupRoleGroupId == groupId.Value)).Count();
-            }
-            else
-            {
-                return _loggedInUsers.Count();
+                _loggedInUsers.Add(user);
             }
         }
 
-        #endregion
+        #endregion LoggedInUsers
 
         #region Get
-
-        public Guid? GetId(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new ArgumentException("Email must be specified");
-            }
-
-            return this._dataSource.Query<User>().Where(u => u.Email.ToLower() == email.ToLower()).Select(u => u.Id).FirstOrDefault();
-        }
-
-        public string GetEmail(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                throw new ArgumentException("id must be specified");
-            }
-
-            return this._dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Email).FirstOrDefault();
-        }
-
-        public string GetName(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                throw new ArgumentException("id must be specified");
-            }
-
-            return this._dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Name).FirstOrDefault();
-        }
 
         public User Get(Guid id)
         {
@@ -168,9 +145,44 @@ namespace StrixIT.Platform.Modules.Membership
             return user;
         }
 
-        #endregion
+        public string GetEmail(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("id must be specified");
+            }
+
+            return this._dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Email).FirstOrDefault();
+        }
+
+        public Guid? GetId(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentException("Email must be specified");
+            }
+
+            return this._dataSource.Query<User>().Where(u => u.Email.ToLower() == email.ToLower()).Select(u => u.Id).FirstOrDefault();
+        }
+
+        public string GetName(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("id must be specified");
+            }
+
+            return this._dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Name).FirstOrDefault();
+        }
+
+        #endregion Get
 
         #region Query
+
+        public IQueryable<UserProfileValue> ProfileQuery()
+        {
+            return this._dataSource.Query<UserProfileValue>().Include(v => v.CustomField);
+        }
 
         public IQueryable<User> Query()
         {
@@ -180,12 +192,7 @@ namespace StrixIT.Platform.Modules.Membership
             return query;
         }
 
-        public IQueryable<UserProfileValue> ProfileQuery()
-        {
-            return this._dataSource.Query<UserProfileValue>().Include(v => v.CustomField);
-        }
-
-        #endregion
+        #endregion Query
 
         #region Save
 
@@ -265,7 +272,7 @@ namespace StrixIT.Platform.Modules.Membership
             return user;
         }
 
-        #endregion
+        #endregion Save
 
         #region Delete
 
@@ -303,7 +310,7 @@ namespace StrixIT.Platform.Modules.Membership
             this._dataSource.Delete(user);
         }
 
-        #endregion
+        #endregion Delete
 
         #region Session
 
@@ -341,7 +348,7 @@ namespace StrixIT.Platform.Modules.Membership
             this._dataSource.Save(session);
         }
 
-        #endregion
+        #endregion Session
 
         #region Private Methods
 
@@ -394,6 +401,6 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

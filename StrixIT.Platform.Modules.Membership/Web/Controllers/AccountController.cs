@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="AccountController.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,28 +17,36 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
 using StrixIT.Platform.Web;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     [StrixAuthorization]
     public class AccountController : BaseController
     {
-        private IAuthenticationService _authenticationService;
+        #region Private Fields
+
         private IAccountService _accountService;
+        private IAuthenticationService _authenticationService;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AccountController(IAuthenticationService authenticationService, IAccountService accountService) : base()
         {
             this._authenticationService = authenticationService;
             this._accountService = accountService;
         }
+
+        #endregion Public Constructors
 
         #region Login/Logout
 
@@ -94,7 +103,7 @@ namespace StrixIT.Platform.Modules.Membership
             return this.RedirectToAction(MvcConstants.INDEX, MvcConstants.HOME, new { area = string.Empty, culture = returnCulture });
         }
 
-        #endregion
+        #endregion Login/Logout
 
         #region Register
 
@@ -151,17 +160,9 @@ namespace StrixIT.Platform.Modules.Membership
             return this.View();
         }
 
-        #endregion
+        #endregion Register
 
         #region Password Reset
-
-        [AllowAnonymous]
-        public ActionResult SendPasswordLink(Guid userId)
-        {
-            this._accountService.SendPasswordResetLink(userId);
-            this.TempData["NewAccount"] = true;
-            return this.RedirectToAction("SetPasswordRequested");
-        }
 
         [AllowAnonymous]
         public ActionResult RequestSetPassword()
@@ -185,9 +186,11 @@ namespace StrixIT.Platform.Modules.Membership
         }
 
         [AllowAnonymous]
-        public ActionResult SetPasswordRequested()
+        public ActionResult SendPasswordLink(Guid userId)
         {
-            return this.View();
+            this._accountService.SendPasswordResetLink(userId);
+            this.TempData["NewAccount"] = true;
+            return this.RedirectToAction("SetPasswordRequested");
         }
 
         [AllowAnonymous]
@@ -260,6 +263,12 @@ namespace StrixIT.Platform.Modules.Membership
         }
 
         [AllowAnonymous]
+        public ActionResult SetPasswordRequested()
+        {
+            return this.View();
+        }
+
+        [AllowAnonymous]
         public ActionResult SetPasswordSuccess()
         {
             ViewBag.ReturnUrl = this.TempData["ReturnUrl"];
@@ -272,6 +281,6 @@ namespace StrixIT.Platform.Modules.Membership
             return this.View();
         }
 
-        #endregion
+        #endregion Password Reset
     }
 }

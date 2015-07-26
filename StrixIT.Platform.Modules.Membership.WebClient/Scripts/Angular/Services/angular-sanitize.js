@@ -39,7 +39,6 @@
      *
      */
 
-
     /**
      * @ngdoc service
      * @name $sanitize
@@ -110,21 +109,21 @@
            expect(element(by.css('#bind-html-with-sanitize div')).getInnerHtml()).
              toBe('<p>an html\n<em>click here</em>\nsnippet</p>');
          });
-    
+
          it('should inline raw snippet if bound to a trusted value', function() {
            expect(element(by.css('#bind-html-with-trust div')).getInnerHtml()).
              toBe("<p style=\"color:blue\">an html\n" +
                   "<em onmouseover=\"this.textContent='PWN3D!'\">click here</em>\n" +
                   "snippet</p>");
          });
-    
+
          it('should escape snippet without any filter', function() {
            expect(element(by.css('#bind-default div')).getInnerHtml()).
              toBe("&lt;p style=\"color:blue\"&gt;an html\n" +
                   "&lt;em onmouseover=\"this.textContent='PWN3D!'\"&gt;click here&lt;/em&gt;\n" +
                   "snippet&lt;/p&gt;");
          });
-    
+
          it('should update', function() {
            element(by.model('snippet')).clear();
            element(by.model('snippet')).sendKeys('new <b onclick="alert(1)">text</b>');
@@ -157,7 +156,6 @@
         return buf.join('');
     }
 
-
     // Regular Expressions for parsing tags and attributes
     var START_TAG_REGEXP =
            /^<((?:[a-zA-Z])[\w:-]*)((?:\s+[\w:-]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)\s*(>?)/,
@@ -171,7 +169,6 @@
       SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
       // Match everything outside of normal chars and " (quote character)
       NON_ALPHANUMERIC_REGEXP = /([^\#-~| |!])/g;
-
 
     // Good source of info about elements and attributes
     // http://dev.w3.org/html5/spec/Overview.html#semantics
@@ -255,7 +252,6 @@
         return obj;
     }
 
-
     /**
      * @example
      * htmlParser(htmlString, {
@@ -285,7 +281,6 @@
 
             // Make sure we're not in a script or style element
             if (!stack.last() || !specialElements[stack.last()]) {
-
                 // Comment
                 if (html.indexOf("<!--") === 0) {
                     // comments containing -- are not allowed unless they terminate the comment
@@ -340,7 +335,6 @@
 
                     if (handler.chars) handler.chars(decodeEntities(text));
                 }
-
             } else {
                 // IE versions 9 and 10 do not understand the regex '[^]', so using a workaround with [\W\w].
                 html = html.replace(new RegExp("([\\W\\w]*)<\\s*\\/\\s*" + stack.last() + "[^>]*>", 'i'),
@@ -509,7 +503,6 @@
         };
     }
 
-
     // define ngSanitize module and register $sanitize service
     angular.module('ngSanitize', []).provider('$sanitize', $SanitizeProvider);
 
@@ -588,14 +581,14 @@
                       'another@somewhere.org, and one more: ftp://127.0.0.1/.');
              expect(element.all(by.css('#linky-filter a')).count()).toEqual(4);
            });
-    
+
            it('should not linkify snippet without the linky filter', function() {
              expect(element(by.id('escaped-html')).element(by.binding('snippet')).getText()).
                  toBe('Pretty text with some links: http://angularjs.org/, mailto:us@somewhere.org, ' +
                       'another@somewhere.org, and one more: ftp://127.0.0.1/.');
              expect(element.all(by.css('#escaped-html a')).count()).toEqual(0);
            });
-    
+
            it('should update', function() {
              element(by.model('snippet')).clear();
              element(by.model('snippet')).sendKeys('new http://link.');
@@ -605,7 +598,7 @@
              expect(element(by.id('escaped-html')).element(by.binding('snippet')).getText())
                  .toBe('new http://link.');
            });
-    
+
            it('should work with the target property', function() {
             expect(element(by.id('linky-target')).
                 element(by.binding("snippetWithTarget | linky:'_blank'")).getText()).
@@ -664,6 +657,4 @@
             }
         };
     }]);
-
-
 })(window, window.angular);

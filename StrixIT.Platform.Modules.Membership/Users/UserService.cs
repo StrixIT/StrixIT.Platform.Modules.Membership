@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,14 +17,15 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -32,13 +34,13 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Properties
 
         private IMembershipDataSource _dataSource;
+        private IGroupManager _groupManager;
+        private IMembershipMailer _mailer;
+        private IRoleManager _roleManager;
         private ISecurityManager _securityManager;
         private IUserManager _userManager;
-        private IGroupManager _groupManager;
-        private IRoleManager _roleManager;
-        private IMembershipMailer _mailer;
 
-        #endregion
+        #endregion Private Properties
 
         #region Constructor
 
@@ -52,7 +54,7 @@ namespace StrixIT.Platform.Modules.Membership
             this._mailer = membershipMailer;
         }
 
-        #endregion
+        #endregion Constructor
 
         #region Checks
 
@@ -63,7 +65,7 @@ namespace StrixIT.Platform.Modules.Membership
             return result;
         }
 
-        #endregion
+        #endregion Checks
 
         #region Get
 
@@ -133,7 +135,7 @@ namespace StrixIT.Platform.Modules.Membership
             return modelList;
         }
 
-        #endregion
+        #endregion Get
 
         #region Save
 
@@ -213,7 +215,8 @@ namespace StrixIT.Platform.Modules.Membership
                 }
             }
 
-            // Now, assign the user to all selected roles after adjusting the start and end date to those of his group, when needed.
+            // Now, assign the user to all selected roles after adjusting the start and end date to
+            // those of his group, when needed.
             if (!model.Roles.IsEmpty())
             {
                 foreach (var role in model.Roles.Where(r => r.Selected))
@@ -253,7 +256,7 @@ namespace StrixIT.Platform.Modules.Membership
             return result;
         }
 
-        #endregion
+        #endregion Save
 
         #region Delete
 
@@ -294,7 +297,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        #endregion
+        #endregion Delete
 
         #region Private Methods
 
@@ -419,6 +422,6 @@ namespace StrixIT.Platform.Modules.Membership
             return query;
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

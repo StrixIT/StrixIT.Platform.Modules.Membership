@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="GroupViewModel.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,13 +17,12 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -31,11 +31,17 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class GroupViewModel : BaseCrudDto
     {
-        public GroupViewModel() : base(typeof(Group)) 
+        #region Public Constructors
+
+        public GroupViewModel() : base(typeof(Group))
         {
             this.CanEdit = StrixPlatform.User.HasPermission(MembershipPermissions.EditGroup);
             this.CanDelete = StrixPlatform.User.HasPermission(MembershipPermissions.DeleteGroup);
         }
+
+        #endregion Public Constructors
+
+        #region Public Properties
 
         /// <summary>
         /// Gets or sets the id of the group.
@@ -48,14 +54,9 @@ namespace StrixIT.Platform.Modules.Membership
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether permissions are to be used for the group.
+        /// Gets or sets all available permissions.
         /// </summary>
-        public bool UsePermissions { get; set; }
-
-        /// <summary>
-        /// Gets or sets the permission set start date.
-        /// </summary>
-        public DateTime? PermissionSetStartDate { get; set; }
+        public IList<AssignPermissionModel> Permissions { get; set; }
 
         /// <summary>
         /// Gets or sets the permission set end date.
@@ -68,13 +69,20 @@ namespace StrixIT.Platform.Modules.Membership
         public int? PermissionSetMaxNumberOfUsers { get; set; }
 
         /// <summary>
+        /// Gets or sets the permission set start date.
+        /// </summary>
+        public DateTime? PermissionSetStartDate { get; set; }
+
+        /// <summary>
         /// Gets or sets all available roles.
         /// </summary>
         public IList<AssignRoleModel> Roles { get; set; }
 
         /// <summary>
-        /// Gets or sets all available permissions.
+        /// Gets or sets a value indicating whether permissions are to be used for the group.
         /// </summary>
-        public IList<AssignPermissionModel> Permissions { get; set; }
+        public bool UsePermissions { get; set; }
+
+        #endregion Public Properties
     }
 }

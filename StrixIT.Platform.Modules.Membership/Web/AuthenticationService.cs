@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="AuthenticationService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,21 +17,28 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
-using System.Collections.Generic;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
 using StrixIT.Platform.Web;
+using System;
+using System.Collections.Generic;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private IMembershipDataSource _dataSource;
-        private IUserManager _userManager;
-        private ISecurityManager _securityManager;
+        #region Private Fields
+
         private IAuthenticationCookieService _cookieService;
+        private IMembershipDataSource _dataSource;
+        private ISecurityManager _securityManager;
+        private IUserManager _userManager;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AuthenticationService(IMembershipDataSource dataSource, IUserManager userManager, ISecurityManager securityManager, IAuthenticationCookieService cookieService)
         {
@@ -38,6 +46,32 @@ namespace StrixIT.Platform.Modules.Membership
             this._userManager = userManager;
             this._securityManager = securityManager;
             this._cookieService = cookieService;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public void LogOff(string email)
+        {
+            this.LogOff(email, null);
+        }
+
+        public void LogOff(string email, IDictionary<string, object> sessionValues)
+        {
+            this._cookieService.SignOut();
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                var user = this._userManager.Get(email);
+                this._userManager.RemoveLoggedInUser(user.Id);
+                this._userManager.SaveSession(user.Id, sessionValues != null ? sessionValues : StrixPlatform.Environment.GetSessionDictionary());
+                this._dataSource.SaveChanges();
+                Logger.LogToAudit(AuditLogType.LoginLogout.ToString(), string.Format("User {0} logged out.", user.Name));
+                StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTUSEREMAIL, null);
+            }
+
+            StrixPlatform.Environment.AbandonSession();
         }
 
         public LoginUserResult LogOn(string email, string password)
@@ -110,26 +144,6 @@ namespace StrixIT.Platform.Modules.Membership
             return result;
         }
 
-        public void LogOff(string email)
-        {
-            this.LogOff(email, null);
-        }
-
-        public void LogOff(string email, IDictionary<string, object> sessionValues)
-        {
-            this._cookieService.SignOut();
-          
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                var user = this._userManager.Get(email);
-                this._userManager.RemoveLoggedInUser(user.Id);
-                this._userManager.SaveSession(user.Id, sessionValues != null ? sessionValues : StrixPlatform.Environment.GetSessionDictionary());
-                this._dataSource.SaveChanges();
-                Logger.LogToAudit(AuditLogType.LoginLogout.ToString(), string.Format("User {0} logged out.", user.Name));
-                StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTUSEREMAIL, null);
-            }
-
-            StrixPlatform.Environment.AbandonSession();
-        }
+        #endregion Public Methods
     }
 }

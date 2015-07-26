@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserListModel.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
 
@@ -27,30 +29,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class UserListModel
     {
-        /// <summary>
-        /// Gets or sets the id of the user.
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the group the user belongs to.
-        /// </summary>
-        public string GroupName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the user.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the email of the user.
-        /// </summary>
-        public string Email { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the user is locked out.
-        /// </summary>
-        public bool LockedOut { get; set; }
+        #region Public Properties
 
         /// <summary>
         /// Gets or sets a value indicating whether the user is approved.
@@ -58,8 +37,35 @@ namespace StrixIT.Platform.Modules.Membership
         public bool Approved { get; set; }
 
         /// <summary>
+        /// Gets or sets the email of the user.
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the group the user belongs to.
+        /// </summary>
+        public string GroupName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the id of the user.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the user is locked out.
+        /// </summary>
+        public bool LockedOut { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the user.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets or sets the names of the roles the user is in.
         /// </summary>
         public string[] RoleNames { get; set; }
+
+        #endregion Public Properties
     }
 }

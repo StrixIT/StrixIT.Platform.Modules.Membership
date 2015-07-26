@@ -37,5 +37,4 @@
             return kendo.toString(input, format);
         }
     }
-
 })();

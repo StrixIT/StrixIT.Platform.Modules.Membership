@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipConstants.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,16 +17,21 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public static class MembershipConstants
     {
+        #region Public Fields
+
         public static readonly string ACCOUNT = "Account";
-        public static readonly string MEMBERSHIP = "Membership";
-        public static readonly string USER = "User";
         public static readonly string GROUP = "Group";
+        public static readonly string MEMBERSHIP = "Membership";
         public static readonly string ROLE = "Role";
+        public static readonly string USER = "User";
+
+        #endregion Public Fields
     }
 }

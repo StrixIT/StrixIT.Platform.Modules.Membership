@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="AssignRoleModel.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
 
@@ -27,45 +29,47 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class AssignRoleModel
     {
-        /// <summary>
-        /// Gets or sets the role id.
-        /// </summary> 
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the role name.
-        /// </summary> 
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the start date of the group for this role, when assigning roles to users.
-        /// </summary> 
-        public DateTime? GroupStartDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the end date of the group for this role, when assigning roles to users.
-        /// </summary> 
-        public DateTime? GroupEndDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the start date for this role.
-        /// </summary> 
-        public DateTime? StartDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the end date for this role.
-        /// </summary> 
-        public DateTime? EndDate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the maximum number of users in this role for an organisation.
-        /// </summary> 
-        public int? MaxNumberOfUsers { get; set; }
+        #region Public Properties
 
         /// <summary>
         /// Gets or sets the current number of users in this role for an organisation.
-        /// </summary>        
+        /// </summary>
         public int CurrentNumberOfUsers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the end date for this role.
+        /// </summary>
+        public DateTime? EndDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the end date of the group for this role, when assigning roles to users.
+        /// </summary>
+        public DateTime? GroupEndDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the start date of the group for this role, when assigning roles to users.
+        /// </summary>
+        public DateTime? GroupStartDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the role id.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index of the role in the checkbox list.
+        /// </summary>
+        public int Index { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum number of users in this role for an organisation.
+        /// </summary>
+        public int? MaxNumberOfUsers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the role name.
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the role has been selected.
@@ -73,8 +77,10 @@ namespace StrixIT.Platform.Modules.Membership
         public bool Selected { get; set; }
 
         /// <summary>
-        ///  Gets or sets the index of the role in the checkbox list.
+        /// Gets or sets the start date for this role.
         /// </summary>
-        public int Index { get; set; }
+        public DateTime? StartDate { get; set; }
+
+        #endregion Public Properties
     }
 }

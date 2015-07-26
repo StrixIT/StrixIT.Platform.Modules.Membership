@@ -4,31 +4,29 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
-using StrixIT.Platform.Core;
-using System.Collections.Generic;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public class RoleServiceMock
     {
+        #region Private Fields
+
         private Mock<IMembershipDataSource> _dataSourceMock = new Mock<IMembershipDataSource>();
         private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
         private IRoleService _roleService;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RoleServiceMock()
         {
             _roleService = new RoleService(_dataSourceMock.Object, _roleManagerMock.Object);
         }
 
-        #region Properties
+        #endregion Public Constructors
 
-        public IRoleService RoleService
-        {
-            get
-            {
-                return _roleService;
-            }
-        }
+        #region Properties
 
         public Mock<IMembershipDataSource> DataSourceMock
         {
@@ -46,6 +44,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        #endregion
+        public IRoleService RoleService
+        {
+            get
+            {
+                return _roleService;
+            }
+        }
+
+        #endregion Properties
     }
 }

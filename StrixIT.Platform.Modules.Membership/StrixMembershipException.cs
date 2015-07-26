@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="StrixMembershipException.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
 using System.Runtime.Serialization;
@@ -26,12 +28,28 @@ namespace StrixIT.Platform.Modules.Membership
     [Serializable]
     public class StrixMembershipException : Exception
     {
-        public StrixMembershipException() : base() { }
+        #region Public Constructors
 
-        public StrixMembershipException(string message) : base(message) { }
+        public StrixMembershipException() : base()
+        {
+        }
 
-        public StrixMembershipException(string message, Exception inner) : base(message, inner) { }
+        public StrixMembershipException(string message) : base(message)
+        {
+        }
 
-        protected StrixMembershipException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        public StrixMembershipException(string message, Exception inner) : base(message, inner)
+        {
+        }
+
+        #endregion Public Constructors
+
+        #region Protected Constructors
+
+        protected StrixMembershipException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+
+        #endregion Protected Constructors
     }
 }

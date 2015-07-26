@@ -21,7 +21,19 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass]
     public class AuthorizationAttributeTests
     {
+        #region Private Fields
+
         private Mock<IUserContext> _userContextMock;
+
+        #endregion Private Fields
+
+        #region Public Methods
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            StrixPlatform.Environment = null;
+        }
 
         [TestInitialize]
         public void Init()
@@ -30,22 +42,16 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             StrixPlatform.Environment = new DefaultEnvironment();
         }
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-            StrixPlatform.Environment = null;
-        }
-
         [TestMethod]
-        public void UnauthorizedAjaxRequestShouldSetStatusCodeTo401AndEndResponse()
+        public void SkipAuthorizationShouldNotSkipWhenNotAnonymousAllowed()
         {
             var attribute = new StrixAuthorizationAttribute();
             List<Mock> mocks;
             var context = GetAuthorizationContext(out mocks);
+            var request = mocks.First(m => m.GetType() == typeof(Mock<HttpRequestBase>)) as Mock<HttpRequestBase>;
+            request.Setup(r => r.Headers).Returns(new NameValueCollection());
             attribute.OnAuthorization(context);
-            var result = context.Result as HttpStatusCodeResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(401, result.StatusCode);
+            Assert.AreEqual(typeof(HttpUnauthorizedResult), context.Result.GetType());
         }
 
         [TestMethod]
@@ -79,29 +85,30 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         }
 
         [TestMethod]
-        public void SkipAuthorizationShouldNotSkipWhenNotAnonymousAllowed()
+        public void UnauthorizedAjaxRequestShouldSetStatusCodeTo401AndEndResponse()
         {
             var attribute = new StrixAuthorizationAttribute();
             List<Mock> mocks;
             var context = GetAuthorizationContext(out mocks);
-            var request = mocks.First(m => m.GetType() == typeof(Mock<HttpRequestBase>)) as Mock<HttpRequestBase>;
-            request.Setup(r => r.Headers).Returns(new NameValueCollection());
             attribute.OnAuthorization(context);
-            Assert.AreEqual(typeof(HttpUnauthorizedResult), context.Result.GetType());
+            var result = context.Result as HttpStatusCodeResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(401, result.StatusCode);
         }
 
         [TestMethod]
-        public void UserWithRequiredRoleShouldBeAuthorized()
+        public void UserWithoutRequiredPermissionShouldNotBeAuthorized()
         {
-            var attribute = new StrixAuthorizationAttribute { Roles = "Administrator" };
+            var attribute = new StrixAuthorizationAttribute { Permissions = "View users" };
             List<Mock> mocks;
             var context = GetAuthorizationContext(out mocks);
             var identity = mocks.First(m => m.GetType() == typeof(Mock<IIdentity>)) as Mock<IIdentity>;
             identity.Setup(i => i.Name).Returns("Administrator");
-            _userContextMock.Setup(m => m.IsInRoles(new string[] { "Administrator" })).Returns(true);
+            _userContextMock.Setup(m => m.HasPermission(new string[] { "View users" })).Returns(false);
             attribute.OnAuthorization(context);
-            var cache = mocks.First(m => m.GetType() == typeof(Mock<HttpCachePolicyBase>)) as Mock<HttpCachePolicyBase>;
-            cache.Verify(c => c.SetProxyMaxAge(It.IsAny<TimeSpan>()), Times.Once());
+            var result = context.Result as HttpStatusCodeResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(401, result.StatusCode);
         }
 
         [TestMethod]
@@ -134,19 +141,22 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         }
 
         [TestMethod]
-        public void UserWithoutRequiredPermissionShouldNotBeAuthorized()
+        public void UserWithRequiredRoleShouldBeAuthorized()
         {
-            var attribute = new StrixAuthorizationAttribute { Permissions = "View users" };
+            var attribute = new StrixAuthorizationAttribute { Roles = "Administrator" };
             List<Mock> mocks;
             var context = GetAuthorizationContext(out mocks);
             var identity = mocks.First(m => m.GetType() == typeof(Mock<IIdentity>)) as Mock<IIdentity>;
             identity.Setup(i => i.Name).Returns("Administrator");
-            _userContextMock.Setup(m => m.HasPermission(new string[] { "View users" })).Returns(false);
+            _userContextMock.Setup(m => m.IsInRoles(new string[] { "Administrator" })).Returns(true);
             attribute.OnAuthorization(context);
-            var result = context.Result as HttpStatusCodeResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(401, result.StatusCode);
+            var cache = mocks.First(m => m.GetType() == typeof(Mock<HttpCachePolicyBase>)) as Mock<HttpCachePolicyBase>;
+            cache.Verify(c => c.SetProxyMaxAge(It.IsAny<TimeSpan>()), Times.Once());
         }
+
+        #endregion Public Methods
+
+        #region Private Methods
 
         private AuthorizationContext GetAuthorizationContext(out List<Mock> mocks)
         {
@@ -184,5 +194,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var context = new AuthorizationContext(controllerContext, actionDescriptor.Object);
             return context;
         }
+
+        #endregion Private Methods
     }
 }

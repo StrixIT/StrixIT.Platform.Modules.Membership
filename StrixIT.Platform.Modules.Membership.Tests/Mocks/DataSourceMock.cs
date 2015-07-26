@@ -4,19 +4,53 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public class DataSourceMock
     {
-        private Mock<IMembershipDataSource> _dataSourceMock = new Mock<IMembershipDataSource>();
+        #region Private Fields
+
         private Dictionary<Type, List<object>> _dataLists = new Dictionary<Type, List<object>>();
+        private Mock<IMembershipDataSource> _dataSourceMock = new Mock<IMembershipDataSource>();
+
+        #endregion Private Fields
+
+        #region Public Properties
+
+        public Mock<IMembershipDataSource> Mock
+        {
+            get
+            {
+                return _dataSourceMock;
+            }
+        }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        public void AddDataItem<T>(T item)
+        {
+            var type = typeof(T);
+
+            if (!_dataLists.ContainsKey(type))
+            {
+                throw new KeyNotFoundException();
+            }
+
+            _dataLists[type].Add(item);
+        }
+
+        public List<T> DataList<T>()
+        {
+            var list = _dataLists.ContainsKey(typeof(T)) ? _dataLists[typeof(T)].Cast<T>().ToList() : new List<T>();
+            return list;
+        }
 
         public void RegisterData<T>(IEnumerable<T> data) where T : class
         {
@@ -36,30 +70,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        public Mock<IMembershipDataSource> Mock
-        {
-            get
-            {
-                return _dataSourceMock;
-            }
-        }
-
-        public List<T> DataList<T>()
-        {
-            var list = _dataLists.ContainsKey(typeof(T)) ? _dataLists[typeof(T)].Cast<T>().ToList() : new List<T>();
-            return list;
-        }
-
-        public void AddDataItem<T>(T item)
-        {
-            var type = typeof(T);
-
-            if (!_dataLists.ContainsKey(type))
-            {
-                throw new KeyNotFoundException();
-            }
-
-            _dataLists[type].Add(item);
-        }
+        #endregion Public Methods
     }
 }

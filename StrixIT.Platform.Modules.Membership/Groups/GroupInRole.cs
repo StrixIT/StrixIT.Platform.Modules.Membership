@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="GroupInRole.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,10 +17,11 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using System;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -28,15 +30,19 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class GroupInRole : ValidationBase
     {
+        #region Public Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="GroupInRole" /> class.
+        /// Initializes a new instance of the <see cref="GroupInRole"/> class.
         /// </summary>
         /// <param name="groupId">The id of the group</param>
         /// <param name="roleId">The id of the role</param>
-        public GroupInRole(Guid groupId, Guid roleId) : this(groupId, roleId, DateTime.Now, null) { }
+        public GroupInRole(Guid groupId, Guid roleId) : this(groupId, roleId, DateTime.Now, null)
+        {
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GroupInRole" /> class.
+        /// Initializes a new instance of the <see cref="GroupInRole"/> class.
         /// </summary>
         /// <param name="groupId">The id of the group</param>
         /// <param name="roleId">The id of the role</param>
@@ -50,35 +56,22 @@ namespace StrixIT.Platform.Modules.Membership
             this.EndDate = endDate;
         }
 
-        private GroupInRole() { }
+        #endregion Public Constructors
+
+        #region Private Constructors
+
+        private GroupInRole()
+        {
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         /// <summary>
-        /// Gets the group id.
+        /// Gets or sets the current number of users in the group.
         /// </summary>
-        [StrixRequired]
-        public Guid GroupId { get; private set; }
-
-        /// <summary>
-        /// Gets the group.
-        /// </summary>
-        public Group Group { get; private set; }
-
-        /// <summary>
-        /// Gets the role id.
-        /// </summary>
-        [StrixRequired]
-        public Guid RoleId { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the role.
-        /// </summary>
-        public Role Role { get; set; }
-
-        /// <summary>
-        /// Gets or sets the start date and time for the group in the role.
-        /// </summary>
-        [StrixNotDefault]
-        public DateTime StartDate { get; set; }
+        public int CurrentNumberOfUsers { get; set; }
 
         /// <summary>
         /// Gets or sets the end date and time for the group in the role.
@@ -87,14 +80,39 @@ namespace StrixIT.Platform.Modules.Membership
         public DateTime? EndDate { get; set; }
 
         /// <summary>
+        /// Gets the group.
+        /// </summary>
+        public Group Group { get; private set; }
+
+        /// <summary>
+        /// Gets the group id.
+        /// </summary>
+        [StrixRequired]
+        public Guid GroupId { get; private set; }
+
+        /// <summary>
         /// Gets or sets the maximum number of users that can be part of the group.
         /// </summary>
         [StrixNotDefault]
         public int? MaxNumberOfUsers { get; set; }
 
         /// <summary>
-        /// Gets or sets the current number of users in the group.
+        /// Gets or sets the role.
         /// </summary>
-        public int CurrentNumberOfUsers { get; set; }
+        public Role Role { get; set; }
+
+        /// <summary>
+        /// Gets the role id.
+        /// </summary>
+        [StrixRequired]
+        public Guid RoleId { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the start date and time for the group in the role.
+        /// </summary>
+        [StrixNotDefault]
+        public DateTime StartDate { get; set; }
+
+        #endregion Public Properties
     }
 }

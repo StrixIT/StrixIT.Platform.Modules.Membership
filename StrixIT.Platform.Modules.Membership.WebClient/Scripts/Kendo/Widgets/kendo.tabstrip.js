@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.data" ], f);
 })(function(){
-
 (function ($, undefined) {
     var kendo = window.kendo,
         ui = kendo.ui,
@@ -142,7 +141,6 @@
         tabs.filter("." + ACTIVESTATE)
             .attr("aria-selected", true);
 
-
         tabs.each(function() {
             var item = $(this);
 
@@ -153,7 +151,6 @@
                     .wrapAll("<span class='" + LINK + "'/>");
             }
         });
-
     }
 
     function updateFirstLast (tabGroup) {
@@ -396,7 +393,6 @@
                 action,
                 view = that.dataSource.view(),
                 length;
-
 
             e = e || {};
             action = e.action;
@@ -1296,9 +1292,7 @@
     });
 
     kendo.ui.plugin(TabStrip);
-
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

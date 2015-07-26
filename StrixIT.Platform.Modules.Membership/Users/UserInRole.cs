@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserInRole.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,10 +17,11 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
+using System;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -28,15 +30,19 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class UserInRole : ValidationBase
     {
+        #region Public Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserInRole" /> class.
+        /// Initializes a new instance of the <see cref="UserInRole"/> class.
         /// </summary>
         /// <param name="groupRole">The group role that this user role is based on</param>
         /// <param name="userId">The id of the user</param>
-        public UserInRole(GroupInRole groupRole, Guid userId) : this(groupRole, userId, DateTime.Now, null) { }
+        public UserInRole(GroupInRole groupRole, Guid userId) : this(groupRole, userId, DateTime.Now, null)
+        {
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserInRole" /> class.
+        /// Initializes a new instance of the <see cref="UserInRole"/> class.
         /// </summary>
         /// <param name="groupRole">The group role that this user role is based on</param>
         /// <param name="userId">The id of the role</param>
@@ -57,7 +63,28 @@ namespace StrixIT.Platform.Modules.Membership
             this.EndDate = endDate;
         }
 
-        private UserInRole() { }
+        #endregion Public Constructors
+
+        #region Private Constructors
+
+        private UserInRole()
+        {
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets or sets the end date for the user in the role.
+        /// </summary>
+        [StrixNotDefault]
+        public DateTime? EndDate { get; set; }
+
+        /// <summary>
+        /// Gets the group role.
+        /// </summary>
+        public GroupInRole GroupRole { get; private set; }
 
         /// <summary>
         /// Gets the group role group Id.
@@ -72,15 +99,10 @@ namespace StrixIT.Platform.Modules.Membership
         public Guid GroupRoleRoleId { get; private set; }
 
         /// <summary>
-        /// Gets the group role.
+        /// Gets or sets the start date for the user in the role.
         /// </summary>
-        public GroupInRole GroupRole { get; private set; }
-
-        /// <summary>
-        /// Gets the user Id.
-        /// </summary>
-        [StrixRequired]
-        public Guid UserId { get; private set; }
+        [StrixNotDefault]
+        public DateTime StartDate { get; set; }
 
         /// <summary>
         /// Gets the user.
@@ -88,15 +110,11 @@ namespace StrixIT.Platform.Modules.Membership
         public User User { get; private set; }
 
         /// <summary>
-        /// Gets or sets the start date for the user in the role.
+        /// Gets the user Id.
         /// </summary>
-        [StrixNotDefault]
-        public DateTime StartDate { get; set; }
+        [StrixRequired]
+        public Guid UserId { get; private set; }
 
-        /// <summary>
-        /// Gets or sets the end date for the user in the role.
-        /// </summary>
-        [StrixNotDefault]
-        public DateTime? EndDate { get; set; }
+        #endregion Public Properties
     }
 }

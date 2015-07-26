@@ -4,26 +4,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
-using StrixIT.Platform.Core;
-using System.Collections.Generic;
-using System.Security.Principal;
-using System.Web;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public class AccountServiceMock
     {
+        #region Private Fields
+
+        private IAccountService _accountService;
         private Mock<IMembershipDataSource> _dataSourceMock = new Mock<IMembershipDataSource>();
+        private Mock<IMembershipMailer> _mailerMock = new Mock<IMembershipMailer>();
+        private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
         private Mock<ISecurityManager> _securityManagerMock = new Mock<ISecurityManager>();
         private Mock<IUserManager> _userManagerMock = new Mock<IUserManager>();
-        private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
-        private Mock<IMembershipMailer> _mailerMock = new Mock<IMembershipMailer>();
-        private IAccountService _accountService;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AccountServiceMock()
         {
             _accountService = new AccountService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object);
         }
+
+        #endregion Public Constructors
 
         #region Properties
 
@@ -43,6 +47,22 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
+        public Mock<IMembershipMailer> MailerMock
+        {
+            get
+            {
+                return _mailerMock;
+            }
+        }
+
+        public Mock<IRoleManager> RoleManagerMock
+        {
+            get
+            {
+                return _roleManagerMock;
+            }
+        }
+
         public Mock<ISecurityManager> SecurityManagerMock
         {
             get
@@ -59,22 +79,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        public Mock<IRoleManager> RoleManagerMock
-        {
-            get
-            {
-                return _roleManagerMock;
-            }
-        }
-
-        public Mock<IMembershipMailer> MailerMock
-        {
-            get
-            {
-                return _mailerMock;
-            }
-        }
-
-        #endregion
+        #endregion Properties
     }
 }

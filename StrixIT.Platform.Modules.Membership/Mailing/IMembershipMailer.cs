@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IMembershipMailer.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
 
@@ -27,6 +29,17 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public interface IMembershipMailer
     {
+        #region Public Methods
+
+        /// <summary>
+        /// Sends a mail to a user to inform him his account has been approved.
+        /// </summary>
+        /// <param name="culture">The culture to use</param>
+        /// <param name="userName">The full name of the user to send the mail to</param>
+        /// <param name="email">The user's email address</param>
+        /// <returns>True if the mail was send successfully, false otherwise</returns>
+        bool SendAccountApprovedMail(string culture, string userName, string email);
+
         /// <summary>
         /// Sends an account information mail to a user.
         /// </summary>
@@ -48,25 +61,6 @@ namespace StrixIT.Platform.Modules.Membership
         bool SendApprovedAccountMail(string culture, string userName, string email, Guid passwordVerificationId);
 
         /// <summary>
-        /// Sends a mail to a user when he registers himself and autoapproving accounts is inactive.
-        /// </summary>
-        /// <param name="culture">The culture to use</param>
-        /// <param name="userName">The full name of the user to send the mail to</param>
-        /// <param name="email">The user's email address</param>
-        /// <param name="passwordVerificationId">The set password verification id</param>
-        /// <returns>True if the mail was send successfully, false otherwise</returns>
-        bool SendUnapprovedAccountMail(string culture, string userName, string email, Guid passwordVerificationId);
-
-        /// <summary>
-        /// Sends a mail to a user to inform him his account has been approved.
-        /// </summary>
-        /// <param name="culture">The culture to use</param>
-        /// <param name="userName">The full name of the user to send the mail to</param>
-        /// <param name="email">The user's email address</param>
-        /// <returns>True if the mail was send successfully, false otherwise</returns>
-        bool SendAccountApprovedMail(string culture, string userName, string email);
-
-        /// <summary>
         /// Sends an email changed mail to a user.
         /// </summary>
         /// <param name="culture">The culture to use</param>
@@ -75,6 +69,15 @@ namespace StrixIT.Platform.Modules.Membership
         /// <param name="oldEmail">The user's old email address</param>
         /// <returns>True if the mail was send successfully, false otherwise</returns>
         bool SendEmailChangedMail(string culture, string userName, string newEmail, string oldEmail);
+
+        /// <summary>
+        /// Sends a password changed mail to a user.
+        /// </summary>
+        /// <param name="culture">The culture to use</param>
+        /// <param name="userName">The full name of the user to send the mail to</param>
+        /// <param name="email">The user's email address</param>
+        /// <returns>True if the mail was send successfully, false otherwise</returns>
+        bool SendPasswordSetMail(string culture, string userName, string email);
 
         /// <summary>
         /// Sends a password set mail to a user.
@@ -87,12 +90,15 @@ namespace StrixIT.Platform.Modules.Membership
         bool SendSetPasswordMail(string culture, string userName, string email, Guid passwordVerificationId);
 
         /// <summary>
-        /// Sends a password changed mail to a user.
+        /// Sends a mail to a user when he registers himself and autoapproving accounts is inactive.
         /// </summary>
         /// <param name="culture">The culture to use</param>
         /// <param name="userName">The full name of the user to send the mail to</param>
         /// <param name="email">The user's email address</param>
+        /// <param name="passwordVerificationId">The set password verification id</param>
         /// <returns>True if the mail was send successfully, false otherwise</returns>
-        bool SendPasswordSetMail(string culture, string userName, string email);
+        bool SendUnapprovedAccountMail(string culture, string userName, string email, Guid passwordVerificationId);
+
+        #endregion Public Methods
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="RoleController.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,19 +17,22 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System;
-using System.Web.Mvc;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
 using StrixIT.Platform.Web;
+using System;
+using System.Web.Mvc;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     [StrixAuthorization(Permissions = MembershipPermissions.ViewRoles)]
     public class RoleController : BaseCrudController<Guid, RoleViewModel>
     {
-        public RoleController(IRoleService service) : base(service) 
+        #region Public Constructors
+
+        public RoleController(IRoleService service) : base(service)
         {
             if (!StrixMembership.Configuration.UsePermissions)
             {
@@ -36,10 +40,16 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
+        #endregion Public Constructors
+
+        #region Public Methods
+
         public override ActionResult Index()
         {
             var config = new RoleListConfiguration(StrixPlatform.User);
             return this.View(config);
         }
+
+        #endregion Public Methods
     }
 }

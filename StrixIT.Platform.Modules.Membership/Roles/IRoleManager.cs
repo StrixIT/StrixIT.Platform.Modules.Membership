@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IRoleManager.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,12 +17,12 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -30,6 +31,8 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public interface IRoleManager
     {
+        #region Public Methods
+
         /// <summary>
         /// Checks whether a role with the specified name already exists for the current group.
         /// </summary>
@@ -37,6 +40,8 @@ namespace StrixIT.Platform.Modules.Membership
         /// <param name="id">The id of the role to check the name for</param>
         /// <returns>True if a role with the name already exists, false otherwise</returns>
         bool Exists(string name, Guid? id);
+
+        #endregion Public Methods
 
         #region Create Role
 
@@ -49,7 +54,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// <returns>The created role</returns>
         Role Create(string name, string description, IList<Permission> permissions);
 
-        #endregion
+        #endregion Create Role
 
         #region IsInRole
 
@@ -69,7 +74,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// <returns>True if the user is in one of the roles, false otherwise</returns>
         bool IsUserInRoles(Guid id, string[] roleNames);
 
-        #endregion
+        #endregion IsInRole
 
         /// <summary>
         /// Gets the role with the specified id.
@@ -110,7 +115,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// <returns>A query for the roles of the user</returns>
         IQueryable<AssignRoleModel> QueryForUser(Guid userId);
 
-        #endregion
+        #endregion Query
 
         #region AddToRole
 
@@ -121,7 +126,9 @@ namespace StrixIT.Platform.Modules.Membership
         /// <param name="roleName">The role name</param>
         /// <param name="startDate">The start date for the group in the role</param>
         /// <param name="endDate">The end date for the group in the role</param>
-        /// <param name="maxNumberOfUsers">The maximum number of users that can be in this role for the group</param>
+        /// <param name="maxNumberOfUsers">
+        /// The maximum number of users that can be in this role for the group
+        /// </param>
         void AddGroupToRole(Guid groupId, string roleName, DateTime? startDate = null, DateTime? endDate = null, int? maxNumberOfUsers = null);
 
         /// <summary>
@@ -148,18 +155,9 @@ namespace StrixIT.Platform.Modules.Membership
         /// <param name="roleNames">The names of the roles to remove the users from</param>
         void RemoveUsersFromRoles(Guid[] userIds, string[] roleNames);
 
-        #endregion
+        #endregion AddToRole
 
         #region Permissions
-
-        IQueryable<Permission> PermissionQuery();
-
-        /// <summary>
-        /// Gets a value indicating whether the specified group uses permissions.
-        /// </summary>
-        /// <param name="groupId">The id of group to check using permissions for</param>
-        /// <returns>True if the group uses permissions, false otherwise</returns>
-        bool GroupUsesPermissions(Guid groupId);
 
         /// <summary>
         /// Gets the permission set for the specified group.
@@ -168,7 +166,16 @@ namespace StrixIT.Platform.Modules.Membership
         /// <returns>The group permission set</returns>
         GroupInRole GetPermissionSetForGroup(Guid groupId);
 
-        #endregion
+        /// <summary>
+        /// Gets a value indicating whether the specified group uses permissions.
+        /// </summary>
+        /// <param name="groupId">The id of group to check using permissions for</param>
+        /// <returns>True if the group uses permissions, false otherwise</returns>
+        bool GroupUsesPermissions(Guid groupId);
+
+        IQueryable<Permission> PermissionQuery();
+
+        #endregion Permissions
 
         #region Delete
 
@@ -178,6 +185,6 @@ namespace StrixIT.Platform.Modules.Membership
         /// <param name="id">The id</param>
         void Delete(Guid id);
 
-        #endregion
+        #endregion Delete
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="RegisterViewModel.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System.ComponentModel.DataAnnotations;
 
@@ -27,13 +29,13 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class RegisterViewModel
     {
+        #region Public Properties
+
         /// <summary>
-        /// Gets or sets the user name.
+        /// Gets or sets a value indicating whether the user accepted the terms of use.
         /// </summary>
-        [Required(ErrorMessageResourceType = typeof(Resources.Interface), ErrorMessageResourceName = "Required")]
-        [Display(ResourceType = typeof(Resources.Interface), Name = "Name")]
-        [StringLength(250)]
-        public string Name { get; set; }
+        [Display(ResourceType = typeof(Resources.Interface), Name = "AcceptedTerms")]
+        public bool AcceptedTerms { get; set; }
 
         /// <summary>
         /// Gets or sets the user email.
@@ -44,15 +46,19 @@ namespace StrixIT.Platform.Modules.Membership
         public string Email { get; set; }
 
         /// <summary>
+        /// Gets or sets the user name.
+        /// </summary>
+        [Required(ErrorMessageResourceType = typeof(Resources.Interface), ErrorMessageResourceName = "Required")]
+        [Display(ResourceType = typeof(Resources.Interface), Name = "Name")]
+        [StringLength(250)]
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets or sets the user registration comment.
         /// </summary>
         [Display(ResourceType = typeof(Resources.Interface), Name = "RegistrationComment")]
         public string RegistrationComment { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the user accepted the terms of use.
-        /// </summary>
-         [Display(ResourceType = typeof(Resources.Interface), Name = "AcceptedTerms")]
-        public bool AcceptedTerms { get; set; }
+        #endregion Public Properties
     }
 }

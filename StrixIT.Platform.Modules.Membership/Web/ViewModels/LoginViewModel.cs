@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="LoginViewModel.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System.ComponentModel.DataAnnotations;
 
@@ -27,6 +29,8 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class LoginViewModel
     {
+        #region Public Properties
+
         /// <summary>
         /// Gets or sets the user name.
         /// </summary>
@@ -46,5 +50,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// Gets or sets the url to return to after logging in.
         /// </summary>
         public string ReturnUrl { get; set; }
+
+        #endregion Public Properties
     }
 }

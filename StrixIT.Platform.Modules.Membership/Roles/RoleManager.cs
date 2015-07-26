@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="RoleManager.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,30 +17,35 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class RoleManager : IRoleManager
     {
+        #region Private Fields
+
         private static Guid _appId;
 
+        private static Dictionary<Guid, bool> _groupsUsePermissions = new Dictionary<Guid, bool>();
         private static object _lockObject = new object();
 
         private static Dictionary<Guid, Dictionary<Guid, string>> _roleIdsAndNames;
 
         private static ConcurrentDictionary<Guid, List<Tuple<string, DateTime, DateTime?>>> _userRoles = new ConcurrentDictionary<Guid, List<Tuple<string, DateTime, DateTime?>>>();
-
-        private static Dictionary<Guid, bool> _groupsUsePermissions = new Dictionary<Guid, bool>();
-
         private IMembershipDataSource _dataSource;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RoleManager(IMembershipDataSource dataSource)
         {
@@ -53,6 +59,8 @@ namespace StrixIT.Platform.Modules.Membership
                 this.GetUserRoles();
             }
         }
+
+        #endregion Public Constructors
 
         #region Create Roles
 
@@ -71,7 +79,7 @@ namespace StrixIT.Platform.Modules.Membership
             return this._dataSource.Save(role);
         }
 
-        #endregion
+        #endregion Create Roles
 
         #region Update
 
@@ -85,7 +93,7 @@ namespace StrixIT.Platform.Modules.Membership
             return this._dataSource.Save(role);
         }
 
-        #endregion
+        #endregion Update
 
         #region Exists
 
@@ -107,7 +115,7 @@ namespace StrixIT.Platform.Modules.Membership
                 && (!id.HasValue || r.Id != id.Value));
         }
 
-        #endregion
+        #endregion Exists
 
         #region IsInRole
 
@@ -128,7 +136,7 @@ namespace StrixIT.Platform.Modules.Membership
             return _userRoles[id].Any(r => roleNames.Contains(r.Item1) && r.Item2 <= DateTime.Now && (!r.Item3.HasValue || r.Item3.Value > DateTime.Now));
         }
 
-        #endregion
+        #endregion IsInRole
 
         #region Get
 
@@ -137,7 +145,7 @@ namespace StrixIT.Platform.Modules.Membership
             return this.Query().FirstOrDefault(r => r.Id == id);
         }
 
-        #endregion
+        #endregion Get
 
         #region Delete
 
@@ -151,7 +159,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        #endregion
+        #endregion Delete
 
         #region Query
 
@@ -180,7 +188,7 @@ namespace StrixIT.Platform.Modules.Membership
             return this._dataSource.Query<User>().Where(u => userId == u.Id).SelectMany(u => u.Roles.Where(r => r.GroupRole.Role.Permissions.Any(p => p.ApplicationId == _appId)).Select(r => new AssignRoleModel { Id = r.GroupRole.RoleId, Name = r.GroupRole.Role.Name, StartDate = r.StartDate, EndDate = r.EndDate, MaxNumberOfUsers = r.GroupRole.MaxNumberOfUsers, CurrentNumberOfUsers = r.GroupRole.CurrentNumberOfUsers }));
         }
 
-        #endregion
+        #endregion Query
 
         #region AddToRole
 
@@ -214,8 +222,9 @@ namespace StrixIT.Platform.Modules.Membership
                 var newStartDate = startDate.HasValue ? correctedDate : entry.StartDate;
                 var userAssignments = this._dataSource.Query<User>().Where(u => u.Roles.Any(r => r.GroupRoleRoleId == roleId && r.GroupRoleGroupId == groupId)).SelectMany(u => u.Roles.Where(r => r.GroupRoleRoleId == roleId)).ToList();
 
-                // Update user role dates based on the new group dates. If the range is more limited, limit the user range as well. If it is broader,
-                // broaden the range for users that have the same start and/or end date as the previous range.
+                // Update user role dates based on the new group dates. If the range is more
+                // limited, limit the user range as well. If it is broader, broaden the range for
+                // users that have the same start and/or end date as the previous range.
                 foreach (var assignment in userAssignments)
                 {
                     assignment.StartDate = assignment.StartDate <= newStartDate ? newStartDate :
@@ -286,7 +295,7 @@ namespace StrixIT.Platform.Modules.Membership
             _userRoles.Clear();
         }
 
-        #endregion
+        #endregion AddToRole
 
         #region RemoveFromRole
 
@@ -343,13 +352,16 @@ namespace StrixIT.Platform.Modules.Membership
             _userRoles.Clear();
         }
 
-        #endregion
+        #endregion RemoveFromRole
 
         #region Permissions
 
-        public IQueryable<Permission> PermissionQuery()
+        public GroupInRole GetPermissionSetForGroup(Guid groupId)
         {
-            return this._dataSource.Query<Permission>().Where(p => p.ApplicationId == _appId);
+            return this._dataSource.Query<Role>().Where(r => r.Permissions.Any(p => p.ApplicationId == _appId)
+                                                             && r.GroupId == groupId
+                                                             && r.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower())
+                                                 .SelectMany(g => g.Groups).FirstOrDefault(g => g.GroupId == groupId);
         }
 
         public bool GroupUsesPermissions(Guid groupId)
@@ -362,17 +374,30 @@ namespace StrixIT.Platform.Modules.Membership
             return _groupsUsePermissions[groupId];
         }
 
-        public GroupInRole GetPermissionSetForGroup(Guid groupId)
+        public IQueryable<Permission> PermissionQuery()
         {
-            return this._dataSource.Query<Role>().Where(r => r.Permissions.Any(p => p.ApplicationId == _appId)
-                                                             && r.GroupId == groupId
-                                                             && r.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower())
-                                                 .SelectMany(g => g.Groups).FirstOrDefault(g => g.GroupId == groupId);
+            return this._dataSource.Query<Permission>().Where(p => p.ApplicationId == _appId);
         }
 
-        #endregion
+        #endregion Permissions
 
         #region Private Methods
+
+        private Guid GetRoleId(string roleName, string entity, string action)
+        {
+            this.GetRoleIdsAndNames();
+            var usePermissions = StrixMembership.Configuration.UsePermissions;
+            var mainGroupId = StrixPlatform.MainGroupId;
+            var dictionary = usePermissions ? _roleIdsAndNames[StrixPlatform.User.GroupId] : _roleIdsAndNames[mainGroupId];
+
+            if (!dictionary.ContainsValue(roleName.ToLower()))
+            {
+                var fromTo = action == "remove" ? "from" : "to";
+                Logger.LogToAudit(AuditLogType.RoleAssignment.ToString(), string.Format("An attempt was made to {0} a {1} {2} a role ({3}) that is not available for this application", action, entity, fromTo, roleName));
+            }
+
+            return dictionary.First(t => t.Value.ToLower() == roleName.ToLower()).Key;
+        }
 
         private Dictionary<Guid, Dictionary<Guid, string>> GetRoleIdsAndNames()
         {
@@ -416,22 +441,6 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        private Guid GetRoleId(string roleName, string entity, string action)
-        {
-            this.GetRoleIdsAndNames();
-            var usePermissions = StrixMembership.Configuration.UsePermissions;
-            var mainGroupId = StrixPlatform.MainGroupId;
-            var dictionary = usePermissions ? _roleIdsAndNames[StrixPlatform.User.GroupId] : _roleIdsAndNames[mainGroupId];
-
-            if (!dictionary.ContainsValue(roleName.ToLower()))
-            {
-                var fromTo = action == "remove" ? "from" : "to";
-                Logger.LogToAudit(AuditLogType.RoleAssignment.ToString(), string.Format("An attempt was made to {0} a {1} {2} a role ({3}) that is not available for this application", action, entity, fromTo, roleName));
-            }
-
-            return dictionary.First(t => t.Value.ToLower() == roleName.ToLower()).Key;
-        }
-
         private IQueryable<Role> Query(string include)
         {
             var query = this._dataSource.Query<Role>();
@@ -446,6 +455,6 @@ namespace StrixIT.Platform.Modules.Membership
                 && r.Name.ToLower() != PlatformConstants.ADMINROLE.ToLower());
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

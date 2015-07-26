@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipModuleConfiguration.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,23 +17,18 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
-using System.Collections.Generic;
+#endregion Apache License
+
 using StrixIT.Platform.Core;
 using StrixIT.Platform.Web;
+using System.Collections.Generic;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class MembershipModuleConfiguration : IModuleConfiguration
     {
-        public string Name
-        {
-            get
-            {
-                return MembershipConstants.MEMBERSHIP;
-            }
-        }
+        #region Public Properties
 
         public IList<ModuleLink> ModuleLinks
         {
@@ -95,5 +91,15 @@ namespace StrixIT.Platform.Modules.Membership
                 return dictionary;
             }
         }
+
+        public string Name
+        {
+            get
+            {
+                return MembershipConstants.MEMBERSHIP;
+            }
+        }
+
+        #endregion Public Properties
     }
 }

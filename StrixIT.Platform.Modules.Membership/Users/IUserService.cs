@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IUserService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,12 +17,12 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
-using StrixIT.Platform.Core;
-using StrixIT.Platform.Web;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -30,6 +31,8 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public interface IUserService : ICrudService<Guid, UserViewModel>
     {
+        #region Public Methods
+
         /// <summary>
         /// Gets the profile for the user with the specified id.
         /// </summary>
@@ -42,5 +45,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// </summary>
         /// <returns>The list of profiles</returns>
         IList<dynamic> GetProfileList();
+
+        #endregion Public Methods
     }
 }

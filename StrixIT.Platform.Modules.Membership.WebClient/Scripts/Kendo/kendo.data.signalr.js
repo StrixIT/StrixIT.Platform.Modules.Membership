@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.data" ], f);
 })(function(){
-
 (function($) {
     var transport = kendo.data.RemoteTransport.extend({
         init: function (options) {
@@ -111,9 +110,7 @@
             signalr: transport
         }
     });
-
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="RoleService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,20 +17,27 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class RoleService : IRoleService
     {
+        #region Private Fields
+
         private IMembershipDataSource _dataSource;
         private IRoleManager _roleManager;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RoleService(IMembershipDataSource dataSource, IRoleManager roleManager)
         {
@@ -37,17 +45,33 @@ namespace StrixIT.Platform.Modules.Membership
             this._roleManager = roleManager;
         }
 
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public void Delete(Guid id)
+        {
+            this.Delete(id, true);
+        }
+
+        public void Delete(Guid id, bool saveChanges)
+        {
+            this._roleManager.Delete(id);
+
+            if (saveChanges)
+            {
+                this._dataSource.SaveChanges();
+            }
+        }
+
         public bool Exists(string name, Guid? id)
         {
             return this._roleManager.Exists(name, id);
         }
 
-        #region Get
+        #endregion Public Methods
 
-        public IEnumerable List(FilterOptions filter)
-        {
-            return this._roleManager.Query().Where(r => r.Name.ToLower() != Resources.DefaultValues.PermissionSetName.ToLower()).Filter(filter).Select(r => new RoleViewModel { Id = r.Id, Name = r.Name }).ToList();
-        }
+        #region Get
 
         public RoleViewModel Get(Guid? id)
         {
@@ -73,7 +97,12 @@ namespace StrixIT.Platform.Modules.Membership
             return model;
         }
 
-        #endregion
+        public IEnumerable List(FilterOptions filter)
+        {
+            return this._roleManager.Query().Where(r => r.Name.ToLower() != Resources.DefaultValues.PermissionSetName.ToLower()).Filter(filter).Select(r => new RoleViewModel { Id = r.Id, Name = r.Name }).ToList();
+        }
+
+        #endregion Get
 
         public SaveResult<RoleViewModel> Save(RoleViewModel model)
         {
@@ -128,21 +157,6 @@ namespace StrixIT.Platform.Modules.Membership
             return new SaveResult<RoleViewModel>(true, role.Map<RoleViewModel>());
         }
 
-        public void Delete(Guid id)
-        {
-            this.Delete(id, true);
-        }
-
-        public void Delete(Guid id, bool saveChanges)
-        {
-            this._roleManager.Delete(id);
-
-            if (saveChanges)
-            {
-                this._dataSource.SaveChanges();
-            }
-        }
-
         #region Private Methods
 
         private void AddPermissions(RoleViewModel model)
@@ -173,6 +187,6 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

@@ -215,5 +215,4 @@
         icon.removeClass('fa');
         icon.removeClass('fa-caret-' + dir);
     }
-
 })();

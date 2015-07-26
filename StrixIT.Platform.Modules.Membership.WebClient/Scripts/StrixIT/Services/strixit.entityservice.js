@@ -62,7 +62,6 @@
             return dataStore[listName];
         }
 
-
         function isNew() {
             var entity = getEntity();
 
@@ -120,5 +119,4 @@
             return iconClass ? 'fa fa-' + iconClass : null;
         }
     }]);
-
 })()

@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,17 +17,20 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class MembershipService : IMembershipService
     {
+        #region Private Fields
+
         private static Guid _appId;
         private static Group _mainGroup;
 
@@ -36,10 +40,31 @@ namespace StrixIT.Platform.Modules.Membership
         private IMembershipDataSource _dataSource;
         private ISecurityManager _securityManager;
 
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public MembershipService(IMembershipDataSource dataSource, ISecurityManager securityManager)
         {
             this._dataSource = dataSource;
             this._securityManager = securityManager;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public Guid AdminId
+        {
+            get
+            {
+                if (this._adminUser == null)
+                {
+                    this._adminUser = this._dataSource.Query<User>().Where(g => g.Email.ToLower() == Resources.DefaultValues.AdministratorEmail).First();
+                }
+
+                return this._adminUser.Id;
+            }
         }
 
         public Guid ApplicationId
@@ -68,32 +93,36 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        public Guid AdminId
-        {
-            get
-            {
-                if (this._adminUser == null)
-                {
-                    this._adminUser = this._dataSource.Query<User>().Where(g => g.Email.ToLower() == Resources.DefaultValues.AdministratorEmail).First();
-                }
+        #endregion Public Properties
 
-                return this._adminUser.Id;
-            }
+        #region Public Methods
+
+        public IQueryable<GroupData> GroupData()
+        {
+            return this._dataSource.Query<Group>().Select(g => new GroupData { Id = g.Id, Name = g.Name });
         }
 
-        public void Initialize()
+        public void InitAdminUser()
         {
-            StrixPlatform.WriteStartupMessage("Check and create the application.");
-            this.InitApplication();
+            var saveChanges = false;
+            this._adminUser = this._dataSource.Query<User>("Roles.GroupRole.Role").FirstOrDefault(u => u.Email.ToLower() == Resources.DefaultValues.AdministratorEmail.ToLower());
 
-            StrixPlatform.WriteStartupMessage("Check and create the main group.");
-            this.InitMainGroup();
+            if (this._adminUser == null)
+            {
+                this.CreateAdminUser();
+                saveChanges = true;
+            }
+            else if (!this._adminUser.Roles.Any(r => r.GroupRole.Role.Name.ToLower() == PlatformConstants.ADMINROLE.ToLower()))
+            {
+                var userRole = new UserInRole(this._adminRole, this._adminUser.Id, DateTime.Now, null);
+                this._adminUser.Roles.Add(userRole);
+                saveChanges = true;
+            }
 
-            StrixPlatform.WriteStartupMessage("Check and create the admin user.");
-            this.InitAdminUser();
-
-            StrixPlatform.WriteStartupMessage("Check and create the application permissions.");
-            this.InitPermissions();
+            if (saveChanges)
+            {
+                this._dataSource.SaveChanges();
+            }
         }
 
         public void InitApplication()
@@ -111,6 +140,21 @@ namespace StrixIT.Platform.Modules.Membership
                     this._dataSource.SaveChanges();
                 }
             }
+        }
+
+        public void Initialize()
+        {
+            StrixPlatform.WriteStartupMessage("Check and create the application.");
+            this.InitApplication();
+
+            StrixPlatform.WriteStartupMessage("Check and create the main group.");
+            this.InitMainGroup();
+
+            StrixPlatform.WriteStartupMessage("Check and create the admin user.");
+            this.InitAdminUser();
+
+            StrixPlatform.WriteStartupMessage("Check and create the application permissions.");
+            this.InitPermissions();
         }
 
         public void InitMainGroup()
@@ -139,29 +183,6 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        public void InitAdminUser()
-        {
-            var saveChanges = false;
-            this._adminUser = this._dataSource.Query<User>("Roles.GroupRole.Role").FirstOrDefault(u => u.Email.ToLower() == Resources.DefaultValues.AdministratorEmail.ToLower());
-
-            if (this._adminUser == null)
-            {
-                this.CreateAdminUser();
-                saveChanges = true;
-            }
-            else if (!this._adminUser.Roles.Any(r => r.GroupRole.Role.Name.ToLower() == PlatformConstants.ADMINROLE.ToLower()))
-            {
-                var userRole = new UserInRole(this._adminRole, this._adminUser.Id, DateTime.Now, null);
-                this._adminUser.Roles.Add(userRole);
-                saveChanges = true;
-            }
-
-            if (saveChanges)
-            {
-                this._dataSource.SaveChanges();
-            }
-        }
-
         public void InitPermissions()
         {
             var moduleConfigurations = ModuleManager.GetObjectList<IModuleConfiguration>().OrderBy(e => e.Name).ToList();
@@ -176,9 +197,27 @@ namespace StrixIT.Platform.Modules.Membership
             return this._dataSource.Query<User>().Select(u => new UserData { Id = u.Id, Name = u.Name, Email = u.Email });
         }
 
-        public IQueryable<GroupData> GroupData()
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private Role CreateAdminPermissionSet()
         {
-            return this._dataSource.Query<Group>().Select(g => new GroupData { Id = g.Id, Name = g.Name });
+            var adminPermissionSet = this._dataSource.Query<Role>("Permissions").FirstOrDefault(r => r.Permissions.Any(p => p.ApplicationId == _appId) && r.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower());
+
+            if (adminPermissionSet == null)
+            {
+                adminPermissionSet = new Role(Guid.NewGuid(), _mainGroup.Id, Resources.DefaultValues.PermissionSetName);
+                adminPermissionSet.Permissions = new List<Permission>();
+                var adminGroupPermissionSet = new GroupInRole(_mainGroup.Id, adminPermissionSet.Id);
+                adminGroupPermissionSet.StartDate = DateTime.Now;
+                this._dataSource.Save(adminPermissionSet);
+                this._dataSource.Save(adminGroupPermissionSet);
+                adminPermissionSet.Groups = new List<GroupInRole> { adminGroupPermissionSet };
+                this._dataSource.SaveChanges();
+            }
+
+            return adminPermissionSet;
         }
 
         private void CreateAdminUser()
@@ -201,47 +240,6 @@ namespace StrixIT.Platform.Modules.Membership
             admin.Roles = new List<UserInRole>() { userRole };
         }
 
-        private Role CreateAdminPermissionSet()
-        {
-            var adminPermissionSet = this._dataSource.Query<Role>("Permissions").FirstOrDefault(r => r.Permissions.Any(p => p.ApplicationId == _appId) && r.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower());
-
-            if (adminPermissionSet == null)
-            {
-                adminPermissionSet = new Role(Guid.NewGuid(), _mainGroup.Id, Resources.DefaultValues.PermissionSetName);
-                adminPermissionSet.Permissions = new List<Permission>();
-                var adminGroupPermissionSet = new GroupInRole(_mainGroup.Id, adminPermissionSet.Id);
-                adminGroupPermissionSet.StartDate = DateTime.Now;
-                this._dataSource.Save(adminPermissionSet);
-                this._dataSource.Save(adminGroupPermissionSet);
-                adminPermissionSet.Groups = new List<GroupInRole> { adminGroupPermissionSet };
-                this._dataSource.SaveChanges();
-            }
-
-            return adminPermissionSet;
-        }
-
-        private void CreatePermissions(IList<IModuleConfiguration> moduleConfigurations, Role adminPermissionSet)
-        {
-            var allPermissions = moduleConfigurations.SelectMany(c => c.ModulePermissions.SelectMany(p => p.Value)).Distinct().ToArray();
-            var permissionsToCreate = allPermissions.ToLower().Except(this._dataSource.Query<Permission>().Where(p => p.ApplicationId == _appId).Select(p => p.Name.ToLower()));
-
-            // Create all the permissions that do not yet exist.
-            var saveChanges = false;
-
-            foreach (var permissionName in allPermissions.Where(p => permissionsToCreate.Contains(p.ToLower())))
-            {
-                var permission = new Permission(Guid.NewGuid(), _appId, permissionName);
-                this._dataSource.Save(permission);
-                adminPermissionSet.Permissions.Add(permission);
-                saveChanges = true;
-            }
-
-            if (saveChanges)
-            {
-                this._dataSource.SaveChanges();
-            }
-        }
-
         private void CreateAndUpdateRoles(IList<IModuleConfiguration> moduleConfigurations)
         {
             var saveChanges = false;
@@ -249,7 +247,8 @@ namespace StrixIT.Platform.Modules.Membership
             var existingRoles = this._dataSource.Query<Role>("Permissions").Where(r => r.Permissions.Count == 0 || r.Permissions.Any(p => p.ApplicationId == _appId)).ToList();
             var allRoles = moduleConfigurations.SelectMany(c => c.ModulePermissions.Keys).Distinct().ToArray();
 
-            // Add all the permissions to all the roles when not assigned yet, creating the roles when they don't exist.
+            // Add all the permissions to all the roles when not assigned yet, creating the roles
+            // when they don't exist.
             foreach (var roleName in allRoles)
             {
                 var role = existingRoles.FirstOrDefault(r => r.Name.ToLower() == roleName.ToLower());
@@ -289,6 +288,28 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
+        private void CreatePermissions(IList<IModuleConfiguration> moduleConfigurations, Role adminPermissionSet)
+        {
+            var allPermissions = moduleConfigurations.SelectMany(c => c.ModulePermissions.SelectMany(p => p.Value)).Distinct().ToArray();
+            var permissionsToCreate = allPermissions.ToLower().Except(this._dataSource.Query<Permission>().Where(p => p.ApplicationId == _appId).Select(p => p.Name.ToLower()));
+
+            // Create all the permissions that do not yet exist.
+            var saveChanges = false;
+
+            foreach (var permissionName in allPermissions.Where(p => permissionsToCreate.Contains(p.ToLower())))
+            {
+                var permission = new Permission(Guid.NewGuid(), _appId, permissionName);
+                this._dataSource.Save(permission);
+                adminPermissionSet.Permissions.Add(permission);
+                saveChanges = true;
+            }
+
+            if (saveChanges)
+            {
+                this._dataSource.SaveChanges();
+            }
+        }
+
         private void RemoveUnusedPermissions()
         {
             var saveChanges = false;
@@ -304,5 +325,7 @@ namespace StrixIT.Platform.Modules.Membership
                 this._dataSource.SaveChanges();
             }
         }
+
+        #endregion Private Methods
     }
 }

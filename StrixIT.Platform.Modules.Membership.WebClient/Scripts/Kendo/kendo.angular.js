@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core" ], f);
 })(function(){
-
 (function ($, angular, undefined) {
     "use strict";
 
@@ -146,7 +145,6 @@
             if (attrs.kRebind) {
                 originalElement = $($(element)[0].cloneNode(true));
             }
-
 
             var role = widget.replace(/^kendo/, '');
             var options = angular.extend({}, attrs.defaultOptions, scope.$eval(attrs.kOptions || attrs.options));
@@ -294,7 +292,6 @@
                 }
             });
         });
-
     }
 
     function exposeWidget(widget, scope, attrs, kendoWidget, origAttr) {
@@ -484,7 +481,6 @@
             changes.forEach(function(chg){
                 var w = $(widget.wrapper)[0];
                 switch (chg.attributeName) {
-
                     case "class":
                         // sync classes to the wrapper element
                         var currClassList = [].slice.call(chg.target.classList);
@@ -593,7 +589,6 @@
         $defaultCompile = compile;
 
         var create = function(role, origAttr) {
-
             return {
                 // Parse the directive for attributes and classes
                 restrict: "AC",
@@ -769,7 +764,6 @@
         if (shortcut != name) {
             make(shortcut, name);
         }
-
     }
 
     (function(){
@@ -892,7 +886,6 @@
                 var x = arg(), elements = x.elements, data = x.data;
                 if (elements.length > 0) {
                     switch (cmd) {
-
                       case "cleanup":
                         angular.forEach(elements, function(el){
                             var itemScope = angular.element(el).scope();
@@ -1355,12 +1348,8 @@
                 };
             });
         });
-
     })();
-
-
 })(window.kendo.jQuery, window.angular);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

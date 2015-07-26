@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.draganddrop" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         Widget = kendo.ui.Widget,
@@ -1238,7 +1237,6 @@
         resizeHandle: template("<div class='k-resize-handle k-resize-#= data #'></div>")
     };
 
-
     function WindowResizing(wnd) {
         var that = this;
         that.owner = wnd;
@@ -1461,9 +1459,7 @@
     };
 
     kendo.ui.plugin(Window);
-
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

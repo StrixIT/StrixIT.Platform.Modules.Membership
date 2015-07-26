@@ -5,19 +5,13 @@
 //------------------------------------------------------------------------------
 using Moq;
 using StrixIT.Platform.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StrixIT.Platform.Modules.Membership.Tests;
-using System.Reflection;
-using System.IO;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public static class TestHelpers
     {
+        #region Public Methods
+
         public static Mock<IUserContext> MockUserContext()
         {
             StrixPlatform.ApplicationId = MembershipTestData.AppId;
@@ -27,5 +21,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             StrixPlatform.User = context.Object;
             return context;
         }
+
+        #endregion Public Methods
     }
 }

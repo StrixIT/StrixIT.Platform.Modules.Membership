@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="IAuthenticationCookieService.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -25,9 +27,12 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public interface IAuthenticationCookieService
     {
+        #region Public Methods
+
         /// <summary>
-        /// Sets an authentication cookie using FormsAuthentication. Whether to persist the cookie accross browser sessions
-        /// is configured using the LimitAuthenticationToBrowserSession app setting (default value is false).
+        /// Sets an authentication cookie using FormsAuthentication. Whether to persist the cookie
+        /// accross browser sessions is configured using the LimitAuthenticationToBrowserSession app
+        /// setting (default value is false).
         /// </summary>
         /// <param name="userName">The name of the user to set the cookie for.</param>
         void SetAuthCookie(string userName);
@@ -36,5 +41,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// Signs a user out.
         /// </summary>
         void SignOut();
+
+        #endregion Public Methods
     }
 }

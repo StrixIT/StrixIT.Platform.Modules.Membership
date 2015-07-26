@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="MembershipInitializer.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,17 +17,19 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System.Linq;
 using System.Web.Mvc;
-using StrixIT.Platform.Core;
-using StrixIT.Platform.Web;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class MembershipInitializer : IInitializer, IWebInitializer
     {
+        #region Public Methods
+
         public void Initialize()
         {
             DataMapper.CreateMap<User, UserViewModel>();
@@ -44,5 +47,7 @@ namespace StrixIT.Platform.Modules.Membership
             razorEngine.PartialViewLocationFormats = razorEngine.PartialViewLocationFormats.Concat(new string[] { "~/Areas/Membership/Views/Shared/{0}.cshtml" }).ToArray();
             razorEngine.AreaPartialViewLocationFormats = razorEngine.AreaPartialViewLocationFormats.Concat(new string[] { "~/Areas/Membership/Views/Shared/{0}.cshtml" }).ToArray();
         }
+
+        #endregion Public Methods
     }
 }

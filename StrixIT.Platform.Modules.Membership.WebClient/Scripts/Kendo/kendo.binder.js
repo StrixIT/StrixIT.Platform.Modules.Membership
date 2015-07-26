@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.data" ], f);
 })(function(){
-
 /*jshint eqnull: true */
 (function ($, undefined) {
     var kendo = window.kendo,
@@ -125,7 +124,6 @@
         },
 
         get: function() {
-
             var that = this,
                 source = that.source,
                 index = 0,
@@ -142,7 +140,6 @@
 
             // Traverse the observable hierarchy if the binding is not resolved at the current level.
             while (result === undefined && source) {
-
                 source = that.parents[++index];
 
                 if (source instanceof ObservableObject) {
@@ -186,7 +183,6 @@
 
             // If the binding is resolved by a parent object
             if (source && source !== that.source) {
-
                 that.currentSource = source; // save parent object
 
                 // Listen for changes in the parent object
@@ -295,7 +291,7 @@
 
     var TypedBinder = Binder.extend({
         dataType: function() {
-            var dataType = this.element.getAttribute("data-type") || this.element.type || "text"; 
+            var dataType = this.element.getAttribute("data-type") || this.element.type || "text";
             return dataType.toLowerCase();
         },
 
@@ -803,7 +799,6 @@
                 for (var valueIndex = 0; valueIndex < values.length; valueIndex++) {
                     value = values[valueIndex];
 
-
                     if (field && value instanceof ObservableObject) {
                         value = value.get(field);
                     }
@@ -1084,7 +1079,6 @@
                 this._initChange = true;
 
                 if (field) {
-
                     if (this.bindings.source) {
                         source = this.bindings.source.get();
                     }
@@ -1135,7 +1129,6 @@
             },
 
             refresh: function() {
-
                 if (!this._initChange) {
                     var field = this.options.dataValueField || this.options.dataTextField,
                         value = this.bindings.value.get(),
@@ -1292,7 +1285,6 @@
                 destroy: function() {
                     this.widget.unbind(CHANGE, this._change);
                 }
-
             })
         },
         scheduler: {
@@ -1468,7 +1460,6 @@
                 binder = new binder(this.target, bindings, this.target.options);
 
                 toDestroy.push(binder);
-
 
                 if (binding instanceof Binding) {
                     binder.bind(binding);
@@ -1725,9 +1716,7 @@
 
         return dataSource._data;
     };
-
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

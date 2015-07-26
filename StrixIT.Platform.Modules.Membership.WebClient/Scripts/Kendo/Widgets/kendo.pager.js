@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.data" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         ui = kendo.ui,
@@ -268,7 +267,6 @@
             }
 
             if (options.numeric) {
-
                 if (page > buttonCount) {
                     reminder = (page % buttonCount);
 
@@ -413,5 +411,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

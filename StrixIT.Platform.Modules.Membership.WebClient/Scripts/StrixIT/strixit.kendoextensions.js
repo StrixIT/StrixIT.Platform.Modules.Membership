@@ -163,7 +163,7 @@
             // trigger validation again
             validator.validateInput(element);
             scope.$emit('remoteValidationDone');
-        }, 
+        },
         function() {
             // Todo: do something useful here.
             // the ajax call failed so just set the field

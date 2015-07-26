@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserContext.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,19 +17,26 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
     public class UserContext : IUserContext
     {
+        #region Private Fields
+
         private IMembershipDataSource _dataSource;
         private IUserManager _userManager;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public UserContext(IMembershipDataSource dataSource, IUserManager userManager)
         {
@@ -36,23 +44,9 @@ namespace StrixIT.Platform.Modules.Membership
             this._userManager = userManager;
         }
 
-        public string Name
-        {
-            get
-            {
-                var user = this.User;
-                return user != null ? user.Name : null;
-            }
-        }
+        #endregion Public Constructors
 
-        public Guid Id
-        {
-            get
-            {
-                var user = this.User;
-                return user != null ? user.Id : Guid.Empty;
-            }
-        }
+        #region Public Properties
 
         public Guid GroupId
         {
@@ -93,12 +87,12 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
-        // Todo: can this be reworked and removed?
-        public bool IsInMainGroup
+        public Guid Id
         {
             get
             {
-                return StrixPlatform.MainGroupId == this.GroupId;
+                var user = this.User;
+                return user != null ? user.Id : Guid.Empty;
             }
         }
 
@@ -110,6 +104,28 @@ namespace StrixIT.Platform.Modules.Membership
                 return this.IsInRole(PlatformConstants.ADMINROLE);
             }
         }
+
+        // Todo: can this be reworked and removed?
+        public bool IsInMainGroup
+        {
+            get
+            {
+                return StrixPlatform.MainGroupId == this.GroupId;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                var user = this.User;
+                return user != null ? user.Name : null;
+            }
+        }
+
+        #endregion Public Properties
+
+        #region Private Properties
 
         private ActiveUser User
         {
@@ -144,14 +160,15 @@ namespace StrixIT.Platform.Modules.Membership
 
                         if (!groupId.HasValue)
                         {
-                            // If there is no current group id in the session, get the user's session data from the database and try again.
+                            // If there is no current group id in the session, get the user's
+                            // session data from the database and try again.
                             this._userManager.GetSession(email);
                             groupId = StrixPlatform.Environment.GetFromSession<Guid?>(PlatformConstants.CURRENTGROUPID);
 
                             if (!groupId.HasValue)
                             {
-                                // If there is still no current group id, either use the id of the main group if the user has access to it
-                                // or the first group in his list.
+                                // If there is still no current group id, either use the id of the
+                                // main group if the user has access to it or the first group in his list.
                                 if (groups.Count > 0)
                                 {
                                     var mainGroup = groups.FirstOrDefault(g => g.Id == StrixPlatform.MainGroupId);
@@ -215,28 +232,9 @@ namespace StrixIT.Platform.Modules.Membership
             }
         }
 
+        #endregion Private Properties
+
         #region IsInRole
-
-        public bool IsInRoles(IEnumerable<string> roleNames)
-        {
-            if (roleNames == null)
-            {
-                throw new ArgumentNullException("roleNames");
-            }
-
-            var isInRole = false;
-
-            foreach (var roleName in roleNames)
-            {
-                if (this.IsInRole(roleName))
-                {
-                    isInRole = true;
-                    break;
-                }
-            }
-
-            return isInRole;
-        }
 
         // Todo: rework and remove, use permissions only.
         public bool IsInRole(string roleName)
@@ -263,7 +261,28 @@ namespace StrixIT.Platform.Modules.Membership
             return user.Roles.Any(p => p.Name.ToLower() == roleName.ToLower() && currentDate.IsInRange(p.StartDate, p.EndDate));
         }
 
-        #endregion
+        public bool IsInRoles(IEnumerable<string> roleNames)
+        {
+            if (roleNames == null)
+            {
+                throw new ArgumentNullException("roleNames");
+            }
+
+            var isInRole = false;
+
+            foreach (var roleName in roleNames)
+            {
+                if (this.IsInRole(roleName))
+                {
+                    isInRole = true;
+                    break;
+                }
+            }
+
+            return isInRole;
+        }
+
+        #endregion IsInRole
 
         #region HasPermission
 
@@ -312,6 +331,6 @@ namespace StrixIT.Platform.Modules.Membership
             return user.Permissions.Any(p => p.Name.ToLower() == permission.ToLower() && currentDate.IsInRange(p.StartDate, p.EndDate));
         }
 
-        #endregion
+        #endregion HasPermission
     }
 }

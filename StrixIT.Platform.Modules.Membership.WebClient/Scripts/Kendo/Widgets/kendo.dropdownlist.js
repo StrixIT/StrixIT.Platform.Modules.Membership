@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.list", "./kendo.mobile.scroller" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         ui = kendo.ui,
@@ -569,7 +568,6 @@
                 if (!that.filterInput) {
                     wrapper.on("keypress" + ns, proxy(that._keypress, that));
                 }
-
             } else if (disable) {
                 wrapper.removeAttr(TABINDEX);
                 dropDownWrapper
@@ -1106,7 +1104,6 @@
             var that = this,
                 template = that.options.valueTemplate;
 
-
             if (!template) {
                 template = $.proxy(kendo.template('#:this._text(data)#', { useWithBlock: false }), that);
             } else {
@@ -1178,5 +1175,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

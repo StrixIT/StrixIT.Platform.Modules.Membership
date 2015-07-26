@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserSessionStorage.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
 
@@ -27,8 +29,10 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     internal class UserSessionStorage
     {
+        #region Public Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserSessionStorage" /> class.
+        /// Initializes a new instance of the <see cref="UserSessionStorage"/> class.
         /// </summary>
         /// <param name="userId">The id of the user the session data is for</param>
         public UserSessionStorage(Guid userId)
@@ -36,12 +40,27 @@ namespace StrixIT.Platform.Modules.Membership
             this.Id = userId;
         }
 
-        private UserSessionStorage() { }
+        #endregion Public Constructors
+
+        #region Private Constructors
+
+        private UserSessionStorage()
+        {
+        }
+
+        #endregion Private Constructors
+
+        #region Public Properties
 
         /// <summary>
         /// Gets the id of the user the session data is for.
         /// </summary>
         public Guid Id { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the session data in JSON format.
+        /// </summary>
+        public string Session { get; set; }
 
         /// <summary>
         /// Gets or sets the user the session data is for.
@@ -53,9 +72,6 @@ namespace StrixIT.Platform.Modules.Membership
         /// </summary>
         public UserSecurity UserSecurity { get; private set; }
 
-        /// <summary>
-        /// Gets or sets the session data in JSON format.
-        /// </summary>
-        public string Session { get; set; }
+        #endregion Public Properties
     }
 }

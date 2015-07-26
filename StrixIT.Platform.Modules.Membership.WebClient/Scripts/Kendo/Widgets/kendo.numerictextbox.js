@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.userevents" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         caret = kendo.caret,
@@ -174,7 +173,6 @@
                     .on("keydown" + ns, proxy(that._keydown, that))
                     .on("keypress" + ns, proxy(that._keypress, that))
                     .on("paste" + ns, proxy(that._paste, that));
-
             } else {
                 wrapper
                     .addClass(disable ? STATEDISABLED : DEFAULT)
@@ -673,5 +671,4 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

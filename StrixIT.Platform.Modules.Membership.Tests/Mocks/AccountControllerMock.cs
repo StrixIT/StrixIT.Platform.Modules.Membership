@@ -6,11 +6,7 @@
 using Moq;
 using StrixIT.Platform.Web;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -18,13 +14,19 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public sealed class AccountControllerMock : IDisposable
     {
-        private AccountController _controller;
-        private Mock<IAuthenticationService> _authService = new Mock<IAuthenticationService>();
+        #region Private Fields
+
         private Mock<IAccountService> _accountService = new Mock<IAccountService>();
+        private Mock<IAuthenticationService> _authService = new Mock<IAuthenticationService>();
+        private AccountController _controller;
+        private Mock<ControllerContext> _controllerContext = new Mock<ControllerContext>();
         private Mock<HttpContextBase> _httpContext = new Mock<HttpContextBase>();
         private Mock<IIdentity> _identity = new Mock<IIdentity>();
         private Mock<HttpRequestBase> _request = new Mock<HttpRequestBase>();
-        private Mock<ControllerContext> _controllerContext = new Mock<ControllerContext>();
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AccountControllerMock()
         {
@@ -38,6 +40,10 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _controller = new AccountController(_authService.Object, _accountService.Object);
             _controller.ControllerContext = _controllerContext.Object;
         }
+
+        #endregion Public Constructors
+
+        #region Public Properties
 
         public AccountController AccountController
         {
@@ -71,6 +77,13 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
+        public Mock<IIdentity> IdentityMock
+        {
+            get
+            {
+                return _identity;
+            }
+        }
 
         public Mock<HttpRequestBase> RequestMock
         {
@@ -80,17 +93,15 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        public Mock<IIdentity> IdentityMock
-        {
-            get
-            {
-                return _identity;
-            }
-        }
+        #endregion Public Properties
+
+        #region Public Methods
 
         public void Dispose()
         {
             _controller.Dispose();
         }
+
+        #endregion Public Methods
     }
 }

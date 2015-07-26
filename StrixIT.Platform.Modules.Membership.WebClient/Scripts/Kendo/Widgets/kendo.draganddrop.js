@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.userevents" ], f);
 })(function(){
-
 (function ($, undefined) {
     var kendo = window.kendo,
         support = kendo.support,
@@ -311,7 +310,6 @@
     });
 
     var Pane = Class.extend({
-
         init: function(options) {
             var that = this,
                 x,
@@ -407,7 +405,6 @@
     var TRANSFORM_STYLE = support.transitions.prefix + "Transform",
         translate;
 
-
     if (support.hasHW3D) {
         translate = function(x, y, scale) {
             return "translate3d(" + x + "px," + y +"px,0) scale(" + scale + ")";
@@ -481,7 +478,6 @@
                     that.element[0].style.position = "absolute";
                     that.element[0].style.left = that.x + "px";
                     that.element[0].style.top = that.y + "px";
-
                 } else {
                     that.element[0].style[TRANSFORM_STYLE] = newCoordinates;
                 }
@@ -844,7 +840,6 @@
                 setTimeout(function() {
                     that.hint.stop(true, true).animate(that.currentTargetOffset, "fast", that._afterEndHandler);
                 }, 0);
-
             } else {
                 that._afterEnd();
             }
@@ -875,7 +870,6 @@
                 areas = dropAreas[options.group];
 
             if (targets && targets.length || areas && areas.length) {
-
                 target = elementUnderCursor(e);
 
                 if (that.hint && contains(that.hint[0], target)) {
@@ -936,9 +930,7 @@
         PaneDimensions: PaneDimensions,
         Movable: Movable
     });
-
  })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

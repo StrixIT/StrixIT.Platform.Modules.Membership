@@ -15,7 +15,13 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass]
     public class GroupServiceTests
     {
+        #region Private Fields
+
         private Mock<IUserContext> _userContextMock;
+
+        #endregion Private Fields
+
+        #region Public Methods
 
         [ClassInitialize]
         public static void Init(TestContext context)
@@ -28,6 +34,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         {
             _userContextMock = TestHelpers.MockUserContext();
         }
+
+        #endregion Public Methods
 
         #region Get
 
@@ -47,24 +55,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             Assert.AreEqual(0, result.Roles.Where(r => r.Selected).Count());
             Assert.IsFalse(result.Roles.Any(r => r.Name.ToLower() == MembershipTestData.AdminRoleName.ToLower()));
             Assert.IsTrue(new int[] { 0, 1, 2 }.Except(result.Roles.Select(r => r.Index)).Count() == 0);
-            Assert.AreEqual(4, result.Permissions.Count);
-        }
-
-        [TestMethod()]
-        public void GetShouldRetrieveFilledGroupModelForUsingRoles()
-        {
-            var mock = new GroupServiceMock();
-            mock.DataSourceMock.Setup(m => m.Query<Group>()).Returns(MembershipTestData.Groups.AsQueryable());
-            mock.GroupManagerMock.Setup(g => g.Get(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.DivingGroup);
-            mock.RoleManagerMock.Setup(r => r.Query()).Returns(MembershipTestData.Roles.Where(r => r.Permissions.Any(p => p.ApplicationId == MembershipTestData.AppId)).AsQueryable());
-            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => g.Role).Map<AssignRoleModel>().AsQueryable());
-            mock.RoleManagerMock.Setup(p => p.PermissionQuery()).Returns(MembershipTestData.Permissions.Where(p => p.ApplicationId == MembershipTestData.AppId).AsQueryable());
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
-            var result = mock.GroupService.Get(MembershipTestData.DivingGroupId);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
-            Assert.IsNotNull(result);
-            Assert.AreEqual(5, result.Roles.Count);
-            Assert.AreEqual(2, result.Roles.Where(r => r.Selected).Count());
             Assert.AreEqual(4, result.Permissions.Count);
         }
 
@@ -94,42 +84,69 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             Assert.AreEqual(MembershipTestData.CreateUserPermission.Name, result.Permissions.First(r => r.Selected).Name);
         }
 
-        #endregion
+        [TestMethod()]
+        public void GetShouldRetrieveFilledGroupModelForUsingRoles()
+        {
+            var mock = new GroupServiceMock();
+            mock.DataSourceMock.Setup(m => m.Query<Group>()).Returns(MembershipTestData.Groups.AsQueryable());
+            mock.GroupManagerMock.Setup(g => g.Get(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.DivingGroup);
+            mock.RoleManagerMock.Setup(r => r.Query()).Returns(MembershipTestData.Roles.Where(r => r.Permissions.Any(p => p.ApplicationId == MembershipTestData.AppId)).AsQueryable());
+            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => g.Role).Map<AssignRoleModel>().AsQueryable());
+            mock.RoleManagerMock.Setup(p => p.PermissionQuery()).Returns(MembershipTestData.Permissions.Where(p => p.ApplicationId == MembershipTestData.AppId).AsQueryable());
+            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
+            var result = mock.GroupService.Get(MembershipTestData.DivingGroupId);
+            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Roles.Count);
+            Assert.AreEqual(2, result.Roles.Where(r => r.Selected).Count());
+            Assert.AreEqual(4, result.Permissions.Count);
+        }
+
+        #endregion Get
 
         #region Save
 
         [TestMethod()]
-        public void SaveANewGroupWhenUsingRolesShouldSaveGroupAndAddAllSelectedMainRoles()
+        public void ChangingFromUsingPermissionsToUsingRolesShouldRemoveGroupFromCustomRolesAndDeleteCustomRoles()
         {
             var mock = new GroupServiceMock();
             mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => new AssignRoleModel { Id = g.RoleId, Name = g.Role.Name, CurrentNumberOfUsers = g.CurrentNumberOfUsers, MaxNumberOfUsers = g.MaxNumberOfUsers }).AsQueryable());
-            mock.GroupManagerMock.Setup(g => g.Create(MembershipTestData.DivingGroup.Name, It.IsAny<bool>())).Returns(MembershipTestData.DivingGroup);
-            var groupRoleQuery = MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => g).Map<AssignRoleModel>().AsQueryable();
-            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(new List<AssignRoleModel>().AsQueryable());
-            var userRoleQuery = MembershipTestData.UsersInRoles.Where(g => g.UserId == MembershipTestData.DivingManagerId).Select(g => g.GroupRole).Map<AssignRoleModel>().AsQueryable();
-            mock.RoleManagerMock.Setup(r => r.QueryForUser(MembershipTestData.DivingManagerId)).Returns(userRoleQuery);
+            var group = MembershipTestData.DivingGroup;
+            group.UsePermissions = false;
+            mock.GroupManagerMock.Setup(m => m.Query()).Returns(MembershipTestData.Groups.AsQueryable());
+            mock.GroupManagerMock.Setup(g => g.Update(MembershipTestData.DivingGroupId, MembershipTestData.DivingGroup.Name, It.IsAny<bool>())).Returns(group);
+            mock.GroupManagerMock.Setup(g => g.Get(MembershipTestData.DivingGroupId)).Returns(group);
+            mock.RoleManagerMock.Setup(r => r.Query()).Returns(MembershipTestData.Roles.AsQueryable());
+            mock.RoleManagerMock.Setup(m => m.PermissionQuery()).Returns(MembershipTestData.Permissions.AsQueryable());
+            var id = Guid.NewGuid();
+            Role role = new Role(id, MembershipTestData.DivingGroupId, Resources.DefaultValues.PermissionSetName);
+            role.Groups = new List<GroupInRole> { new GroupInRole(MembershipTestData.DivingGroupId, id) };
+            mock.RoleManagerMock.Setup(r => r.Create(Resources.DefaultValues.PermissionSetName, It.IsAny<string>(), It.IsAny<IList<Permission>>())).Returns(role);
             var model = MembershipTestData.DivingGroup.Map<GroupViewModel>();
-            model.Id = Guid.Empty;
-            model.Roles = new List<AssignRoleModel> { new AssignRoleModel { Id = MembershipTestData.GroupAdminRoleId, Name = MembershipTestData.GroupAdminRoleName, Selected = true }, new AssignRoleModel { Id = MembershipTestData.EditorRoleId, Name = MembershipTestData.EditorRoleName, Selected = true } };
+            model.UsePermissions = true;
+            model.Permissions = new List<AssignPermissionModel>();
             var result = mock.GroupService.Save(model);
-            mock.RoleManagerMock.Verify(m => m.AddGroupToRole(MembershipTestData.DivingGroupId, It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<int?>()), Times.Exactly(2));
+            mock.RoleManagerMock.Verify(m => m.RemoveGroupFromRoles(MembershipTestData.DivingGroupId, It.IsAny<string[]>()), Times.Once());
             mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());
         }
 
         [TestMethod()]
-        public void SaveAnExistingGroupWhenUsingRolesShouldSaveGroupAndRemoveUnselectedMainRoles()
+        public void ChangingFromUsingRolesToUsingPermissionsShouldRemoveGroupFromRoles()
         {
             var mock = new GroupServiceMock();
-            var group = MembershipTestData.DivingGroup;
             mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => new AssignRoleModel { Id = g.RoleId, Name = g.Role.Name, CurrentNumberOfUsers = g.CurrentNumberOfUsers, MaxNumberOfUsers = g.MaxNumberOfUsers }).AsQueryable());
+            var group = MembershipTestData.DivingGroup;
+            group.UsePermissions = true;
+            mock.GroupManagerMock.Setup(g => g.Update(MembershipTestData.DivingGroupId, MembershipTestData.DivingGroup.Name, It.IsAny<bool>())).Returns(group);
             mock.GroupManagerMock.Setup(g => g.Get(MembershipTestData.DivingGroupId)).Returns(group);
-            mock.GroupManagerMock.Setup(g => g.Update(MembershipTestData.DivingGroupId, It.IsAny<string>(), It.IsAny<bool>())).Returns(MembershipTestData.DivingGroup);
-            mock.UserManagerMock.Setup(m => m.Query()).Returns(MembershipTestData.Users.Where(u => u.Roles.Any(r => r.GroupRoleGroupId == MembershipTestData.DivingGroupId)).ToList().AsQueryable());
+            mock.RoleManagerMock.Setup(r => r.Query()).Returns(MembershipTestData.Roles.AsQueryable());
             var model = MembershipTestData.DivingGroup.Map<GroupViewModel>();
-            model.Roles = new List<AssignRoleModel> { new AssignRoleModel { Id = MembershipTestData.GroupAdminRoleId, Name = MembershipTestData.GroupAdminRoleName, Selected = true }, new AssignRoleModel { Id = MembershipTestData.EditorRoleId, Name = MembershipTestData.EditorRoleName, Selected = false } };
+            model.Roles = new List<AssignRoleModel> { new AssignRoleModel { Id = MembershipTestData.GroupAdminRoleId, Name = MembershipTestData.GroupAdminRoleName, Selected = true }, new AssignRoleModel { Id = MembershipTestData.EditorRoleId, Name = MembershipTestData.EditorRoleName, Selected = true } };
+            model.UsePermissions = false;
             var result = mock.GroupService.Save(model);
-            mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());
             mock.RoleManagerMock.Verify(m => m.RemoveGroupFromRoles(MembershipTestData.DivingGroupId, It.IsAny<string[]>()), Times.Once());
+            mock.RoleManagerMock.Verify(m => m.Delete(MembershipTestData.DivingPermissionSetRoleId), Times.Once());
+            mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());
         }
 
         [TestMethod()]
@@ -162,6 +179,24 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         }
 
         [TestMethod()]
+        public void SaveANewGroupWhenUsingRolesShouldSaveGroupAndAddAllSelectedMainRoles()
+        {
+            var mock = new GroupServiceMock();
+            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => new AssignRoleModel { Id = g.RoleId, Name = g.Role.Name, CurrentNumberOfUsers = g.CurrentNumberOfUsers, MaxNumberOfUsers = g.MaxNumberOfUsers }).AsQueryable());
+            mock.GroupManagerMock.Setup(g => g.Create(MembershipTestData.DivingGroup.Name, It.IsAny<bool>())).Returns(MembershipTestData.DivingGroup);
+            var groupRoleQuery = MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => g).Map<AssignRoleModel>().AsQueryable();
+            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(new List<AssignRoleModel>().AsQueryable());
+            var userRoleQuery = MembershipTestData.UsersInRoles.Where(g => g.UserId == MembershipTestData.DivingManagerId).Select(g => g.GroupRole).Map<AssignRoleModel>().AsQueryable();
+            mock.RoleManagerMock.Setup(r => r.QueryForUser(MembershipTestData.DivingManagerId)).Returns(userRoleQuery);
+            var model = MembershipTestData.DivingGroup.Map<GroupViewModel>();
+            model.Id = Guid.Empty;
+            model.Roles = new List<AssignRoleModel> { new AssignRoleModel { Id = MembershipTestData.GroupAdminRoleId, Name = MembershipTestData.GroupAdminRoleName, Selected = true }, new AssignRoleModel { Id = MembershipTestData.EditorRoleId, Name = MembershipTestData.EditorRoleName, Selected = true } };
+            var result = mock.GroupService.Save(model);
+            mock.RoleManagerMock.Verify(m => m.AddGroupToRole(MembershipTestData.DivingGroupId, It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<int?>()), Times.Exactly(2));
+            mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());
+        }
+
+        [TestMethod()]
         public void SaveAnExistingGroupWhenUsingPermissionsShouldUpdateGroupUpdatePermissionSetRoleForGroupAndAllGroupRoleDatesAndAddAllSelectedPermissions()
         {
             var mock = new GroupServiceMock();
@@ -190,49 +225,22 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         }
 
         [TestMethod()]
-        public void ChangingFromUsingRolesToUsingPermissionsShouldRemoveGroupFromRoles()
+        public void SaveAnExistingGroupWhenUsingRolesShouldSaveGroupAndRemoveUnselectedMainRoles()
         {
             var mock = new GroupServiceMock();
-            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => new AssignRoleModel { Id = g.RoleId, Name = g.Role.Name, CurrentNumberOfUsers = g.CurrentNumberOfUsers, MaxNumberOfUsers = g.MaxNumberOfUsers }).AsQueryable());
             var group = MembershipTestData.DivingGroup;
-            group.UsePermissions = true;
-            mock.GroupManagerMock.Setup(g => g.Update(MembershipTestData.DivingGroupId, MembershipTestData.DivingGroup.Name, It.IsAny<bool>())).Returns(group);
+            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => new AssignRoleModel { Id = g.RoleId, Name = g.Role.Name, CurrentNumberOfUsers = g.CurrentNumberOfUsers, MaxNumberOfUsers = g.MaxNumberOfUsers }).AsQueryable());
             mock.GroupManagerMock.Setup(g => g.Get(MembershipTestData.DivingGroupId)).Returns(group);
-            mock.RoleManagerMock.Setup(r => r.Query()).Returns(MembershipTestData.Roles.AsQueryable());
+            mock.GroupManagerMock.Setup(g => g.Update(MembershipTestData.DivingGroupId, It.IsAny<string>(), It.IsAny<bool>())).Returns(MembershipTestData.DivingGroup);
+            mock.UserManagerMock.Setup(m => m.Query()).Returns(MembershipTestData.Users.Where(u => u.Roles.Any(r => r.GroupRoleGroupId == MembershipTestData.DivingGroupId)).ToList().AsQueryable());
             var model = MembershipTestData.DivingGroup.Map<GroupViewModel>();
-            model.Roles = new List<AssignRoleModel> { new AssignRoleModel { Id = MembershipTestData.GroupAdminRoleId, Name = MembershipTestData.GroupAdminRoleName, Selected = true }, new AssignRoleModel { Id = MembershipTestData.EditorRoleId, Name = MembershipTestData.EditorRoleName, Selected = true } };
-            model.UsePermissions = false;
+            model.Roles = new List<AssignRoleModel> { new AssignRoleModel { Id = MembershipTestData.GroupAdminRoleId, Name = MembershipTestData.GroupAdminRoleName, Selected = true }, new AssignRoleModel { Id = MembershipTestData.EditorRoleId, Name = MembershipTestData.EditorRoleName, Selected = false } };
             var result = mock.GroupService.Save(model);
-            mock.RoleManagerMock.Verify(m => m.RemoveGroupFromRoles(MembershipTestData.DivingGroupId, It.IsAny<string[]>()), Times.Once());
-            mock.RoleManagerMock.Verify(m => m.Delete(MembershipTestData.DivingPermissionSetRoleId), Times.Once());
             mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());
+            mock.RoleManagerMock.Verify(m => m.RemoveGroupFromRoles(MembershipTestData.DivingGroupId, It.IsAny<string[]>()), Times.Once());
         }
 
-        [TestMethod()]
-        public void ChangingFromUsingPermissionsToUsingRolesShouldRemoveGroupFromCustomRolesAndDeleteCustomRoles()
-        {
-            var mock = new GroupServiceMock();
-            mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => new AssignRoleModel { Id = g.RoleId, Name = g.Role.Name, CurrentNumberOfUsers = g.CurrentNumberOfUsers, MaxNumberOfUsers = g.MaxNumberOfUsers }).AsQueryable());
-            var group = MembershipTestData.DivingGroup;
-            group.UsePermissions = false;
-            mock.GroupManagerMock.Setup(m => m.Query()).Returns(MembershipTestData.Groups.AsQueryable());
-            mock.GroupManagerMock.Setup(g => g.Update(MembershipTestData.DivingGroupId, MembershipTestData.DivingGroup.Name, It.IsAny<bool>())).Returns(group);
-            mock.GroupManagerMock.Setup(g => g.Get(MembershipTestData.DivingGroupId)).Returns(group);
-            mock.RoleManagerMock.Setup(r => r.Query()).Returns(MembershipTestData.Roles.AsQueryable());
-            mock.RoleManagerMock.Setup(m => m.PermissionQuery()).Returns(MembershipTestData.Permissions.AsQueryable());
-            var id = Guid.NewGuid();
-            Role role = new Role(id, MembershipTestData.DivingGroupId, Resources.DefaultValues.PermissionSetName);
-            role.Groups = new List<GroupInRole> { new GroupInRole(MembershipTestData.DivingGroupId, id) };
-            mock.RoleManagerMock.Setup(r => r.Create(Resources.DefaultValues.PermissionSetName, It.IsAny<string>(), It.IsAny<IList<Permission>>())).Returns(role);
-            var model = MembershipTestData.DivingGroup.Map<GroupViewModel>();
-            model.UsePermissions = true;
-            model.Permissions = new List<AssignPermissionModel>();
-            var result = mock.GroupService.Save(model);
-            mock.RoleManagerMock.Verify(m => m.RemoveGroupFromRoles(MembershipTestData.DivingGroupId, It.IsAny<string[]>()), Times.Once());
-            mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());
-        }
-
-        #endregion
+        #endregion Save
 
         #region Delete
 
@@ -248,6 +256,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());
         }
 
-        #endregion
+        #endregion Delete
     }
 }

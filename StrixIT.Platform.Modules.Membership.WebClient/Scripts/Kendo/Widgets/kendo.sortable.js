@@ -16,7 +16,6 @@
 (function(f, define){
     define([ "./kendo.draganddrop" ], f);
 })(function(){
-
 (function($, undefined) {
     var kendo = window.kendo,
         Widget = kendo.ui.Widget,
@@ -131,7 +130,6 @@
             } else if(handler && !$(e.initialTarget).is(handler)) {
                 e.preventDefault();
             } else {
-
                 if(this.trigger(START, { item: draggedElement, draggableEvent: e })) {
                     e.preventDefault();
                 } else {
@@ -140,7 +138,6 @@
 
                     this._setCursor();
                 }
-
             }
         },
 
@@ -284,7 +281,6 @@
 
                 connectedList.trigger(CHANGE, connectedListEventData);
             }
-
         },
 
         _findTarget: function(e) {
@@ -358,7 +354,6 @@
                     }
                 }
             }
-
         },
 
         _isCursorAfterLast: function(sortable, e) {
@@ -407,7 +402,6 @@
             var placeholder = this.placeholder;
 
             if (!target.sortable.trigger(BEFORE_MOVE, eventData)) {
-
                 if (!direction) {
                     target.element.append(placeholder);
                 } else if (direction === "prev") {
@@ -509,12 +503,10 @@
         _isLastHidden: function() {
             return this.items().length === 1 && this.items().is(":hidden");
         }
-
     });
 
     kendo.ui.plugin(Sortable);
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

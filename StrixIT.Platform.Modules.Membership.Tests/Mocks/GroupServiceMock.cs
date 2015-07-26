@@ -4,33 +4,31 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
-using StrixIT.Platform.Core;
-using System.Collections.Generic;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
     public class GroupServiceMock
     {
+        #region Private Fields
+
         private Mock<IMembershipDataSource> _dataSourceMock = new Mock<IMembershipDataSource>();
         private Mock<IGroupManager> _groupManagerMock = new Mock<IGroupManager>();
-        private Mock<IUserManager> _userManagerMock = new Mock<IUserManager>();
-        private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
         private IGroupService _groupService;
+        private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
+        private Mock<IUserManager> _userManagerMock = new Mock<IUserManager>();
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public GroupServiceMock()
         {
             _groupService = new GroupService(_dataSourceMock.Object, _groupManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object);
         }
 
-        #region Properties
+        #endregion Public Constructors
 
-        public IGroupService GroupService
-        {
-            get
-            {
-                return _groupService;
-            }
-        }
+        #region Properties
 
         public Mock<IMembershipDataSource> DataSourceMock
         {
@@ -48,11 +46,11 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        public Mock<IUserManager> UserManagerMock
+        public IGroupService GroupService
         {
             get
             {
-                return _userManagerMock;
+                return _groupService;
             }
         }
 
@@ -64,6 +62,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             }
         }
 
-        #endregion
+        public Mock<IUserManager> UserManagerMock
+        {
+            get
+            {
+                return _userManagerMock;
+            }
+        }
+
+        #endregion Properties
     }
 }

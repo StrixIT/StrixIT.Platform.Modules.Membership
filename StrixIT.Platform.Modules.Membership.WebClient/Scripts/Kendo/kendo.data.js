@@ -16,10 +16,7 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.data.odata", "./kendo.data.xml" ], f);
 })(function(){
-
 var A = 0;
-
-
 
 /*jshint eqnull: true, loopfunc: true, evil: true */
 (function($, undefined) {
@@ -496,7 +493,6 @@ var A = 0;
                 current = kendo.getter(field, true)(that);
 
             if (current !== value) {
-
                 if (!that.trigger("set", { field: field, value: value })) {
                     if (!composite) {
                         value = that.wrap(value, field, function() { return that; });
@@ -946,7 +942,6 @@ var A = 0;
     };
 
     var operators = (function(){
-
         function quote(value) {
             return value.replace(quoteRegExp, "\\").replace(newLineRegExp, "");
         }
@@ -1298,7 +1293,6 @@ var A = 0;
                     return predicate(d, fields, operators);
                 };
             }
-
 
             for (idx = 0, length = data.length; idx < length; idx++) {
                 current = data[idx];
@@ -2625,7 +2619,6 @@ var A = 0;
             var promise = $.Deferred().resolve().promise();
 
             if (that.online()) {
-
                 if (!that.reader.model) {
                     return promise;
                 }
@@ -4657,5 +4650,4 @@ var A = 0;
 })(window.kendo.jQuery);
 
 return window.kendo;
-
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

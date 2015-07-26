@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="UserProfileValue.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,11 +17,12 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
 
+#endregion Apache License
+
+using StrixIT.Platform.Core;
 using System;
 using System.ComponentModel.DataAnnotations;
-using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership
 {
@@ -29,16 +31,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// </summary>
     public class UserProfileValue : CustomFieldValue<UserProfileField>
     {
-        /// <summary>
-        /// Gets or sets the id of the user the profile value is for.
-        /// </summary>
-        [StrixRequired]
-        public Guid UserId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the user the profile value is for.
-        /// </summary>
-        public User User { get; set; }
+        #region Public Properties
 
         /// <summary>
         /// Gets or sets the culture code the profile value is for.
@@ -46,5 +39,18 @@ namespace StrixIT.Platform.Modules.Membership
         [StrixRequired]
         [StringLength(5)]
         public string Culture { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user the profile value is for.
+        /// </summary>
+        public User User { get; set; }
+
+        /// <summary>
+        /// Gets or sets the id of the user the profile value is for.
+        /// </summary>
+        [StrixRequired]
+        public Guid UserId { get; set; }
+
+        #endregion Public Properties
     }
 }

@@ -5,20 +5,25 @@
 //------------------------------------------------------------------------------
 namespace StrixIT.Platform.Modules.Membership.Migrations
 {
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<StrixIT.Platform.Modules.Membership.MembershipDataSource>
     {
+        #region Public Constructors
+
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
+        #endregion Public Constructors
+
+        #region Protected Methods
+
         protected override void Seed(StrixIT.Platform.Modules.Membership.MembershipDataSource context)
         {
         }
+
+        #endregion Protected Methods
     }
 }

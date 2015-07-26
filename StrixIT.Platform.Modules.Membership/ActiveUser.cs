@@ -1,4 +1,5 @@
 ﻿#region Apache License
+
 //-----------------------------------------------------------------------
 // <copyright file="ActiveUser.cs" company="StrixIT">
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
@@ -16,7 +17,8 @@
 // limitations under the License.
 // </copyright>
 //-----------------------------------------------------------------------
-#endregion
+
+#endregion Apache License
 
 using System;
 using System.Collections.Generic;
@@ -25,34 +27,51 @@ namespace StrixIT.Platform.Modules.Membership
 {
     internal class ActiveUser
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+        #region Public Properties
+
         public string Email { get; set; }
         public Guid GroupId { get; set; }
         public string GroupName { get; set; }
         public IList<ActiveUserGroup> Groups { get; set; }
-        public IList<ActiveUserRole> Roles { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
         public IList<ActiveUserPermission> Permissions { get; set; }
+        public IList<ActiveUserRole> Roles { get; set; }
+
+        #endregion Public Properties
+
         // public IDictionary<string, string> Preferences { get; set; }
     }
 
     internal class ActiveUserGroup
     {
+        #region Public Properties
+
         public Guid Id { get; set; }
         public string Name { get; set; }
-    }
 
-    internal class ActiveUserRole
-    {
-        public string Name { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        #endregion Public Properties
     }
 
     internal class ActiveUserPermission
     {
+        #region Public Properties
+
+        public DateTime? EndDate { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
+
+        #endregion Public Properties
+    }
+
+    internal class ActiveUserRole
+    {
+        #region Public Properties
+
         public DateTime? EndDate { get; set; }
+        public string Name { get; set; }
+        public DateTime StartDate { get; set; }
+
+        #endregion Public Properties
     }
 }
