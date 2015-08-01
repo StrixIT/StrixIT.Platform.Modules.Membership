@@ -48,7 +48,7 @@
         var data = {
             module: routeParams.module ? routeParams.module.toLowerCase() : undefined,
             type: routeParams.type ? routeParams.type.toLowerCase() : undefined,
-            baseRoute: routeParams.route,
+            baseRoute: routeParams.baseRoute ? routeParams.baseRoute : routeParams.route,
             saveCallBack: routeParams.saveCallBack,
             deleteCallBack: routeParams.deleteCallBack,
         };

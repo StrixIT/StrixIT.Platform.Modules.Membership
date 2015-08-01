@@ -15,19 +15,19 @@
     limitations under the License.
 *@
 <!-- #endregion -->
-
 @using System.Web.Optimization;
 @{
     Layout = "~/Views/Shared/_MasterLayout.cshtml";
     var showLanguagePicker = StrixPlatform.Cultures.Count > 1;
-    var moduleConfigs = ModuleManager.GetObjectList<IWebModuleConfiguration>();
+    var moduleConfigs = ModuleManager.GetObjectList<IModuleConfiguration>();
+    var webModuleConfigs = ModuleManager.GetObjectList<IWebModuleConfiguration>();
     var hasModuleLinks = moduleConfigs.Any(m => m.ModuleLinks.Any());
 }
 @section css
 {
     <link rel="stylesheet" href="~/Styles/Kendo/kendo.bootstrap.min.css" />
     @Styles.Render("~/Styles/fontawesome/css")
-    @foreach (var config in moduleConfigs.Select(m => m.StyleBundles).Where(m => m != null).SelectMany(s => s).Distinct())
+    @foreach (var config in webModuleConfigs.Select(m => m.StyleBundles).Where(m => m != null).SelectMany(s => s).Distinct())
     {
         @Styles.Render(config)
     }
@@ -74,7 +74,7 @@
 </div>
 @section Javascript
 {
-    @foreach (var config in moduleConfigs.Select(m => m.ScriptBundles).Where(m => m != null).SelectMany(s => s).Distinct())
+    @foreach (var config in webModuleConfigs.Select(m => m.ScriptBundles).Where(m => m != null).SelectMany(s => s).Distinct())
     {
         @Scripts.Render(config)
     }
