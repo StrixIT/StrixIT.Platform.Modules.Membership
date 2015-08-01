@@ -13,7 +13,8 @@
 x64/
 build/
 bld/
-[Bb]in/
+Debug/
+Release/
 [Oo]bj/
 
 # Roslyn cache directories
