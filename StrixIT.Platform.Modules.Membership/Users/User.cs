@@ -30,7 +30,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// <summary>
     /// The user class.
     /// </summary>
-    public class User : ValidationBase
+    public class User
     {
         #region Public Constructors
 

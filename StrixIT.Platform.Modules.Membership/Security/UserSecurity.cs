@@ -29,7 +29,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// <summary>
     /// A class to track user security data.
     /// </summary>
-    internal class UserSecurity : ValidationBase
+    internal class UserSecurity
     {
         #region Public Constructors
 

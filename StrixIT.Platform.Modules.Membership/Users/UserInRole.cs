@@ -28,7 +28,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// <summary>
     /// The class to track user role membership.
     /// </summary>
-    public class UserInRole : ValidationBase
+    public class UserInRole
     {
         #region Public Constructors
 

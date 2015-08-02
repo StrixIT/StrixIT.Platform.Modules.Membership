@@ -30,7 +30,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// <summary>
     /// Groups are used to group users on for example company membership. Groups can be nested.
     /// </summary>
-    public class Group : ValidationBase
+    public class Group
     {
         #region Public Constructors
 

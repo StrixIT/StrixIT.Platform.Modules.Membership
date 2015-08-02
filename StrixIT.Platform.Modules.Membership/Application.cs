@@ -30,7 +30,7 @@ namespace StrixIT.Platform.Modules.Membership
     /// The application for users and entities. Used to allow multiple applications to use the same
     /// database with or without sharing data.
     /// </summary>
-    public class Application : ValidationBase
+    public class Application
     {
         #region Public Constructors
 
