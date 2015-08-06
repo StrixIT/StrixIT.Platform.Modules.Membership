@@ -15,12 +15,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass]
     public class RoleManagerTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [TestCleanup]
@@ -56,7 +50,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             StrixPlatform.Environment = new DefaultEnvironment();
             StrixPlatform.MainGroupId = MembershipTestData.MainGroupId;
             Logger.LoggingService = new Mock<ILoggingService>().Object;
@@ -217,9 +211,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         public void GetAllRolesShouldReturnAllRolesForCurrentAppForMainGroup()
         {
             var mock = new RoleManagerMock();
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(true);
+            mock.UserMock.Setup(m => m.IsInMainGroup).Returns(true);
             var result = mock.RoleManager.Query().ToList();
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(false);
             Assert.AreEqual(3, result.Count());
         }
 
@@ -250,9 +243,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         public void DeleteRoleShouldHitDataSourceDeleteWhenDeletingAccessibleNonAdminRole()
         {
             var mock = new RoleManagerMock();
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
+            mock.UserMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
             mock.RoleManager.Delete(MembershipTestData.DivingPermissionSetRoleId);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
             mock.DataSourceMock.Mock.Verify(m => m.Delete(It.IsAny<Role>()), Times.Once());
         }
 
@@ -260,9 +252,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         public void DeleteRoleShouldNotHitDataSourceDeleteWhenDeletingAdminRole()
         {
             var mock = new RoleManagerMock();
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(true);
+            mock.UserMock.Setup(m => m.IsInMainGroup).Returns(true);
             mock.RoleManager.Delete(MembershipTestData.AdminRoleId);
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(false);
             mock.DataSourceMock.Mock.Verify(m => m.Delete(It.IsAny<Role>()), Times.Never());
         }
 
@@ -348,18 +339,16 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         public void AddMainGroupToAdminRoleIsAllowed()
         {
             var mock = new RoleManagerMock();
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(true);
+            mock.UserMock.Setup(m => m.IsInMainGroup).Returns(true);
             mock.RoleManager.AddGroupToRole(MembershipTestData.KarateGroupId, MembershipTestData.AdminRoleName);
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(false);
         }
 
         [TestMethod()]
         public void AddMainGroupUserToRoleThatNoGroupRecordExistsForShouldAddThatRecord()
         {
             var mock = new RoleManagerMock();
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(true);
+            mock.UserMock.Setup(m => m.IsInMainGroup).Returns(true);
             mock.RoleManager.AddUserToRole(MembershipTestData.MainGroupId, MembershipTestData.GeneralManagerId, MembershipTestData.UserRoleName);
-            _userContextMock.Setup(m => m.IsInMainGroup).Returns(false);
             mock.DataSourceMock.Mock.Verify(m => m.Save(It.IsAny<GroupInRole>()), Times.Once());
             mock.DataSourceMock.Mock.Verify(m => m.Save(It.IsAny<UserInRole>()), Times.Once());
         }

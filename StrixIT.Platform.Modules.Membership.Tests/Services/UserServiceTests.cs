@@ -16,12 +16,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass()]
     public class UserServiceTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [ClassInitialize]
@@ -40,7 +34,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             StrixPlatform.Environment = new DefaultEnvironment();
             Logger.LoggingService = new Mock<ILoggingService>().Object;
         }
@@ -190,9 +184,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             permissionSet.CurrentNumberOfUsers = 2;
             mock.RoleManagerMock.Setup(m => m.GroupUsesPermissions(MembershipTestData.DivingGroupId)).Returns(true);
             mock.RoleManagerMock.Setup(m => m.GetPermissionSetForGroup(MembershipTestData.DivingGroupId)).Returns(permissionSet);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
+            mock.UserMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
             var result = mock.UserService.Save(new UserViewModel());
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
             Assert.IsFalse(result.Success);
         }
 
@@ -206,9 +199,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             mock.RoleManagerMock.Setup(m => m.GroupUsesPermissions(MembershipTestData.DivingGroupId)).Returns(true);
             mock.RoleManagerMock.Setup(m => m.GetPermissionSetForGroup(MembershipTestData.DivingGroupId)).Returns(permissionSet);
             var model = GetUserModel(mock);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
+            mock.UserMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
             var result = mock.UserService.Save(model);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
             Assert.AreEqual(3, permissionSet.CurrentNumberOfUsers);
         }
 
@@ -259,17 +251,16 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         public void AGroupAdministratorCannotDeleteAnAdministrator()
         {
             var mock = new UserServiceMock();
-            _userContextMock.Setup(m => m.IsInRole(PlatformConstants.GROUPADMINROLE)).Returns(true);
+            mock.UserMock.Setup(m => m.IsInRole(PlatformConstants.GROUPADMINROLE)).Returns(true);
             mock.RoleManagerMock.Setup(r => r.IsUserInRole(MembershipTestData.AdminId, PlatformConstants.ADMINROLE)).Returns(true);
             mock.UserService.Delete(MembershipTestData.AdminId);
-            _userContextMock.Setup(m => m.IsInRole(PlatformConstants.GROUPADMINROLE)).Returns(false);
         }
 
         [TestMethod()]
         public void DeletingAUserForAGroupThatUsesPermissionsShouldLowerTheLicenseCountForThePermissionSet()
         {
             var mock = new UserServiceMock();
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
+            mock.UserMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
             var permissionSet = MembershipTestData.DivingGroupPermissionSet;
             permissionSet.MaxNumberOfUsers = 2;
             permissionSet.CurrentNumberOfUsers = 2;

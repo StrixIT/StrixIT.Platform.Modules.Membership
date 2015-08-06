@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -36,15 +36,17 @@ namespace StrixIT.Platform.Modules.Membership
         private static List<User> _loggedInUsers = new List<User>();
         private IMembershipDataSource _dataSource;
         private ISecurityManager _securityManager;
+        private IUserContext _user;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public UserManager(IMembershipDataSource dataSource, ISecurityManager securityManager)
+        public UserManager(IMembershipDataSource dataSource, ISecurityManager securityManager, IUserContext user)
         {
-            this._dataSource = dataSource;
-            this._securityManager = securityManager;
+            _dataSource = dataSource;
+            _securityManager = securityManager;
+            _user = user;
         }
 
         #endregion Public Constructors
@@ -91,7 +93,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public User Get(Guid id)
         {
-            return this.Get(id, false);
+            return Get(id, false);
         }
 
         public User Get(Guid id, bool getForMainGroup)
@@ -105,7 +107,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (user == null)
             {
-                user = this.Query().FirstOrDefault(u => u.Id == id);
+                user = Query().FirstOrDefault(u => u.Id == id);
             }
 
             if (user == null)
@@ -118,7 +120,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public User Get(string email)
         {
-            return this.Get(email, false);
+            return Get(email, false);
         }
 
         public User Get(string email, bool getForMainGroup)
@@ -134,7 +136,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (user == null)
             {
-                user = this.Query().FirstOrDefault(u => u.Email.ToLower() == email);
+                user = Query().FirstOrDefault(u => u.Email.ToLower() == email);
             }
 
             if (user == null)
@@ -152,7 +154,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("id must be specified");
             }
 
-            return this._dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Email).FirstOrDefault();
+            return _dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Email).FirstOrDefault();
         }
 
         public Guid? GetId(string email)
@@ -162,7 +164,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("Email must be specified");
             }
 
-            return this._dataSource.Query<User>().Where(u => u.Email.ToLower() == email.ToLower()).Select(u => u.Id).FirstOrDefault();
+            return _dataSource.Query<User>().Where(u => u.Email.ToLower() == email.ToLower()).Select(u => u.Id).FirstOrDefault();
         }
 
         public string GetName(Guid id)
@@ -172,7 +174,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("id must be specified");
             }
 
-            return this._dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Name).FirstOrDefault();
+            return _dataSource.Query<User>().Where(u => u.Id == id).Select(u => u.Name).FirstOrDefault();
         }
 
         #endregion Get
@@ -181,14 +183,14 @@ namespace StrixIT.Platform.Modules.Membership
 
         public IQueryable<UserProfileValue> ProfileQuery()
         {
-            return this._dataSource.Query<UserProfileValue>().Include(v => v.CustomField);
+            return _dataSource.Query<UserProfileValue>().Include(v => v.CustomField);
         }
 
         public IQueryable<User> Query()
         {
-            var getForMainGroup = StrixPlatform.User.IsInMainGroup && StrixPlatform.User.IsAdministrator;
-            var groupId = StrixPlatform.User.GroupId;
-            var query = this._dataSource.Query<User>("Roles").Where(u => u.Roles.Any(r => r.GroupRoleGroupId == groupId) || (getForMainGroup && !u.Roles.Any()));
+            var getForMainGroup = _user.IsInMainGroup && _user.IsAdministrator;
+            var groupId = _user.GroupId;
+            var query = _dataSource.Query<User>("Roles").Where(u => u.Roles.Any(r => r.GroupRoleGroupId == groupId) || (getForMainGroup && !u.Roles.Any()));
             return query;
         }
 
@@ -203,13 +205,13 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentNullException("email");
             }
 
-            this.CheckEmailAvailable(email);
-            User user = this._dataSource.Query<User>().FirstOrDefault(u => u.Email.ToLower() == email.ToLower());
+            CheckEmailAvailable(email);
+            User user = _dataSource.Query<User>().FirstOrDefault(u => u.Email.ToLower() == email.ToLower());
 
             if (user == null)
             {
                 CheckPassword(password);
-                var encodedPassword = this._securityManager.EncodePassword(password);
+                var encodedPassword = _securityManager.EncodePassword(password);
 
                 user = new User(Guid.NewGuid(), email, name);
                 user.PreferredCulture = string.IsNullOrWhiteSpace(preferredCulture) ? StrixPlatform.CurrentCultureCode : preferredCulture;
@@ -222,9 +224,9 @@ namespace StrixIT.Platform.Modules.Membership
 
                 var session = new UserSessionStorage(user.Id);
 
-                user = this._dataSource.Save(user);
-                security = this._dataSource.Save(security);
-                session = this._dataSource.Save(session);
+                user = _dataSource.Save(user);
+                security = _dataSource.Save(security);
+                session = _dataSource.Save(session);
 
                 if (security == null || session == null)
                 {
@@ -251,14 +253,14 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("Id must have a value");
             }
 
-            var user = this.Get(id);
+            var user = Get(id);
 
             if (user == null)
             {
                 return null;
             }
 
-            this.CheckEmailAvailable(email, id);
+            CheckEmailAvailable(email, id);
             user.Name = name;
             user.Email = email;
             user.PreferredCulture = preferredCulture;
@@ -284,14 +286,14 @@ namespace StrixIT.Platform.Modules.Membership
             }
 
             // Query the datasource because deleted users must be included here.
-            var user = this._dataSource.Query<User>().FirstOrDefault(u => u.Id == id);
+            var user = _dataSource.Query<User>().FirstOrDefault(u => u.Id == id);
 
             if (user == null)
             {
                 return;
             }
 
-            var groupRoles = this._dataSource.Query<UserInRole>().Where(ur => ur.UserId == id).Select(g => g.GroupRole);
+            var groupRoles = _dataSource.Query<UserInRole>().Where(ur => ur.UserId == id).Select(g => g.GroupRole);
 
             foreach (var role in groupRoles)
             {
@@ -301,33 +303,18 @@ namespace StrixIT.Platform.Modules.Membership
                 }
             }
 
-            var security = this._dataSource.Query<UserSecurity>().Where(s => s.Id == user.Id);
-            var session = this._dataSource.Query<UserSessionStorage>().Where(s => s.Id == user.Id);
-            var profileValues = this._dataSource.Query<UserProfileValue>().Where(p => p.UserId == user.Id);
-            this._dataSource.Delete(security);
-            this._dataSource.Delete(session);
-            this._dataSource.Delete(profileValues);
-            this._dataSource.Delete(user);
+            var security = _dataSource.Query<UserSecurity>().Where(s => s.Id == user.Id);
+            var session = _dataSource.Query<UserSessionStorage>().Where(s => s.Id == user.Id);
+            var profileValues = _dataSource.Query<UserProfileValue>().Where(p => p.UserId == user.Id);
+            _dataSource.Delete(security);
+            _dataSource.Delete(session);
+            _dataSource.Delete(profileValues);
+            _dataSource.Delete(user);
         }
 
         #endregion Delete
 
         #region Session
-
-        public void GetSession(string email)
-        {
-            var session = this._dataSource.Query<UserSessionStorage>().FirstOrDefault(u => u.User.Email.ToLower() == email.ToLower());
-
-            if (session != null && !string.IsNullOrWhiteSpace(session.Session))
-            {
-                var dictionary = JsonConvert.DeserializeObject<IDictionary<string, string>>(session.Session);
-
-                foreach (var key in dictionary.Keys)
-                {
-                    StrixPlatform.Environment.StoreInSession(key, dictionary[key]);
-                }
-            }
-        }
 
         public void SaveSession(Guid userId, IDictionary<string, object> sessionValues)
         {
@@ -336,7 +323,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("Parameter cannot be empty", "userId");
             }
 
-            var session = this._dataSource.Query<UserSessionStorage>().FirstOrDefault(u => u.Id == userId);
+            var session = _dataSource.Query<UserSessionStorage>().FirstOrDefault(u => u.Id == userId);
 
             if (session == null)
             {
@@ -345,7 +332,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             var serializableValues = JsonConvert.SerializeObject(sessionValues);
             session.Session = serializableValues;
-            this._dataSource.Save(session);
+            _dataSource.Save(session);
         }
 
         #endregion Session
@@ -391,7 +378,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentNullException("email");
             }
 
-            var available = !this.Query().Any(u => u.Email.ToLower() == email.ToLower() && (id == null || (id.HasValue && id.Value != u.Id)));
+            var available = !Query().Any(u => u.Email.ToLower() == email.ToLower() && (id == null || (id.HasValue && id.Value != u.Id)));
 
             if (!available)
             {

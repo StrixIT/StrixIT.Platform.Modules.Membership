@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -28,15 +28,15 @@ namespace StrixIT.Platform.Modules.Membership
     {
         #region Public Constructors
 
-        public UserListConfiguration(IUserContext userContext) : base(typeof(UserListModel), new string[] { "Email" })
+        public UserListConfiguration(IUserContext user) : base(typeof(UserListModel), new string[] { "Email" })
         {
-            this.InterfaceResourceType = typeof(Resources.Interface);
-            this.Fields.Add(new ListFieldConfiguration("LockedOut", "bool"));
-            this.Fields.Add(new ListFieldConfiguration("Approved", "bool"));
+            InterfaceResourceType = typeof(Resources.Interface);
+            Fields.Add(new ListFieldConfiguration("LockedOut", "bool"));
+            Fields.Add(new ListFieldConfiguration("Approved", "bool"));
 
-            this.CanCreate = userContext.HasPermission(MembershipPermissions.AddUser);
-            this.CanEdit = userContext.HasPermission(MembershipPermissions.EditUser);
-            this.CanDelete = userContext.HasPermission(MembershipPermissions.DeleteUser);
+            CanCreate = user.HasPermission(MembershipPermissions.AddUser);
+            CanEdit = user.HasPermission(MembershipPermissions.EditUser);
+            CanDelete = user.HasPermission(MembershipPermissions.DeleteUser);
         }
 
         #endregion Public Constructors

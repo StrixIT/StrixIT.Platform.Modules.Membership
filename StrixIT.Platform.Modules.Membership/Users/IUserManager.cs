@@ -106,12 +106,6 @@ namespace StrixIT.Platform.Modules.Membership
         int GetNumberOfUsersOnline(Guid? groupId = null);
 
         /// <summary>
-        /// Gets the session stored in the database for the specified user.
-        /// </summary>
-        /// <param name="email">The email of the user to get the session for</param>
-        void GetSession(string email);
-
-        /// <summary>
         /// Gets a user profile query.
         /// </summary>
         /// <returns>The user profile query</returns>

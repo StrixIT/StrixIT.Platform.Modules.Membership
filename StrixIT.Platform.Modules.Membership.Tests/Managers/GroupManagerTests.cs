@@ -15,12 +15,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass()]
     public class GroupManagerTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [TestCleanup]
@@ -32,7 +26,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             DependencyInjector.Injector = new Mock<IDependencyInjector>().Object;
         }
 

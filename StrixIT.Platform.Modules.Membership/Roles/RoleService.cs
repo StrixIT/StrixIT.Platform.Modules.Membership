@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -34,15 +34,17 @@ namespace StrixIT.Platform.Modules.Membership
 
         private IMembershipDataSource _dataSource;
         private IRoleManager _roleManager;
+        private IUserContext _user;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public RoleService(IMembershipDataSource dataSource, IRoleManager roleManager)
+        public RoleService(IMembershipDataSource dataSource, IRoleManager roleManager, IUserContext user)
         {
-            this._dataSource = dataSource;
-            this._roleManager = roleManager;
+            _dataSource = dataSource;
+            _roleManager = roleManager;
+            _user = user;
         }
 
         #endregion Public Constructors
@@ -51,22 +53,22 @@ namespace StrixIT.Platform.Modules.Membership
 
         public void Delete(Guid id)
         {
-            this.Delete(id, true);
+            Delete(id, true);
         }
 
         public void Delete(Guid id, bool saveChanges)
         {
-            this._roleManager.Delete(id);
+            _roleManager.Delete(id);
 
             if (saveChanges)
             {
-                this._dataSource.SaveChanges();
+                _dataSource.SaveChanges();
             }
         }
 
         public bool Exists(string name, Guid? id)
         {
-            return this._roleManager.Exists(name, id);
+            return _roleManager.Exists(name, id);
         }
 
         #endregion Public Methods
@@ -80,10 +82,12 @@ namespace StrixIT.Platform.Modules.Membership
             if (!id.HasValue || id.Value == Guid.Empty)
             {
                 model = new RoleViewModel();
+                model.CanEdit = _user.HasPermission(MembershipPermissions.EditRole);
+                model.CanDelete = _user.HasPermission(MembershipPermissions.DeleteRole);
             }
             else
             {
-                var role = this._roleManager.Get(id.Value);
+                var role = _roleManager.Get(id.Value);
 
                 if (role.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower())
                 {
@@ -93,20 +97,20 @@ namespace StrixIT.Platform.Modules.Membership
                 model = role.Map<RoleViewModel>();
             }
 
-            this.AddPermissions(model);
+            AddPermissions(model);
             return model;
         }
 
         public IEnumerable List(FilterOptions filter)
         {
-            return this._roleManager.Query().Where(r => r.Name.ToLower() != Resources.DefaultValues.PermissionSetName.ToLower()).Filter(filter).Select(r => new RoleViewModel { Id = r.Id, Name = r.Name }).ToList();
+            return _roleManager.Query().Where(r => r.Name.ToLower() != Resources.DefaultValues.PermissionSetName.ToLower()).Filter(filter).Select(r => new RoleViewModel { Id = r.Id, Name = r.Name }).ToList();
         }
 
         #endregion Get
 
         public SaveResult<RoleViewModel> Save(RoleViewModel model)
         {
-            return this.Save(model, true);
+            return Save(model, true);
         }
 
         public SaveResult<RoleViewModel> Save(RoleViewModel model, bool saveChanges)
@@ -116,7 +120,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentNullException("model");
             }
 
-            if (this.Exists(model.Name, model.Id))
+            if (Exists(model.Name, model.Id))
             {
                 return new SaveResult<RoleViewModel> { Success = false, Message = Resources.Interface.DuplicateName };
             }
@@ -127,12 +131,12 @@ namespace StrixIT.Platform.Modules.Membership
             if (model.Permissions != null)
             {
                 var permissionIds = model.Permissions.Where(p => p.Selected).Select(p => p.Id).ToArray();
-                permissions = this._roleManager.PermissionQuery().Where(p => permissionIds.Contains(p.Id)).ToList();
+                permissions = _roleManager.PermissionQuery().Where(p => permissionIds.Contains(p.Id)).ToList();
             }
 
             if (model.Id == Guid.Empty)
             {
-                role = this._roleManager.Create(model.Name, model.Description, permissions);
+                role = _roleManager.Create(model.Name, model.Description, permissions);
 
                 if (role == null)
                 {
@@ -140,32 +144,33 @@ namespace StrixIT.Platform.Modules.Membership
                 }
 
                 // Add the current group to the role using the permission set start and end dates.
-                var groupId = StrixPlatform.User.GroupId;
-                var groupPermissionSet = this._roleManager.Query().Where(r => r.GroupId == groupId && r.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower()).SelectMany(r => r.Groups.Where(g => g.GroupId == groupId)).FirstOrDefault();
+                var groupId = _user.GroupId;
+                var groupPermissionSet = _roleManager.Query().Where(r => r.GroupId == groupId && r.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower()).SelectMany(r => r.Groups.Where(g => g.GroupId == groupId)).FirstOrDefault();
                 role.Groups = new List<GroupInRole> { new GroupInRole(groupId, role.Id, groupPermissionSet.StartDate, groupPermissionSet.EndDate) };
             }
             else
             {
-                role = this._roleManager.Update(model.Id, model.Name, model.Description, permissions);
+                role = _roleManager.Update(model.Id, model.Name, model.Description, permissions);
             }
 
             if (saveChanges)
             {
-                this._dataSource.SaveChanges();
+                _dataSource.SaveChanges();
             }
 
-            return new SaveResult<RoleViewModel>(true, role.Map<RoleViewModel>());
+            model = role.Map<RoleViewModel>();
+            return new SaveResult<RoleViewModel>(true, model);
         }
 
         #region Private Methods
 
         private void AddPermissions(RoleViewModel model)
         {
-            model.Permissions = this._roleManager.PermissionQuery().Map<AssignPermissionModel>().ToList();
+            model.Permissions = _roleManager.PermissionQuery().Map<AssignPermissionModel>().ToList();
 
             if (model.Id != Guid.Empty)
             {
-                var rolePermissions = this._roleManager.Query().Where(r => r.Id == model.Id).SelectMany(r => r.Permissions).ToList();
+                var rolePermissions = _roleManager.Query().Where(r => r.Id == model.Id).SelectMany(r => r.Permissions).ToList();
 
                 foreach (var permission in model.Permissions)
                 {

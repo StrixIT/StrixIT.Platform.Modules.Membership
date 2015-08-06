@@ -40,7 +40,7 @@
     <header>
         <a href="@adminLink" class="pull-left" title="@Interface.StrixCms"><img src="~/Styles/Images/StrixIT_logo.png" /></a>
         <ul id="adminmenu" kendo-menu k-orientation="'horizontal'" style="display: none; min-width: 150px;" class="pull-right" ng-cloak>
-            @if (StrixPlatform.User.HasPermission(PlatformPermissions.ViewAdminDashboard))
+            @if (User.HasPermission(PlatformPermissions.ViewAdminDashboard))
             {
                 <li><a href="@adminLink">@Interface.AdminDashboardTitle</a></li>
             }
@@ -100,18 +100,18 @@
 
 @helper ModuleRoutes()
 {
-    var result = new List<string>();
+var result = new List<string>();
 
-    foreach (var dir in System.IO.Directory.GetDirectories(HttpContext.Current.Server.MapPath("~/Areas")))
+foreach (var dir in System.IO.Directory.GetDirectories(HttpContext.Current.Server.MapPath("~/Areas")))
+{
+    var config = System.IO.Path.Combine(dir, "Scripts\\module.routes.js");
+
+    if (System.IO.File.Exists(config))
     {
-        var config = System.IO.Path.Combine(dir, "Scripts\\module.routes.js");
-
-        if (System.IO.File.Exists(config))
-        {
-            var contents = System.IO.File.ReadAllText(config);
-            result.Add(contents);
-        }
+        var contents = System.IO.File.ReadAllText(config);
+        result.Add(contents);
     }
+}
 
     @Html.Raw(string.Join("\r\n", result))
 }

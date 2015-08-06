@@ -4,6 +4,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 using System.Linq;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
@@ -26,12 +27,16 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var users = MembershipTestData.Users;
             _dataSourceMock.RegisterData<User>(users);
             _dataSourceMock.RegisterData<UserSecurity>(MembershipTestData.UserSecurity);
-            _dataSourceMock.RegisterData<UserSessionStorage>(MembershipTestData.Sessions);
             _dataSourceMock.Mock.Setup(m => m.Query<User>(It.IsAny<string>())).Returns(_dataSourceMock.DataList<User>().AsQueryable());
             _dataSourceMock.Mock.Setup(d => d.Save<User>(It.IsAny<User>())).Returns<User>(u => u);
             _dataSourceMock.Mock.Setup(d => d.Save<UserSecurity>(It.IsAny<UserSecurity>())).Returns<UserSecurity>(s => s);
             _dataSourceMock.Mock.Setup(d => d.Save<UserSessionStorage>(It.IsAny<UserSessionStorage>())).Returns<UserSessionStorage>(s => s);
-            _userManager = new UserManager(_dataSourceMock.Mock.Object, _securityManagerMock.Object);
+
+            var user = new Mock<IUserContext>();
+            user.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            user.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+
+            _userManager = new UserManager(_dataSourceMock.Mock.Object, _securityManagerMock.Object, user.Object);
         }
 
         #endregion Public Constructors

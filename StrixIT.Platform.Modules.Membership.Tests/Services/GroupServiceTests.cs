@@ -15,12 +15,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass]
     public class GroupServiceTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [ClassInitialize]
@@ -32,7 +26,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
         }
 
         #endregion Public Methods
@@ -73,9 +67,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(groupRoleQuery);
             mock.RoleManagerMock.Setup(p => p.PermissionQuery()).Returns(MembershipTestData.Permissions.Where(p => p.ApplicationId == MembershipTestData.AppId).AsQueryable());
             mock.RoleManagerMock.Setup(p => p.GetPermissionSetForGroup(MembershipTestData.DivingGroupId)).Returns(groupInRole);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
+            mock.UserMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
             var result = mock.GroupService.Get(MembershipTestData.DivingGroupId);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Roles.Count);
             Assert.AreEqual(2, result.Roles.Where(r => r.Selected).Count());
@@ -93,9 +86,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             mock.RoleManagerMock.Setup(r => r.Query()).Returns(MembershipTestData.Roles.Where(r => r.Permissions.Any(p => p.ApplicationId == MembershipTestData.AppId)).AsQueryable());
             mock.RoleManagerMock.Setup(r => r.QueryForGroup(MembershipTestData.DivingGroupId)).Returns(MembershipTestData.GroupsInRoles.Where(g => g.GroupId == MembershipTestData.DivingGroupId).Select(g => g.Role).Map<AssignRoleModel>().AsQueryable());
             mock.RoleManagerMock.Setup(p => p.PermissionQuery()).Returns(MembershipTestData.Permissions.Where(p => p.ApplicationId == MembershipTestData.AppId).AsQueryable());
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
+            mock.UserMock.Setup(m => m.GroupId).Returns(MembershipTestData.DivingGroupId);
             var result = mock.GroupService.Get(MembershipTestData.DivingGroupId);
-            _userContextMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Roles.Count);
             Assert.AreEqual(2, result.Roles.Where(r => r.Selected).Count());

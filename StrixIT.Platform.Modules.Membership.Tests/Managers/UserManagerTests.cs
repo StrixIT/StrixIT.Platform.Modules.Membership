@@ -27,7 +27,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             DependencyInjector.Injector = new Mock<IDependencyInjector>().Object;
             StrixPlatform.Environment = new DefaultEnvironment();
             Logger.LoggingService = new Mock<ILoggingService>().Object;
@@ -226,16 +226,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         #endregion Delete
 
         #region Session
-
-        [TestMethod()]
-        public void GetSessionShouldRestoreSavedSessionValues()
-        {
-            var environmentMock = new Mock<IEnvironment>();
-            StrixPlatform.Environment = environmentMock.Object;
-            var mock = new UserManagerMock();
-            mock.UserManager.GetSession(MembershipTestData.Administrator.Email);
-            environmentMock.Verify(e => e.StoreInSession("CurrentGroupId", It.IsAny<object>()), Times.Once());
-        }
 
         [TestMethod()]
         public void SaveSessionShouldSaveSessionValues()

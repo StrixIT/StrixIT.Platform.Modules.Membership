@@ -114,7 +114,7 @@
     <Compile Include="Services\MembershipMailerTests.cs" />
     <Compile Include="Services\RoleServiceTests.cs" />
     <Compile Include="Services\UserServiceTests.cs" />
-    <Compile Include="TestHelpers.cs" />
+    <Compile Include="UserContextTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -131,10 +131,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\packages\Selenium.WebDriver.IEDriver.2.46.0.0\driver\IEDriverServer.exe">
-      <Link>IEDriverServer.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Templates\AccountApprovedMail.html" />
     <Content Include="Templates\AccountInformationMail.html" />
     <Content Include="Templates\AccountVerificationMail.html" />

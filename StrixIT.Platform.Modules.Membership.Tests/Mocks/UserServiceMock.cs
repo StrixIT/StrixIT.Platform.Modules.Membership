@@ -4,6 +4,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
         private Mock<ISecurityManager> _securityManagerMock = new Mock<ISecurityManager>();
         private Mock<IUserManager> _userManagerMock = new Mock<IUserManager>();
+        private Mock<IUserContext> _userMock = new Mock<IUserContext>();
         private IUserService _userService;
 
         #endregion Private Fields
@@ -46,7 +48,11 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
             _groupManagerMock.Setup(g => g.Query()).Returns(groups.AsQueryable());
             _roleManagerMock.Setup(g => g.Query()).Returns(MembershipTestData.Roles.AsQueryable());
-            _userService = new UserService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _groupManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object);
+
+            _userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            _userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+
+            _userService = new UserService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _groupManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object, _userMock.Object);
         }
 
         #endregion Public Constructors
@@ -98,6 +104,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             get
             {
                 return _userManagerMock;
+            }
+        }
+
+        public Mock<IUserContext> UserMock
+        {
+            get
+            {
+                return _userMock;
             }
         }
 

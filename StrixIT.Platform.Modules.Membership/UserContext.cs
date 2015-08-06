@@ -20,6 +20,7 @@
 
 #endregion Apache License
 
+using Newtonsoft.Json;
 using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
@@ -32,16 +33,14 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Fields
 
         private IMembershipDataSource _dataSource;
-        private IUserManager _userManager;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public UserContext(IMembershipDataSource dataSource, IUserManager userManager)
+        public UserContext(IMembershipDataSource dataSource)
         {
             this._dataSource = dataSource;
-            this._userManager = userManager;
         }
 
         #endregion Public Constructors
@@ -162,7 +161,8 @@ namespace StrixIT.Platform.Modules.Membership
                         {
                             // If there is no current group id in the session, get the user's
                             // session data from the database and try again.
-                            this._userManager.GetSession(email);
+                            GetSession(email);
+
                             groupId = StrixPlatform.Environment.GetFromSession<Guid?>(PlatformConstants.CURRENTGROUPID);
 
                             if (!groupId.HasValue)
@@ -332,5 +332,24 @@ namespace StrixIT.Platform.Modules.Membership
         }
 
         #endregion HasPermission
+
+        #region Private Methods
+
+        private void GetSession(string email)
+        {
+            var session = _dataSource.Query<UserSessionStorage>().FirstOrDefault(u => u.User.Email.ToLower() == email.ToLower());
+
+            if (session != null && !string.IsNullOrWhiteSpace(session.Session))
+            {
+                var dictionary = JsonConvert.DeserializeObject<IDictionary<string, string>>(session.Session);
+
+                foreach (var key in dictionary.Keys)
+                {
+                    StrixPlatform.Environment.StoreInSession(key, dictionary[key]);
+                }
+            }
+        }
+
+        #endregion Private Methods
     }
 }

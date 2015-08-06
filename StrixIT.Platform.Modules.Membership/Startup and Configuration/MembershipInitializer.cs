@@ -32,7 +32,27 @@ namespace StrixIT.Platform.Modules.Membership
 
         public void Initialize()
         {
-            DataMapper.CreateMap<User, UserViewModel>();
+            DataMapper.CreateMap<User, UserViewModel>().AfterMap((x, y) =>
+            {
+                var user = DependencyInjector.Get<IUserContext>();
+                y.CanEdit = user.HasPermission(MembershipPermissions.EditUser);
+                y.CanDelete = user.HasPermission(MembershipPermissions.DeleteUser);
+            });
+
+            DataMapper.CreateMap<Group, GroupViewModel>().AfterMap((x, y) =>
+            {
+                var user = DependencyInjector.Get<IUserContext>();
+                y.CanEdit = user.HasPermission(MembershipPermissions.EditGroup);
+                y.CanDelete = user.HasPermission(MembershipPermissions.DeleteGroup);
+            });
+
+            DataMapper.CreateMap<Role, RoleViewModel>().AfterMap((x, y) =>
+            {
+                var user = DependencyInjector.Get<IUserContext>();
+                y.CanEdit = user.HasPermission(MembershipPermissions.EditRole);
+                y.CanDelete = user.HasPermission(MembershipPermissions.DeleteRole);
+            });
+
             DataMapper.CreateMap<UserViewModel, User>().ForMember(us => us.Roles, c => c.Ignore());
             DataMapper.CreateMap<UserInRole, AssignRoleModel>().ForMember(ar => ar.Id, c => c.MapFrom(ur => ur.UserId));
             DataMapper.CreateMap<GroupViewModel, Group>().ForMember(gr => gr.Roles, c => c.Ignore());

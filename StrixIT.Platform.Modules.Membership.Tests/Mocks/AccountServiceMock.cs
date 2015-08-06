@@ -4,6 +4,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
@@ -17,6 +18,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
         private Mock<ISecurityManager> _securityManagerMock = new Mock<ISecurityManager>();
         private Mock<IUserManager> _userManagerMock = new Mock<IUserManager>();
+        private Mock<IUserContext> _userMock = new Mock<IUserContext>();
 
         #endregion Private Fields
 
@@ -24,7 +26,9 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
         public AccountServiceMock()
         {
-            _accountService = new AccountService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object);
+            _userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            _userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+            _accountService = new AccountService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object, _userMock.Object);
         }
 
         #endregion Public Constructors
@@ -76,6 +80,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             get
             {
                 return _userManagerMock;
+            }
+        }
+
+        public Mock<IUserContext> UserMock
+        {
+            get
+            {
+                return _userMock;
             }
         }
 

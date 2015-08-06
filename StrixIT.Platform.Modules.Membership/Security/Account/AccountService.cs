@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -33,6 +33,7 @@ namespace StrixIT.Platform.Modules.Membership
         private IMembershipMailer _mailer;
         private IRoleManager _roleManager;
         private ISecurityManager _securityManager;
+        private IUserContext _user;
         private IUserManager _userManager;
 
         #endregion Private Fields
@@ -44,13 +45,15 @@ namespace StrixIT.Platform.Modules.Membership
             ISecurityManager securityManager,
             IUserManager userManager,
             IRoleManager roleManager,
-            IMembershipMailer mailer)
+            IMembershipMailer mailer,
+            IUserContext user)
         {
-            this._dataSource = dataSource;
-            this._securityManager = securityManager;
-            this._userManager = userManager;
-            this._roleManager = roleManager;
-            this._mailer = mailer;
+            _dataSource = dataSource;
+            _securityManager = securityManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _mailer = mailer;
+            _user = user;
         }
 
         #endregion Public Constructors
@@ -60,7 +63,7 @@ namespace StrixIT.Platform.Modules.Membership
         public SaveResult<UserViewModel> ChangePassword(string email, string oldPassword, string newPassword, Guid? resetKey = null)
         {
             var result = new SaveResult<UserViewModel>();
-            var user = this._userManager.Get(email);
+            var user = _userManager.Get(email);
 
             if (user == null)
             {
@@ -68,12 +71,12 @@ namespace StrixIT.Platform.Modules.Membership
                 return result;
             }
 
-            result.Success = this._securityManager.ChangePassword(user.Id, oldPassword, newPassword, resetKey);
+            result.Success = _securityManager.ChangePassword(user.Id, oldPassword, newPassword, resetKey);
 
             if (result.Success)
             {
-                this.SaveChanges();
-                if (!this._mailer.SendPasswordSetMail(user.PreferredCulture, user.Name, user.Email))
+                SaveChanges();
+                if (!_mailer.SendPasswordSetMail(user.PreferredCulture, user.Name, user.Email))
                 {
                     result.Message = Resources.Interface.ErrorSendingPasswordChangedMail;
                     Logger.Log(string.Format("An error occurred while sending the password changed mail to user {0}", user.Name), LogLevel.Error);
@@ -85,7 +88,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public UserViewModel GetUserByResetKey(Guid key)
         {
-            return this._securityManager.GetUserByResetKey(key).Map<UserViewModel>();
+            return _securityManager.GetUserByResetKey(key).Map<UserViewModel>();
         }
 
         public SaveResult<UserViewModel> RegisterAccount(RegisterViewModel model)
@@ -95,23 +98,23 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentNullException("model");
             }
 
-            var password = this._securityManager.GeneratePassword();
-            User user = this._userManager.Create(model.Name, model.Email, StrixPlatform.CurrentCultureCode, password, false, model.AcceptedTerms, model.RegistrationComment);
+            var password = _securityManager.GeneratePassword();
+            User user = _userManager.Create(model.Name, model.Email, StrixPlatform.CurrentCultureCode, password, false, model.AcceptedTerms, model.RegistrationComment);
             var result = new SaveResult<UserViewModel>(user != null, user.Map<UserViewModel>());
 
             if (user != null)
             {
                 var verificationId = Guid.NewGuid();
-                this._securityManager.SetVerificationId(user.Id, verificationId);
-                this.SaveChanges();
+                _securityManager.SetVerificationId(user.Id, verificationId);
+                SaveChanges();
 
                 // Add the user role to allow logging in.
-                this._roleManager.AddUserToRole(StrixPlatform.User.GroupId, user.Id, PlatformConstants.USERROLE);
-                this.SaveChanges();
+                _roleManager.AddUserToRole(_user.GroupId, user.Id, PlatformConstants.USERROLE);
+                SaveChanges();
 
                 if (StrixMembership.Configuration.Registration.AutoApproveUsers)
                 {
-                    if (!this._mailer.SendApprovedAccountMail(user.PreferredCulture, user.Name, user.Email, verificationId))
+                    if (!_mailer.SendApprovedAccountMail(user.PreferredCulture, user.Name, user.Email, verificationId))
                     {
                         result.Message = Resources.Interface.ErrorSendingApprovedAccountMail;
                         Logger.Log(string.Format("An error occurred while sending the approved account mail to user {0}", user.Name), LogLevel.Error);
@@ -119,7 +122,7 @@ namespace StrixIT.Platform.Modules.Membership
                 }
                 else
                 {
-                    if (!this._mailer.SendUnapprovedAccountMail(user.PreferredCulture, user.Name, user.Email, verificationId))
+                    if (!_mailer.SendUnapprovedAccountMail(user.PreferredCulture, user.Name, user.Email, verificationId))
                     {
                         result.Message = Resources.Interface.ErrorSendingUnapprovedAccountMail;
                         Logger.Log(string.Format("An error occurred while sending the unapproved account mail to user {0}", user.Name), LogLevel.Error);
@@ -132,30 +135,30 @@ namespace StrixIT.Platform.Modules.Membership
 
         public SaveResult<UserViewModel> SendPasswordResetLink(string email)
         {
-            var userId = this._userManager.GetId(email);
+            var userId = _userManager.GetId(email);
 
             if (!userId.HasValue)
             {
                 throw new StrixMembershipException(string.Format("No user found for email {0}", email));
             }
 
-            return this.SendPasswordResetLink(userId.Value);
+            return SendPasswordResetLink(userId.Value);
         }
 
         public SaveResult<UserViewModel> SendPasswordResetLink(Guid userId)
         {
             var result = new SaveResult<UserViewModel>();
-            var user = this._userManager.Get(userId);
+            var user = _userManager.Get(userId);
 
             if (user != null)
             {
                 // Set a new verification key.
                 var verificationId = Guid.NewGuid();
-                this._securityManager.SetVerificationId(user.Id, verificationId);
-                this.SaveChanges();
+                _securityManager.SetVerificationId(user.Id, verificationId);
+                SaveChanges();
                 result.Success = true;
 
-                if (!this._mailer.SendSetPasswordMail(user.PreferredCulture, user.Name, user.Email, verificationId))
+                if (!_mailer.SendSetPasswordMail(user.PreferredCulture, user.Name, user.Email, verificationId))
                 {
                     Logger.Log(string.Format("An error occurred while sending the password reset mail to user {0}", user.Name), LogLevel.Error);
                     result.Message = Resources.Interface.ErrorSendingPasswordResetLink;
@@ -174,20 +177,20 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (model.Id == Guid.Empty)
             {
-                throw new ArgumentException("The id is empty.This method can only be used to update existing accounts");
+                throw new ArgumentException("The id is empty.method can only be used to update existing accounts");
             }
 
-            var validCredentials = this._securityManager.ValidateUser(model.Id, model.Password) == ValidateUserResult.Valid;
+            var validCredentials = _securityManager.ValidateUser(model.Id, model.Password) == ValidateUserResult.Valid;
             var result = new SaveResult<UserViewModel>();
 
             if (validCredentials)
             {
-                result.Entity = this._userManager.Update(model.Id, model.Name, model.Email, model.PreferredCulture);
+                result.Entity = _userManager.Update(model.Id, model.Name, model.Email, model.PreferredCulture);
                 result.Success = result.Entity != null;
 
                 if (result.Success)
                 {
-                    this.SaveChanges();
+                    SaveChanges();
                 }
             }
 
@@ -196,7 +199,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public bool ValidateResetKey(Guid resetKey)
         {
-            return this._securityManager.CheckVerificationId(resetKey);
+            return _securityManager.CheckVerificationId(resetKey);
         }
 
         #endregion Account
@@ -205,7 +208,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         private void SaveChanges()
         {
-            this._dataSource.SaveChanges();
+            _dataSource.SaveChanges();
         }
 
         #endregion Private Methods

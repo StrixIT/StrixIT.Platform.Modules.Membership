@@ -4,6 +4,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         private DataSourceMock _dataSourceMock = new DataSourceMock();
         private Mock<IRoleManager> _managerMock = new Mock<IRoleManager>();
         private IRoleManager _roleManager;
+        private Mock<IUserContext> _userMock = new Mock<IUserContext>();
 
         #endregion Private Fields
 
@@ -34,7 +36,10 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _dataSourceMock.Mock.Setup(m => m.Find<GroupInRole>(It.IsAny<object[]>())).Returns<object[]>(p => _dataSourceMock.DataList<GroupInRole>().FirstOrDefault(r => r.GroupId == (Guid)p[0] && r.RoleId == (Guid)p[1]));
             _dataSourceMock.Mock.Setup(m => m.Find<UserInRole>(It.IsAny<object[]>())).Returns<object[]>(p => _dataSourceMock.DataList<UserInRole>().FirstOrDefault(r => r.GroupRoleGroupId == (Guid)p[0] && r.GroupRoleRoleId == (Guid)p[1] && r.UserId == (Guid)p[2]));
 
-            _roleManager = new RoleManager(_dataSourceMock.Mock.Object);
+            _userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            _userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+
+            _roleManager = new RoleManager(_dataSourceMock.Mock.Object, _userMock.Object);
         }
 
         #endregion Public Constructors
@@ -54,6 +59,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             get
             {
                 return _roleManager;
+            }
+        }
+
+        public Mock<IUserContext> UserMock
+        {
+            get
+            {
+                return _userMock;
             }
         }
 

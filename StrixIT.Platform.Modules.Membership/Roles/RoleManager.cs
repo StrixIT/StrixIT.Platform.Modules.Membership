@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -34,29 +34,30 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Fields
 
         private static Guid _appId;
-
         private static Dictionary<Guid, bool> _groupsUsePermissions = new Dictionary<Guid, bool>();
         private static object _lockObject = new object();
 
         private static Dictionary<Guid, Dictionary<Guid, string>> _roleIdsAndNames;
-
         private static ConcurrentDictionary<Guid, List<Tuple<string, DateTime, DateTime?>>> _userRoles = new ConcurrentDictionary<Guid, List<Tuple<string, DateTime, DateTime?>>>();
+
         private IMembershipDataSource _dataSource;
+        private IUserContext _user;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public RoleManager(IMembershipDataSource dataSource)
+        public RoleManager(IMembershipDataSource dataSource, IUserContext user)
         {
-            this._dataSource = dataSource;
+            _dataSource = dataSource;
+            _user = user;
 
             // Get the application id and load the roles dictionaries on first load.
             if (_appId == Guid.Empty)
             {
                 _appId = ApplicationHelper.GetApplicationId(dataSource);
-                this.GetRoleIdsAndNames();
-                this.GetUserRoles();
+                GetRoleIdsAndNames();
+                GetUserRoles();
             }
         }
 
@@ -66,17 +67,17 @@ namespace StrixIT.Platform.Modules.Membership
 
         public Role Create(string name, string description, IList<Permission> permissions)
         {
-            if (this.Exists(name, null))
+            if (Exists(name, null))
             {
-                return this._dataSource.Query<Role>().First(r => r.Name.ToLower() == name.ToLower());
+                return _dataSource.Query<Role>().First(r => r.Name.ToLower() == name.ToLower());
             }
 
-            var currentGroupId = StrixPlatform.User.GroupId;
+            var currentGroupId = _user.GroupId;
             var role = new Role(Guid.NewGuid(), currentGroupId, name);
             role.Description = description;
             role.Permissions = permissions;
             _roleIdsAndNames.Clear();
-            return this._dataSource.Save(role);
+            return _dataSource.Save(role);
         }
 
         #endregion Create Roles
@@ -85,12 +86,12 @@ namespace StrixIT.Platform.Modules.Membership
 
         public Role Update(Guid id, string name, string description, IList<Permission> permissions)
         {
-            var role = this.Query("Permissions").First(r => r.Id == id);
+            var role = Query("Permissions").First(r => r.Id == id);
             role.Name = name;
             role.Description = description;
             role.Permissions = permissions;
             _roleIdsAndNames.Clear();
-            return this._dataSource.Save(role);
+            return _dataSource.Save(role);
         }
 
         #endregion Update
@@ -109,8 +110,8 @@ namespace StrixIT.Platform.Modules.Membership
                 return true;
             }
 
-            return this._dataSource.Query<Role>().Any(r => r.Permissions.Any(p => p.ApplicationId == _appId)
-                && r.GroupId == StrixPlatform.User.GroupId
+            return _dataSource.Query<Role>().Any(r => r.Permissions.Any(p => p.ApplicationId == _appId)
+                && r.GroupId == _user.GroupId
                 && r.Name.ToLower() == name.ToLower()
                 && (!id.HasValue || r.Id != id.Value));
         }
@@ -121,7 +122,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public bool IsUserInRole(Guid id, string roleName)
         {
-            return this.IsUserInRoles(id, new string[] { roleName });
+            return IsUserInRoles(id, new string[] { roleName });
         }
 
         public bool IsUserInRoles(Guid id, string[] roleNames)
@@ -132,7 +133,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
 
             roleNames = roleNames.ToLower().ToArray();
-            this.GetUserRoles();
+            GetUserRoles();
             return _userRoles[id].Any(r => roleNames.Contains(r.Item1) && r.Item2 <= DateTime.Now && (!r.Item3.HasValue || r.Item3.Value > DateTime.Now));
         }
 
@@ -142,7 +143,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public Role Get(Guid id)
         {
-            return this.Query().FirstOrDefault(r => r.Id == id);
+            return Query().FirstOrDefault(r => r.Id == id);
         }
 
         #endregion Get
@@ -151,11 +152,11 @@ namespace StrixIT.Platform.Modules.Membership
 
         public void Delete(Guid id)
         {
-            var role = this.Get(id);
+            var role = Get(id);
 
             if (role != null && role.Name.ToLower() != PlatformConstants.ADMINROLE.ToLower())
             {
-                this._dataSource.Delete(role);
+                _dataSource.Delete(role);
             }
         }
 
@@ -165,7 +166,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public IQueryable<Role> Query()
         {
-            return this.Query(null);
+            return Query(null);
         }
 
         public IQueryable<AssignRoleModel> QueryForGroup(Guid groupId)
@@ -175,7 +176,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("GroupId must have a value", "groupId");
             }
 
-            return this._dataSource.Query<Group>().Where(g => g.Id == groupId).SelectMany(g => g.Roles.Where(r => r.Role.Permissions.Any(p => p.ApplicationId == _appId) && r.Role.Name.ToLower() != Resources.DefaultValues.PermissionSetName.ToLower())).Select(r => new AssignRoleModel { Id = r.RoleId, Name = r.Role.Name, StartDate = r.StartDate, EndDate = r.EndDate, MaxNumberOfUsers = r.MaxNumberOfUsers, CurrentNumberOfUsers = r.CurrentNumberOfUsers });
+            return _dataSource.Query<Group>().Where(g => g.Id == groupId).SelectMany(g => g.Roles.Where(r => r.Role.Permissions.Any(p => p.ApplicationId == _appId) && r.Role.Name.ToLower() != Resources.DefaultValues.PermissionSetName.ToLower())).Select(r => new AssignRoleModel { Id = r.RoleId, Name = r.Role.Name, StartDate = r.StartDate, EndDate = r.EndDate, MaxNumberOfUsers = r.MaxNumberOfUsers, CurrentNumberOfUsers = r.CurrentNumberOfUsers });
         }
 
         public IQueryable<AssignRoleModel> QueryForUser(Guid userId)
@@ -185,7 +186,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("userId cannot be empty", "userId");
             }
 
-            return this._dataSource.Query<User>().Where(u => userId == u.Id).SelectMany(u => u.Roles.Where(r => r.GroupRole.Role.Permissions.Any(p => p.ApplicationId == _appId)).Select(r => new AssignRoleModel { Id = r.GroupRole.RoleId, Name = r.GroupRole.Role.Name, StartDate = r.StartDate, EndDate = r.EndDate, MaxNumberOfUsers = r.GroupRole.MaxNumberOfUsers, CurrentNumberOfUsers = r.GroupRole.CurrentNumberOfUsers }));
+            return _dataSource.Query<User>().Where(u => userId == u.Id).SelectMany(u => u.Roles.Where(r => r.GroupRole.Role.Permissions.Any(p => p.ApplicationId == _appId)).Select(r => new AssignRoleModel { Id = r.GroupRole.RoleId, Name = r.GroupRole.Role.Name, StartDate = r.StartDate, EndDate = r.EndDate, MaxNumberOfUsers = r.GroupRole.MaxNumberOfUsers, CurrentNumberOfUsers = r.GroupRole.CurrentNumberOfUsers }));
         }
 
         #endregion Query
@@ -199,15 +200,15 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("Please specify a group id and/or a role name.");
             }
 
-            if (!StrixPlatform.User.IsInMainGroup && roleName.ToLower() == PlatformConstants.ADMINROLE.ToLower())
+            if (!_user.IsInMainGroup && roleName.ToLower() == PlatformConstants.ADMINROLE.ToLower())
             {
                 var message = string.Format("Trying to add group {0} to role {1}, which is a reserved role.", groupId, roleName);
                 Logger.LogToAudit(AuditLogType.IllegalOperation.ToString(), message);
                 throw new StrixMembershipException(message);
             }
 
-            var roleId = this.GetRoleId(roleName, "group", "add");
-            var entry = this._dataSource.Find<GroupInRole>(new object[] { groupId, roleId });
+            var roleId = GetRoleId(roleName, "group", "add");
+            var entry = _dataSource.Find<GroupInRole>(new object[] { groupId, roleId });
             var correctedDate = startDate.HasValue && startDate != new DateTime() ? startDate.Value : DateTime.Now;
             endDate = endDate == null || endDate == new DateTime() ? null : endDate;
 
@@ -220,7 +221,7 @@ namespace StrixIT.Platform.Modules.Membership
             else
             {
                 var newStartDate = startDate.HasValue ? correctedDate : entry.StartDate;
-                var userAssignments = this._dataSource.Query<User>().Where(u => u.Roles.Any(r => r.GroupRoleRoleId == roleId && r.GroupRoleGroupId == groupId)).SelectMany(u => u.Roles.Where(r => r.GroupRoleRoleId == roleId)).ToList();
+                var userAssignments = _dataSource.Query<User>().Where(u => u.Roles.Any(r => r.GroupRoleRoleId == roleId && r.GroupRoleGroupId == groupId)).SelectMany(u => u.Roles.Where(r => r.GroupRoleRoleId == roleId)).ToList();
 
                 // Update user role dates based on the new group dates. If the range is more
                 // limited, limit the user range as well. If it is broader, broaden the range for
@@ -239,7 +240,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             entry.MaxNumberOfUsers = maxNumberOfUsers.HasValue ? maxNumberOfUsers.Value : entry.MaxNumberOfUsers;
 
-            this._dataSource.Save(entry);
+            _dataSource.Save(entry);
         }
 
         public void AddUserToRole(Guid groupId, Guid userId, string roleName, DateTime? startDate = null, DateTime? endDate = null)
@@ -249,13 +250,13 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentException("Please specify a group id, user id and/or a role name.");
             }
 
-            var roleId = this.GetRoleId(roleName, "user", "add");
-            var userEntry = this._dataSource.Find<UserInRole>(new object[] { groupId, roleId, userId });
-            var groupEntry = this._dataSource.Find<GroupInRole>(new object[] { groupId, roleId });
+            var roleId = GetRoleId(roleName, "user", "add");
+            var userEntry = _dataSource.Find<UserInRole>(new object[] { groupId, roleId, userId });
+            var groupEntry = _dataSource.Find<GroupInRole>(new object[] { groupId, roleId });
 
             if (groupEntry == null)
             {
-                if (!StrixPlatform.User.IsInMainGroup)
+                if (!_user.IsInMainGroup)
                 {
                     var message = string.Format("Trying to add user {0} to role {1} to which his company has no access.", userId, roleName);
                     Logger.LogToAudit(AuditLogType.IllegalOperation.ToString(), message);
@@ -264,7 +265,7 @@ namespace StrixIT.Platform.Modules.Membership
                 else
                 {
                     groupEntry = new GroupInRole(StrixPlatform.ApplicationId, roleId);
-                    this._dataSource.Save(groupEntry);
+                    _dataSource.Save(groupEntry);
                 }
             }
 
@@ -291,7 +292,7 @@ namespace StrixIT.Platform.Modules.Membership
                 userEntry.EndDate = endDate;
             }
 
-            this._dataSource.Save(userEntry);
+            _dataSource.Save(userEntry);
             _userRoles.Clear();
         }
 
@@ -310,18 +311,18 @@ namespace StrixIT.Platform.Modules.Membership
 
             foreach (var name in roleNames)
             {
-                roleIds.Add(this.GetRoleId(name, "group", "remove"));
+                roleIds.Add(GetRoleId(name, "group", "remove"));
             }
 
             // Get the group roles.
-            var groupEntries = this._dataSource.Query<GroupInRole>().Where(e => e.GroupId == groupId && roleIds.Contains(e.RoleId));
+            var groupEntries = _dataSource.Query<GroupInRole>().Where(e => e.GroupId == groupId && roleIds.Contains(e.RoleId));
 
             // Get the user roles.
-            var userEntries = this._dataSource.Query<UserInRole>().Where(e => e.GroupRoleGroupId == groupId && roleIds.Contains(e.GroupRoleRoleId));
+            var userEntries = _dataSource.Query<UserInRole>().Where(e => e.GroupRoleGroupId == groupId && roleIds.Contains(e.GroupRoleRoleId));
 
             // Delete the entries.
-            this._dataSource.Delete(userEntries);
-            this._dataSource.Delete(groupEntries);
+            _dataSource.Delete(userEntries);
+            _dataSource.Delete(groupEntries);
         }
 
         public void RemoveUsersFromRoles(Guid[] userIds, string[] roleNames)
@@ -335,12 +336,12 @@ namespace StrixIT.Platform.Modules.Membership
 
             foreach (var name in roleNames)
             {
-                roleIds.Add(this.GetRoleId(name, "user", "remove"));
+                roleIds.Add(GetRoleId(name, "user", "remove"));
             }
 
-            var entries = this._dataSource.Query<UserInRole>().Where(e => userIds.Contains(e.UserId) && roleIds.Contains(e.GroupRole.RoleId));
+            var entries = _dataSource.Query<UserInRole>().Where(e => userIds.Contains(e.UserId) && roleIds.Contains(e.GroupRole.RoleId));
             var groupIds = entries.Select(e => e.GroupRoleGroupId).Distinct().ToArray();
-            var groupEntries = this._dataSource.Query<GroupInRole>().Where(e => groupIds.Contains(e.GroupId)).ToList();
+            var groupEntries = _dataSource.Query<GroupInRole>().Where(e => groupIds.Contains(e.GroupId)).ToList();
 
             foreach (var entry in entries)
             {
@@ -348,7 +349,7 @@ namespace StrixIT.Platform.Modules.Membership
                 groupEntry.CurrentNumberOfUsers--;
             }
 
-            this._dataSource.Delete(entries);
+            _dataSource.Delete(entries);
             _userRoles.Clear();
         }
 
@@ -358,7 +359,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public GroupInRole GetPermissionSetForGroup(Guid groupId)
         {
-            return this._dataSource.Query<Role>().Where(r => r.Permissions.Any(p => p.ApplicationId == _appId)
+            return _dataSource.Query<Role>().Where(r => r.Permissions.Any(p => p.ApplicationId == _appId)
                                                              && r.GroupId == groupId
                                                              && r.Name.ToLower() == Resources.DefaultValues.PermissionSetName.ToLower())
                                                  .SelectMany(g => g.Groups).FirstOrDefault(g => g.GroupId == groupId);
@@ -368,7 +369,7 @@ namespace StrixIT.Platform.Modules.Membership
         {
             if (_groupsUsePermissions.IsEmpty())
             {
-                _groupsUsePermissions = this._dataSource.Query<Group>().ToDictionary(k => k.Id, v => v.UsePermissions);
+                _groupsUsePermissions = _dataSource.Query<Group>().ToDictionary(k => k.Id, v => v.UsePermissions);
             }
 
             return _groupsUsePermissions[groupId];
@@ -376,7 +377,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public IQueryable<Permission> PermissionQuery()
         {
-            return this._dataSource.Query<Permission>().Where(p => p.ApplicationId == _appId);
+            return _dataSource.Query<Permission>().Where(p => p.ApplicationId == _appId);
         }
 
         #endregion Permissions
@@ -385,15 +386,15 @@ namespace StrixIT.Platform.Modules.Membership
 
         private Guid GetRoleId(string roleName, string entity, string action)
         {
-            this.GetRoleIdsAndNames();
+            GetRoleIdsAndNames();
             var usePermissions = StrixMembership.Configuration.UsePermissions;
             var mainGroupId = StrixPlatform.MainGroupId;
-            var dictionary = usePermissions ? _roleIdsAndNames[StrixPlatform.User.GroupId] : _roleIdsAndNames[mainGroupId];
+            var dictionary = usePermissions ? _roleIdsAndNames[_user.GroupId] : _roleIdsAndNames[mainGroupId];
 
             if (!dictionary.ContainsValue(roleName.ToLower()))
             {
                 var fromTo = action == "remove" ? "from" : "to";
-                Logger.LogToAudit(AuditLogType.RoleAssignment.ToString(), string.Format("An attempt was made to {0} a {1} {2} a role ({3}) that is not available for this application", action, entity, fromTo, roleName));
+                Logger.LogToAudit(AuditLogType.RoleAssignment.ToString(), string.Format("An attempt was made to {0} a {1} {2} a role ({3}) that is not available for application", action, entity, fromTo, roleName));
             }
 
             return dictionary.First(t => t.Value.ToLower() == roleName.ToLower()).Key;
@@ -409,7 +410,7 @@ namespace StrixIT.Platform.Modules.Membership
                     {
                         _roleIdsAndNames = new Dictionary<Guid, Dictionary<Guid, string>>();
 
-                        foreach (var group in this._dataSource.Query<Role>().Where(r => r.Permissions.Any(p => p.ApplicationId == _appId)).GroupBy(r => r.GroupId).ToList())
+                        foreach (var group in _dataSource.Query<Role>().Where(r => r.Permissions.Any(p => p.ApplicationId == _appId)).GroupBy(r => r.GroupId).ToList())
                         {
                             _roleIdsAndNames.Add(group.Key, null);
                             _roleIdsAndNames[group.Key] = group.ToDictionary(k => k.Id, v => v.Name.ToLower());
@@ -425,7 +426,7 @@ namespace StrixIT.Platform.Modules.Membership
         {
             if (_userRoles.IsEmpty())
             {
-                var roleEntries = this._dataSource.Query<User>().Select(u => new { Id = u.Id, Roles = u.Roles.Where(r => r.GroupRole.Role.Permissions.Any(p => p.ApplicationId == _appId)).Select(r => new { Name = r.GroupRole.Role.Name.ToLower(), StartDate = r.StartDate, EndDate = r.EndDate }) });
+                var roleEntries = _dataSource.Query<User>().Select(u => new { Id = u.Id, Roles = u.Roles.Where(r => r.GroupRole.Role.Permissions.Any(p => p.ApplicationId == _appId)).Select(r => new { Name = r.GroupRole.Role.Name.ToLower(), StartDate = r.StartDate, EndDate = r.EndDate }) });
 
                 foreach (var entry in roleEntries)
                 {
@@ -443,7 +444,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         private IQueryable<Role> Query(string include)
         {
-            var query = this._dataSource.Query<Role>();
+            var query = _dataSource.Query<Role>();
 
             if (!string.IsNullOrWhiteSpace(include))
             {
@@ -451,7 +452,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
 
             return query.Where(r => r.Permissions.Any(p => p.ApplicationId == _appId)
-                && r.GroupId == StrixPlatform.User.GroupId
+                && r.GroupId == _user.GroupId
                 && r.Name.ToLower() != PlatformConstants.ADMINROLE.ToLower());
         }
 

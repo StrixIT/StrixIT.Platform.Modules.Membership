@@ -16,12 +16,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests.Controllers
     [TestClass]
     public class AccountControllerTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [ClassInitialize]
@@ -46,7 +40,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests.Controllers
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             StrixPlatform.Environment = new DefaultEnvironment();
         }
 

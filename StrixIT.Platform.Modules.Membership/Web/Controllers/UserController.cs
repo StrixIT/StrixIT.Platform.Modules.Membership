@@ -30,10 +30,17 @@ namespace StrixIT.Platform.Modules.Membership
     [StrixAuthorization(Permissions = MembershipPermissions.ViewUsers)]
     public class UserController : BaseCrudController<Guid, UserViewModel>
     {
+        #region Private Fields
+
+        private IUserContext _user;
+
+        #endregion Private Fields
+
         #region Public Constructors
 
-        public UserController(IUserService service) : base(service)
+        public UserController(IUserService service, IUserContext user) : base(service)
         {
+            _user = user;
         }
 
         #endregion Public Constructors
@@ -59,7 +66,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public override ActionResult Index()
         {
-            var config = new UserListConfiguration(StrixPlatform.User);
+            var config = new UserListConfiguration(_user);
             return this.View(config);
         }
 

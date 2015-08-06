@@ -35,8 +35,6 @@ namespace StrixIT.Platform.Modules.Membership
 
         public GroupViewModel() : base(typeof(Group))
         {
-            this.CanEdit = StrixPlatform.User.HasPermission(MembershipPermissions.EditGroup);
-            this.CanDelete = StrixPlatform.User.HasPermission(MembershipPermissions.DeleteGroup);
         }
 
         #endregion Public Constructors

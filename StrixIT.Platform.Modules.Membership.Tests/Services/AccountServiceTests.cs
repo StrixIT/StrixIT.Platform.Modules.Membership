@@ -13,12 +13,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass()]
     public class AccountServiceTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [TestCleanup]
@@ -31,7 +25,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             StrixPlatform.Environment = new DefaultEnvironment();
             Logger.LoggingService = new Mock<ILoggingService>().Object;
         }
@@ -131,13 +125,12 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         {
             var mock = new AccountServiceMock();
             var userId = Guid.NewGuid();
-            _userContextMock.Setup(m => m.Id).Returns(userId);
+            mock.UserMock.Setup(m => m.Id).Returns(userId);
             mock.UserManagerMock.Setup(m => m.Update(userId, "Test", "New", "en")).Returns(new User(userId, "Test", "New"));
             mock.UserManagerMock.Setup(m => m.GetEmail(userId)).Returns("Test");
             mock.SecurityManagerMock.Setup(s => s.ValidateUser(userId, "Test")).Returns(ValidateUserResult.Valid);
             mock.MailerMock.Setup(m => m.SendEmailChangedMail("en", "Test", "New", "Test")).Returns(true);
             var result = mock.AccountService.UpdateAccount(new UserViewModel { Id = userId, Name = "Test", Email = "New", PreferredCulture = "en", Password = "Test" });
-            _userContextMock.Setup(m => m.Id).Returns(Guid.NewGuid());
             Assert.IsTrue(result.Success);
             mock.UserManagerMock.Verify(m => m.Update(userId, "Test", "New", "en"), Times.Once());
             mock.DataSourceMock.Verify(m => m.SaveChanges(), Times.Once());

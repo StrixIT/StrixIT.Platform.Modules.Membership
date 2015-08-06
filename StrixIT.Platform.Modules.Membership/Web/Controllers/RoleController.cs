@@ -30,14 +30,22 @@ namespace StrixIT.Platform.Modules.Membership
     [StrixAuthorization(Permissions = MembershipPermissions.ViewRoles)]
     public class RoleController : BaseCrudController<Guid, RoleViewModel>
     {
+        #region Private Fields
+
+        private IUserContext _user;
+
+        #endregion Private Fields
+
         #region Public Constructors
 
-        public RoleController(IRoleService service) : base(service)
+        public RoleController(IRoleService service, IUserContext user) : base(service)
         {
             if (!StrixMembership.Configuration.UsePermissions)
             {
                 throw new InvalidOperationException(Resources.Interface.GroupsNotEnabed);
             }
+
+            _user = user;
         }
 
         #endregion Public Constructors
@@ -46,7 +54,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public override ActionResult Index()
         {
-            var config = new RoleListConfiguration(StrixPlatform.User);
+            var config = new RoleListConfiguration(_user);
             return this.View(config);
         }
 

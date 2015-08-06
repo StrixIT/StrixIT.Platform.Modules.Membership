@@ -15,12 +15,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass()]
     public class MembershipMailerTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [TestCleanup]
@@ -34,7 +28,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             var environmentMock = new Mock<IEnvironment>();
             StrixPlatform.Environment = new DefaultEnvironment();
             Logger.LoggingService = new Mock<ILoggingService>().Object;

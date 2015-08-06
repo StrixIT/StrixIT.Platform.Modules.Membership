@@ -4,6 +4,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
@@ -25,7 +26,10 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _dataSourceMock.RegisterData<User>(MembershipTestData.Users);
             _dataSourceMock.Mock.Setup(d => d.Save<Group>(It.IsAny<Group>())).Returns<Group>(g => g);
 
-            _groupManager = new GroupManager(_dataSourceMock.Mock.Object);
+            var user = new Mock<IUserContext>();
+            user.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            user.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+            _groupManager = new GroupManager(_dataSourceMock.Mock.Object, user.Object);
         }
 
         #endregion Public Constructors

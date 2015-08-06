@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -34,13 +34,16 @@ namespace StrixIT.Platform.Modules.Membership
 
         private IMembershipDataSource _dataSource;
 
+        private IUserContext _user;
+
         #endregion Private Fields
 
         #region Public Constructors
 
-        public GroupManager(IMembershipDataSource dataSource)
+        public GroupManager(IMembershipDataSource dataSource, IUserContext user)
         {
-            this._dataSource = dataSource;
+            _dataSource = dataSource;
+            _user = user;
         }
 
         #endregion Public Constructors
@@ -49,14 +52,14 @@ namespace StrixIT.Platform.Modules.Membership
 
         public Group Create(string name, bool usePermissions)
         {
-            if (this.Exists(name, null))
+            if (Exists(name, null))
             {
                 var ex = new StrixMembershipException(string.Format("A group with name {0} already exists", name));
                 Logger.Log(ex.Message, ex, LogLevel.Fatal);
                 throw ex;
             }
 
-            var currentUserId = StrixPlatform.User.Id;
+            var currentUserId = _user.Id;
 
             if (currentUserId == null)
             {
@@ -65,7 +68,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             var group = new Group(Guid.NewGuid(), name);
             group.UsePermissions = usePermissions;
-            group = this._dataSource.Save(group);
+            group = _dataSource.Save(group);
 
             if (group == null)
             {
@@ -84,16 +87,16 @@ namespace StrixIT.Platform.Modules.Membership
 
         public void Delete(Guid id)
         {
-            var group = this._dataSource.Query<Group>().Include(g => g.Roles).FirstOrDefault(g => g.Id == id);
+            var group = _dataSource.Query<Group>().Include(g => g.Roles).FirstOrDefault(g => g.Id == id);
 
             if (group == null)
             {
                 return;
             }
 
-            this._dataSource.Delete(group.Roles);
+            _dataSource.Delete(group.Roles);
             group.Roles.Clear();
-            this._dataSource.Delete(group);
+            _dataSource.Delete(group);
         }
 
         public bool Exists(string name, Guid? id)
@@ -103,7 +106,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentNullException("name");
             }
 
-            return this.Query().Any(g => (g.Id != id && g.Name.ToLower() == name.ToLower()));
+            return Query().Any(g => (g.Id != id && g.Name.ToLower() == name.ToLower()));
         }
 
         public Group Get(Guid id)
@@ -113,7 +116,7 @@ namespace StrixIT.Platform.Modules.Membership
                 return null;
             }
 
-            return this.Query().FirstOrDefault(g => g.Id == id);
+            return Query().FirstOrDefault(g => g.Id == id);
         }
 
         public Group Get(string name)
@@ -123,31 +126,31 @@ namespace StrixIT.Platform.Modules.Membership
                 return null;
             }
 
-            return this.Query().FirstOrDefault(gr => gr.Name.ToLower() == name.ToLower());
+            return Query().FirstOrDefault(gr => gr.Name.ToLower() == name.ToLower());
         }
 
         public IQueryable<Group> Query()
         {
-            return this._dataSource.Query<Group>();
+            return _dataSource.Query<Group>();
         }
 
         public Group Update(Guid id, string name, bool usePermissions)
         {
-            if (this.Exists(name, id))
+            if (Exists(name, id))
             {
                 var ex = new StrixMembershipException(string.Format("A group with name {0} already exists", name));
                 Logger.Log(ex.Message, ex, LogLevel.Fatal);
                 throw ex;
             }
 
-            var currentUserId = StrixPlatform.User.Id;
+            var currentUserId = _user.Id;
 
             if (currentUserId == null)
             {
                 throw new StrixMembershipException("No active user");
             }
 
-            var group = this.Get(id);
+            var group = Get(id);
 
             if (group != null)
             {

@@ -4,6 +4,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
@@ -21,7 +22,10 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
         public RoleServiceMock()
         {
-            _roleService = new RoleService(_dataSourceMock.Object, _roleManagerMock.Object);
+            var user = new Mock<IUserContext>();
+            user.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            user.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+            _roleService = new RoleService(_dataSourceMock.Object, _roleManagerMock.Object, user.Object);
         }
 
         #endregion Public Constructors

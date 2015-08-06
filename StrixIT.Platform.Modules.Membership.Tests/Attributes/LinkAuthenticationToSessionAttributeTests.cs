@@ -23,7 +23,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         #region Private Fields
 
         private static Mock<IAuthenticationService> _authService = new Mock<IAuthenticationService>();
-        private Mock<IUserContext> _userContextMock;
 
         #endregion Private Fields
 
@@ -39,7 +38,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             var injectorMock = new Mock<IDependencyInjector>();
             injectorMock.Setup(i => i.TryGet<IAuthenticationService>()).Returns(_authService.Object);
             DependencyInjector.Injector = injectorMock.Object;
@@ -96,7 +95,12 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             httpContext.Setup(h => h.Session).Returns(session.Object);
             var routeData = new RouteData();
             var requestContext = new RequestContext(httpContext.Object, routeData);
-            var controller = new UserController(new Mock<IUserService>().Object);
+
+            var user = new Mock<IUserContext>();
+            user.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            user.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+
+            var controller = new UserController(new Mock<IUserService>().Object, user.Object);
             var controllerContext = new ControllerContext(requestContext, controller);
             var controllerDescriptor = new Mock<ControllerDescriptor>();
             controllerDescriptor.Setup(c => c.ControllerType).Returns(typeof(AccountController));

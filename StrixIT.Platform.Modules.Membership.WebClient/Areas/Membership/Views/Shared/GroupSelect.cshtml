@@ -24,9 +24,9 @@
     if (Request.IsAuthenticated && StrixMembership.Configuration.UseGroups)
     {
         groupSelectlist = new List<SelectListItem>();
-        var currentId = StrixPlatform.User.GroupId;
+        var currentId = User.GroupId;
 
-        foreach (var group in StrixPlatform.User.Groups)
+        foreach (var group in User.Groups)
         {
             groupSelectlist.Add(new SelectListItem { Value = group.Key.ToString(), Text = group.Value, Selected = currentId == group.Key });
         }
@@ -38,7 +38,7 @@
     {
         <span id="groupname">
             <i class="fa fa-group fa-lg fa-fw"></i>
-            @Html.RenderEscapedHtml(StrixPlatform.User.GroupName)
+            @Html.RenderEscapedHtml(User.GroupName)
         </span>
         <ul>
             @foreach (var item in groupSelectlist)

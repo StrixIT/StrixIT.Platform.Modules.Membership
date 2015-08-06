@@ -21,24 +21,19 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass]
     public class AuthorizationAttributeTests
     {
-        #region Private Fields
-
-        private Mock<IUserContext> _userContextMock;
-
-        #endregion Private Fields
-
         #region Public Methods
 
         [TestCleanup]
         public void Cleanup()
         {
             StrixPlatform.Environment = null;
+            DependencyInjector.Injector = null;
         }
 
         [TestInitialize]
         public void Init()
         {
-            _userContextMock = TestHelpers.MockUserContext();
+            StrixPlatform.ApplicationId = MembershipTestData.AppId;
             StrixPlatform.Environment = new DefaultEnvironment();
         }
 
@@ -104,7 +99,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var context = GetAuthorizationContext(out mocks);
             var identity = mocks.First(m => m.GetType() == typeof(Mock<IIdentity>)) as Mock<IIdentity>;
             identity.Setup(i => i.Name).Returns("Administrator");
-            _userContextMock.Setup(m => m.HasPermission(new string[] { "View users" })).Returns(false);
+            var userMock = mocks.First(m => m.GetType() == typeof(Mock<IUserContext>)) as Mock<IUserContext>;
+            userMock.Setup(m => m.HasPermission(new string[] { "View users" })).Returns(false);
             attribute.OnAuthorization(context);
             var result = context.Result as HttpStatusCodeResult;
             Assert.IsNotNull(result);
@@ -119,7 +115,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var context = GetAuthorizationContext(out mocks);
             var identity = mocks.First(m => m.GetType() == typeof(Mock<IIdentity>)) as Mock<IIdentity>;
             identity.Setup(i => i.Name).Returns("Editor");
-            _userContextMock.Setup(m => m.IsInRoles(new string[] { "Administrator" })).Returns(false);
+            var userMock = mocks.First(m => m.GetType() == typeof(Mock<IUserContext>)) as Mock<IUserContext>;
+            userMock.Setup(m => m.IsInRoles(new string[] { "Administrator" })).Returns(false);
             attribute.OnAuthorization(context);
             var result = context.Result as HttpStatusCodeResult;
             Assert.IsNotNull(result);
@@ -134,7 +131,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var context = GetAuthorizationContext(out mocks);
             var identity = mocks.First(m => m.GetType() == typeof(Mock<IIdentity>)) as Mock<IIdentity>;
             identity.Setup(i => i.Name).Returns("Administrator");
-            _userContextMock.Setup(m => m.HasPermission(new string[] { "View users" })).Returns(true);
+            var userMock = mocks.First(m => m.GetType() == typeof(Mock<IUserContext>)) as Mock<IUserContext>;
+            userMock.Setup(m => m.HasPermission(new string[] { "View users" })).Returns(true);
             attribute.OnAuthorization(context);
             var cache = mocks.First(m => m.GetType() == typeof(Mock<HttpCachePolicyBase>)) as Mock<HttpCachePolicyBase>;
             cache.Verify(c => c.SetProxyMaxAge(It.IsAny<TimeSpan>()), Times.Once());
@@ -148,7 +146,8 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var context = GetAuthorizationContext(out mocks);
             var identity = mocks.First(m => m.GetType() == typeof(Mock<IIdentity>)) as Mock<IIdentity>;
             identity.Setup(i => i.Name).Returns("Administrator");
-            _userContextMock.Setup(m => m.IsInRoles(new string[] { "Administrator" })).Returns(true);
+            var userMock = mocks.First(m => m.GetType() == typeof(Mock<IUserContext>)) as Mock<IUserContext>;
+            userMock.Setup(m => m.IsInRoles(new string[] { "Administrator" })).Returns(true);
             attribute.OnAuthorization(context);
             var cache = mocks.First(m => m.GetType() == typeof(Mock<HttpCachePolicyBase>)) as Mock<HttpCachePolicyBase>;
             cache.Verify(c => c.SetProxyMaxAge(It.IsAny<TimeSpan>()), Times.Once());
@@ -184,7 +183,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             mocks.Add(httpContext);
             var routeData = new RouteData();
             var requestContext = new RequestContext(httpContext.Object, routeData);
-            var controller = new UserController(new Mock<IUserService>().Object);
+            var controller = new UserController(new Mock<IUserService>().Object, new Mock<IUserContext>().Object);
             var controllerContext = new ControllerContext(requestContext, controller);
             var controllerDescriptor = new Mock<ControllerDescriptor>();
             mocks.Add(controllerDescriptor);
@@ -192,6 +191,15 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             actionDescriptor.Setup(a => a.ControllerDescriptor).Returns(controllerDescriptor.Object);
             mocks.Add(actionDescriptor);
             var context = new AuthorizationContext(controllerContext, actionDescriptor.Object);
+            var user = new Mock<IUserContext>();
+            user.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            user.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+            mocks.Add(user);
+
+            var injectorMock = new Mock<IDependencyInjector>();
+            injectorMock.Setup(m => m.TryGet<IUserContext>()).Returns(user.Object);
+            DependencyInjector.Injector = injectorMock.Object;
+
             return context;
         }
 

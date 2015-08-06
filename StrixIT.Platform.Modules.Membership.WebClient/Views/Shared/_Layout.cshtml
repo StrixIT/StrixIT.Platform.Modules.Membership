@@ -41,7 +41,7 @@
             <a href="@Url.Action(MvcConstants.INDEX, "Home", new { area = string.Empty }, null)" class="navbar-brand" title="@Interface.StrixCms">@StrixPlatform.Configuration.ApplicationName</a>
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink(Interface.Home, MvcConstants.INDEX, "Home", new { area = string.Empty, language = StrixPlatform.CurrentCultureCode }, null)</li>
-                @if (hasModuleLinks && StrixPlatform.User.HasPermission(PlatformPermissions.ViewAdminDashboard))
+                @if (hasModuleLinks && User.HasPermission(PlatformPermissions.ViewAdminDashboard))
                 {
                     <li>@Html.ActionLink(Interface.AdminDashboardTitle, MvcConstants.INDEX, WebConstants.ADMIN, new { area = string.Empty }, null)</li>
                 }
