@@ -51,7 +51,8 @@ namespace StrixIT.Platform.Modules.Membership
             {
                 if (_appId == null)
                 {
-                    _appId = this._dataSource.Query<Application>().Where(g => g.Name.ToLower() == _config.GetConfiguration<PlatformConfiguration>().ApplicationName.ToLower()).Select(a => a.Id).First();
+                    var appName = _config.GetConfiguration<PlatformConfiguration>().ApplicationName.ToLower();
+                    _appId = this._dataSource.Query<Application>().Where(g => g.Name.ToLower() == appName).Select(a => a.Id).First();
                 }
 
                 return _appId.Value;
