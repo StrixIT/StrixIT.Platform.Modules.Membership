@@ -73,21 +73,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\StrixIT.Platform.Core.dll</HintPath>
     </Reference>
+    <Reference Include="StrixIT.Platform.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\StrixIT.Platform.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="StrixIT.Platform.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\StrixIT.Platform.Web.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap, Version=3.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\structuremap.3.1.5.154\lib\net40\StructureMap.dll</HintPath>
-    </Reference>
-    <Reference Include="StructureMap.Net4, Version=3.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\structuremap.3.1.5.154\lib\net40\StructureMap.Net4.dll</HintPath>
+      <HintPath>Libraries\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\structuremap.web.3.1.5.154\lib\net40\StructureMap.Web.dll</HintPath>
+      <HintPath>Libraries\StructureMap.Web.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
@@ -161,11 +161,12 @@
     <Content Include="Areas\Membership\Templates\SetPasswordMail_nl.html" />
     <Content Include="Areas\Membership\Templates\UnapprovedAccountMail.html" />
     <Content Include="Areas\Membership\Templates\UnapprovedAccountMail_nl.html" />
-    <Content Include="Libraries\nl\StrixIT.Platform.Core.resources.dll" />
-    <Content Include="Libraries\nl\StrixIT.Platform.Web.resources.dll" />
     <Content Include="Libraries\StrixIT.Platform.Core.dll" />
+    <Content Include="Libraries\StrixIT.Platform.Framework.dll" />
     <Content Include="Libraries\StrixIT.Platform.Testing.dll" />
     <Content Include="Libraries\StrixIT.Platform.Web.dll" />
+    <Content Include="Libraries\StructureMap.dll" />
+    <Content Include="Libraries\StructureMap.Web.dll" />
     <Content Include="License.txt" />
     <Content Include="ReadMe.txt" />
     <Content Include="Scripts\license.js" />
@@ -378,7 +379,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Libraries\nl\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -399,7 +402,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50269</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

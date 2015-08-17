@@ -20,9 +20,41 @@
 
 #endregion Apache License
 
+using StrixIT.Platform.Core;
+using StrixIT.Platform.Framework;
 using StrixIT.Platform.Web;
+using System;
+using System.Web.Mvc;
 
 namespace StrixIT.Platform.Membership.Modules.WebClient
 {
-    public class Global : StrixWebApplication { }
+    public class Global : StrixWebApplication
+    {
+        #region Protected Methods
+
+        protected void Application_Start(object sender, EventArgs e)
+        {
+            DependencyInjector.Injector = new StructureMapDependencyInjector();
+            DependencyResolver.SetResolver(new StructureMapDependencyResolver());
+
+            SetupFileWatcher();
+            Bootstrapper.Run();
+
+            Logger.Log("Web application start. Initialize Mvc.");
+            var mvcService = DependencyInjector.Get<IMvcService>();
+            mvcService.Initialize();
+
+            Logger.Log("Run all web initializers");
+
+            foreach (var initializer in DependencyInjector.GetAll<IWebInitializer>())
+            {
+                Logger.Log(string.Format("Start web initializer {0}.", initializer.GetType().Name));
+                initializer.WebInitialize();
+            }
+
+            Logger.Log("Web application startup finished.");
+        }
+
+        #endregion Protected Methods
+    }
 }

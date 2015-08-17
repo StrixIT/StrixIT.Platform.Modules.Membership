@@ -21,6 +21,7 @@
 #endregion Apache License
 
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Framework;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace StrixIT.Platform.Modules.Membership
     {
         #region Public Constructors
 
-        public MembershipDataSource() : base(MembershipConstants.MEMBERSHIP)
+        public MembershipDataSource(IConfiguration config) : base(config, MembershipConstants.MEMBERSHIP)
         {
             this.Configuration.ValidateOnSaveEnabled = false;
             this.Configuration.LazyLoadingEnabled = false;

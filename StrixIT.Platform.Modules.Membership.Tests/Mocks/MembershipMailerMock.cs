@@ -5,7 +5,13 @@
 //------------------------------------------------------------------------------
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
+using StrixIT.Platform.Framework;
 using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Dynamic;
+using System.Net.Configuration;
 using System.Web;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
@@ -14,11 +20,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     {
         #region Private Fields
 
+        private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
+        private Mock<ICultureService> _cultureServiceMock = new Mock<ICultureService>();
+        private Mock<IEnvironment> _environmentMock = new Mock<IEnvironment>();
         private Mock<HttpContextBase> _httpMock = new Mock<HttpContextBase>();
         private Mock<HttpRequestBase> _httpRequestMock = new Mock<HttpRequestBase>();
         private Mock<IMailer> _mailerMock = new Mock<IMailer>();
         private IMembershipMailer _membershipMailer;
-        private Mock<IFileSystemWrapper> _wrapperMock = new Mock<IFileSystemWrapper>();
+        private Mock<IFileSystem> _wrapperMock = new Mock<IFileSystem>();
 
         #endregion Private Fields
 
@@ -26,18 +35,35 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
         public MembershipMailerMock()
         {
-            _wrapperMock.Setup(w => w.GetHtmlTemplate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns<string, string, string>((x, y, z) => new FileSystemWrapper().GetHtmlTemplate(string.Format("{0}\\Templates", StrixPlatform.Environment.WorkingDirectory), y, z));
+            var platformConfiguration = new PlatformConfiguration();
+            platformConfiguration.ApplicationName = "StrixIT Membership Tests";
+            var membershipConfiguration = new MembershipConfiguration();
+            membershipConfiguration.UseGroups = true;
+            membershipConfiguration.AllowUserRegistration = true;
+            membershipConfiguration.AutoApproveUsers = true;
+            membershipConfiguration.MailTemplateFolder = "Areas/Membership/Templates";
+            _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
+            _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+            _configMock.Setup(m => m.FromAddress).Returns("test@test.nl");
+            _cultureServiceMock.Setup(c => c.Cultures).Returns(new List<CultureData> { new CultureData { Code = "en", Name = "English" }, new CultureData { Code = "nl", Name = "Nederlands" } });
+            _cultureServiceMock.Setup(c => c.DefaultCultureCode).Returns("en");
+            _cultureServiceMock.Setup(c => c.CurrentCultureCode).Returns("en");
+            _environmentMock.Setup(e => e.Cultures).Returns(_cultureServiceMock.Object);
+            _environmentMock.Setup(e => e.Configuration).Returns(_configMock.Object);
+
+            _wrapperMock.Setup(w => w.GetHtmlTemplate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns<string, string, string>((x, y, z) => new FileSystem(_environmentMock.Object).GetHtmlTemplate(string.Format("{0}\\Templates", Core.Helpers.GetWorkingDirectory()), y, z));
             _httpRequestMock.Setup(m => m.Url).Returns(new Uri("http://www.strixit.com"));
             _httpRequestMock.Setup(m => m.ApplicationPath).Returns("/");
             _httpMock.Setup(m => m.Request).Returns(_httpRequestMock.Object);
-            _membershipMailer = new MembershipMailer(_wrapperMock.Object, _mailerMock.Object, _httpMock.Object);
+
+            _membershipMailer = new MembershipMailer(_environmentMock.Object, _wrapperMock.Object, _mailerMock.Object, _httpMock.Object);
         }
 
         #endregion Public Constructors
 
         #region Public Properties
 
-        public Mock<IFileSystemWrapper> FileSystemWrapperMock
+        public Mock<IFileSystem> FileSystemWrapperMock
         {
             get
             {

@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 using Newtonsoft.Json;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;

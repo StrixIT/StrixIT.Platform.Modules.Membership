@@ -6,6 +6,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.DependencyInjection;
 using StrixIT.Platform.Web;
 using System;
 using System.Linq;
@@ -29,19 +30,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests.Controllers
             {
                 roleMap.ForMember(ar => ar.Id, c => c.MapFrom(ur => ur.UserId));
             }
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            StrixPlatform.Environment = null;
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            StrixPlatform.Environment = new DefaultEnvironment();
         }
 
         #endregion Public Methods
@@ -136,9 +124,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests.Controllers
         {
             var mock = new AccountControllerMock();
             var user = MembershipTestData.GeneralManager;
-            var environmentMock = new Mock<IEnvironment>();
-            environmentMock.Setup(e => e.CurrentUserEmail).Returns(MembershipTestData.GeneralManager.Email);
-            StrixPlatform.Environment = environmentMock.Object;
             mock.RequestMock.Setup(r => r.IsAuthenticated).Returns(true);
             mock.AccountServiceMock.Setup(m => m.ChangePassword(user.Email, MembershipTestData.GeneralManagerSecurity.Password, "Test", It.IsAny<Guid?>())).Returns(new SaveResult<UserViewModel> { Success = true });
             var result = mock.AccountController.SetPassword(new SetPasswordViewModel { OldPassword = MembershipTestData.GeneralManagerSecurity.Password, NewPassword = "Test", ConfirmPassword = "Test" });

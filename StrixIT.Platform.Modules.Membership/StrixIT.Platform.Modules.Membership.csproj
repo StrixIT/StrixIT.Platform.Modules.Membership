@@ -29,6 +29,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <OutputPath>bin\Test\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper">
       <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
@@ -42,14 +51,11 @@
     <Reference Include="StrixIT.Platform.Core">
       <HintPath>..\StrixIT.Platform.Modules.Membership.WebClient\Libraries\StrixIT.Platform.Core.dll</HintPath>
     </Reference>
+    <Reference Include="StrixIT.Platform.Framework">
+      <HintPath>..\StrixIT.Platform.Modules.Membership.WebClient\Libraries\StrixIT.Platform.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="StrixIT.Platform.Web">
       <HintPath>..\StrixIT.Platform.Modules.Membership.WebClient\Libraries\StrixIT.Platform.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="StructureMap">
-      <HintPath>..\packages\structuremap.3.1.5.154\lib\net40\StructureMap.dll</HintPath>
-    </Reference>
-    <Reference Include="StructureMap.Web">
-      <HintPath>..\packages\structuremap.web.3.1.5.154\lib\net40\StructureMap.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -88,6 +94,7 @@
     <Compile Include="MembershipCacheAndSessionKeys.cs" />
     <Compile Include="MembershipConstants.cs" />
     <Compile Include="MembershipService.cs" />
+    <Compile Include="MembershipSettings.cs" />
     <Compile Include="Migrations\201505211323541_UpdateStringPropertyLengths.cs" />
     <Compile Include="Migrations\201505211323541_UpdateStringPropertyLengths.Designer.cs">
       <DependentUpon>201505211323541_UpdateStringPropertyLengths.cs</DependentUpon>
@@ -144,9 +151,6 @@
     <Compile Include="Security\ValidateUserResult.cs" />
     <Compile Include="Startup and Configuration\MembershipConfiguration.cs" />
     <Compile Include="Startup and Configuration\MembershipInitializer.cs" />
-    <Compile Include="Startup and Configuration\PasswordConfiguration.cs" />
-    <Compile Include="Startup and Configuration\RegistrationConfiguration.cs" />
-    <Compile Include="StrixMembership.cs" />
     <Compile Include="StrixMembershipException.cs" />
     <Compile Include="UserContext.cs" />
     <Compile Include="Users\IUserManager.cs" />
@@ -169,7 +173,7 @@
     <Compile Include="Web\Controllers\UserController.cs" />
     <Compile Include="Web\MembershipMailer.cs" />
     <Compile Include="Web\MembershipModuleConfiguration.cs" />
-    <Compile Include="Web\MembershipRegistry.cs" />
+    <Compile Include="Web\MembershipServiceConfiguration.cs" />
     <Compile Include="Web\ViewModels\LoginViewModel.cs" />
     <Compile Include="Web\ViewModels\RegisterViewModel.cs" />
     <Compile Include="Web\ViewModels\SetPasswordViewModel.cs" />

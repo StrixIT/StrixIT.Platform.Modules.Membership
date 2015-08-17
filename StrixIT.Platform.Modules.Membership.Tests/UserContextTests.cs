@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,22 +18,12 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         [TestMethod()]
         public void GetSessionShouldRestoreSavedSessionValues()
         {
-            var environmentMock = new Mock<IEnvironment>();
-            StrixPlatform.Environment = environmentMock.Object;
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            StrixPlatform.MainGroupId = MembershipTestData.MainGroupId;
-
-            environmentMock.Setup(e => e.GetFromSession<string>(PlatformConstants.CURRENTUSEREMAIL)).Returns(MembershipTestData.Administrator.Email);
-
+            var sessionMock = new Mock<ISessionService>();
             var dataMock = new Mock<IMembershipDataSource>();
-
-            var mock = new UserManagerMock();
-
             dataMock.Setup(d => d.Query<UserSessionStorage>()).Returns(MembershipTestData.Sessions.AsQueryable());
-            var context = new UserContext(dataMock.Object);
-
+            var context = new UserContext(dataMock.Object, sessionMock.Object, MembershipTestData.Administrator.Email);
             var result = context.GroupId;
-            environmentMock.Verify(e => e.StoreInSession("CurrentGroupId", It.IsAny<object>()), Times.Exactly(2));
+            sessionMock.Verify(e => e.Store("CurrentGroupId", It.IsAny<object>()), Times.Exactly(2));
         }
 
         #endregion Public Methods

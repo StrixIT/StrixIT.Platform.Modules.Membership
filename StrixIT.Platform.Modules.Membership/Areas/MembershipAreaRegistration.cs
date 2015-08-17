@@ -21,6 +21,7 @@
 #endregion Apache License
 
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using StrixIT.Platform.Web;
 using System;
 using System.Web.Mvc;
@@ -50,7 +51,7 @@ namespace StrixIT.Platform.Modules.Membership
                 throw new ArgumentNullException("context");
             }
 
-            var culture = StrixPlatform.DefaultCultureCode.ToLower();
+            var culture = DependencyInjector.Get<ICultureService>().DefaultCultureCode.ToLower();
 
             context.MapLocalizedRoute(
                 "Account_ResetLink",

@@ -21,6 +21,7 @@
 #endregion Apache License
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StrixIT.Platform.Core;
 using StrixIT.Platform.Testing;
 
 namespace StrixIT.Platform.Modules.Membership.Specs
@@ -33,7 +34,7 @@ namespace StrixIT.Platform.Modules.Membership.Specs
         [AssemblyInitialize]
         public static void Setup(TestContext context)
         {
-            TestManager.UseDataContext(new MembershipDataSource());
+            TestManager.UseDataContext(new MembershipDataSource(new TestConfiguration()));
             TestManager.AuthenticationEmail = Resources.DefaultValues.AdministratorEmail;
             TestManager.AuthenticationPassword = Resources.DefaultValues.AdministratorPassword;
             TestManager.SetupTestRun("StrixIT.Platform.Modules.Membership.WebClient", TestBrowser.Chrome);

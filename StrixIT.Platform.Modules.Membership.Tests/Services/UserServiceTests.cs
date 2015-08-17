@@ -6,6 +6,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,21 +23,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         public static void ClassInit(TestContext context)
         {
             DataMapper.CreateMap<UserInRole, AssignRoleModel>();
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            StrixPlatform.Environment = null;
-            Logger.LoggingService = null;
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            StrixPlatform.Environment = new DefaultEnvironment();
-            Logger.LoggingService = new Mock<ILoggingService>().Object;
         }
 
         #endregion Public Methods

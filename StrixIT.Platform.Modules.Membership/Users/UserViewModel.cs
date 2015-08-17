@@ -29,22 +29,18 @@ namespace StrixIT.Platform.Modules.Membership
     /// <summary>
     /// A view model for creating and editing users.
     /// </summary>
-    public class UserViewModel : BaseCrudDto
+    public class UserViewModel : IViewModel
     {
-        #region Public Constructors
-
-        public UserViewModel() : base(typeof(User))
-        {
-        }
-
-        #endregion Public Constructors
-
         #region Public Properties
 
         /// <summary>
         /// Gets or sets a value indicating whether this user account is approved.
         /// </summary>
         public bool Approved { get; set; }
+
+        public bool CanDelete { get; set; }
+
+        public bool CanEdit { get; set; }
 
         /// <summary>
         /// Gets or sets the date at which the user has accepted the terms.
@@ -55,6 +51,14 @@ namespace StrixIT.Platform.Modules.Membership
         /// Gets or sets the email of the user.
         /// </summary>
         public string Email { get; set; }
+
+        public Type EntityType
+        {
+            get
+            {
+                return typeof(User);
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the user has accepted the terms.

@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -32,15 +32,17 @@ namespace StrixIT.Platform.Modules.Membership
     {
         #region Private Fields
 
+        private IConfiguration _config;
         private IMembershipDataSource _dataSource;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public SecurityManager(IMembershipDataSource dataSource)
+        public SecurityManager(IMembershipDataSource dataSource, IConfiguration config)
         {
-            this._dataSource = dataSource;
+            _dataSource = dataSource;
+            _config = config;
         }
 
         #endregion Public Constructors
@@ -54,14 +56,14 @@ namespace StrixIT.Platform.Modules.Membership
                 return ValidateUserResult.Error;
             }
 
-            var security = this.GetSecurity(id);
+            var security = GetSecurity(id);
 
             if (security == null)
             {
                 return ValidateUserResult.Error;
             }
 
-            var result = this.CheckPassword(security, password);
+            var result = CheckPassword(security, password);
 
             if (!result)
             {
@@ -78,7 +80,7 @@ namespace StrixIT.Platform.Modules.Membership
                 return ValidateUserResult.Unapproved;
             }
 
-            var hasRoles = this._dataSource.Query<User>().Any(u => u.Id == security.Id && u.Roles.Any());
+            var hasRoles = _dataSource.Query<User>().Any(u => u.Id == security.Id && u.Roles.Any());
 
             if (!hasRoles)
             {
@@ -99,18 +101,18 @@ namespace StrixIT.Platform.Modules.Membership
                 return false;
             }
 
-            var security = this.GetSecurity(userId);
+            var security = GetSecurity(userId);
 
             if (security == null)
             {
                 return false;
             }
 
-            var userName = this._dataSource.Query<User>().Where(u => u.Id == userId).Select(u => u.Name).First();
+            var userName = _dataSource.Query<User>().Where(u => u.Id == userId).Select(u => u.Name).First();
 
             if (oldPassword != null)
             {
-                if (this.ValidateUser(userId, oldPassword) != ValidateUserResult.Valid)
+                if (ValidateUser(userId, oldPassword) != ValidateUserResult.Valid)
                 {
                     return false;
                 }
@@ -122,7 +124,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
             else
             {
-                if (!(security.VerificationId == resetKey && security.VerificationWindowStart.HasValue && security.VerificationWindowStart.Value.AddHours(StrixMembership.Configuration.Password.VerificationIdValidWindow) >= DateTime.Now))
+                if (!(security.VerificationId == resetKey && security.VerificationWindowStart.HasValue && security.VerificationWindowStart.Value.AddHours(_config.GetConfiguration<MembershipConfiguration>().VerificationIdValidWindow) >= DateTime.Now))
                 {
                     if (security.VerificationId != resetKey)
                     {
@@ -139,13 +141,13 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (security.LockedOut)
             {
-                this.UnlockUser(userId);
+                UnlockUser(userId);
             }
 
-            var encodedPassword = this.EncodePassword(newPassword);
+            var encodedPassword = EncodePassword(newPassword);
             security.Password = encodedPassword;
 
-            this.SetVerificationId(userId, null);
+            SetVerificationId(userId, null);
             Logger.LogToAudit(AuditLogType.PasswordReset.ToString(), string.Format("Changed the password for user {0}.", userName));
 
             return true;
@@ -164,7 +166,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public string GeneratePassword()
         {
-            return System.Web.Security.Membership.GeneratePassword(StrixMembership.Configuration.Password.MinRequiredPasswordLength, StrixMembership.Configuration.Password.MinRequiredNonAlphanumericCharacters);
+            return System.Web.Security.Membership.GeneratePassword(_config.GetConfiguration<MembershipConfiguration>().MinRequiredPasswordLength, _config.GetConfiguration<MembershipConfiguration>().MinRequiredNonAlphanumericCharacters);
         }
 
         #endregion Password
@@ -178,7 +180,7 @@ namespace StrixIT.Platform.Modules.Membership
                 return false;
             }
 
-            var security = this.GetSecurity(id);
+            var security = GetSecurity(id);
 
             if (security == null)
             {
@@ -196,8 +198,8 @@ namespace StrixIT.Platform.Modules.Membership
                 return false;
             }
 
-            var validWindow = StrixMembership.Configuration.Password.VerificationIdValidWindow;
-            var start = this._dataSource.Query<UserSecurity>().Where(s => s.VerificationId == verificationId && s.VerificationWindowStart.HasValue).Select(s => s.VerificationWindowStart).FirstOrDefault();
+            var validWindow = _config.GetConfiguration<MembershipConfiguration>().VerificationIdValidWindow;
+            var start = _dataSource.Query<UserSecurity>().Where(s => s.VerificationId == verificationId && s.VerificationWindowStart.HasValue).Select(s => s.VerificationWindowStart).FirstOrDefault();
             return start.HasValue && start.Value.AddMinutes(validWindow) >= DateTime.Now;
         }
 
@@ -208,14 +210,14 @@ namespace StrixIT.Platform.Modules.Membership
                 return new List<AccountStatus>();
             }
 
-            return this._dataSource.Query<UserSecurity>().Where(s => userIds.Contains(s.Id)).Select(s => new AccountStatus { Id = s.Id, LockedOut = s.LockedOut, Approved = s.Approved }).ToList();
+            return _dataSource.Query<UserSecurity>().Where(s => userIds.Contains(s.Id)).Select(s => new AccountStatus { Id = s.Id, LockedOut = s.LockedOut, Approved = s.Approved }).ToList();
         }
 
         public User GetUserByResetKey(Guid key)
         {
-            if (this.CheckVerificationId(key))
+            if (CheckVerificationId(key))
             {
-                return this._dataSource.Query<UserSecurity>().Where(s => s.VerificationId == key).Select(s => s.User).FirstOrDefault();
+                return _dataSource.Query<UserSecurity>().Where(s => s.VerificationId == key).Select(s => s.User).FirstOrDefault();
             }
 
             return null;
@@ -228,7 +230,7 @@ namespace StrixIT.Platform.Modules.Membership
                 return;
             }
 
-            var security = this.GetSecurity(userId);
+            var security = GetSecurity(userId);
 
             if (security == null)
             {
@@ -246,7 +248,7 @@ namespace StrixIT.Platform.Modules.Membership
                 security.VerificationWindowStart = DateTime.Now;
             }
 
-            this._dataSource.SaveChanges();
+            _dataSource.SaveChanges();
         }
 
         public bool UnlockUser(Guid id)
@@ -256,7 +258,7 @@ namespace StrixIT.Platform.Modules.Membership
                 return false;
             }
 
-            var security = this.GetSecurity(id);
+            var security = GetSecurity(id);
 
             if (security == null)
             {
@@ -293,7 +295,7 @@ namespace StrixIT.Platform.Modules.Membership
                 }
                 else
                 {
-                    if (security.FailedPasswordAttemptWindowStart.HasValue && utcNow > security.FailedPasswordAttemptWindowStart.Value.AddMinutes(StrixMembership.Configuration.Password.PasswordAttemptWindow))
+                    if (security.FailedPasswordAttemptWindowStart.HasValue && utcNow > security.FailedPasswordAttemptWindowStart.Value.AddMinutes(_config.GetConfiguration<MembershipConfiguration>().PasswordAttemptWindow))
                     {
                         security.FailedPasswordAttemptCount = 1;
                     }
@@ -304,7 +306,7 @@ namespace StrixIT.Platform.Modules.Membership
 
                     security.FailedPasswordAttemptWindowStart = utcNow;
 
-                    if (security.FailedPasswordAttemptCount >= StrixMembership.Configuration.Password.MaxInvalidPasswordAttempts)
+                    if (security.FailedPasswordAttemptCount >= _config.GetConfiguration<MembershipConfiguration>().MaxInvalidPasswordAttempts)
                     {
                         security.LockedOut = true;
                     }
@@ -316,7 +318,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         private UserSecurity GetSecurity(Guid userId)
         {
-            var security = this._dataSource.Find<UserSecurity>(new object[] { userId });
+            var security = _dataSource.Find<UserSecurity>(new object[] { userId });
 
             if (security == null)
             {

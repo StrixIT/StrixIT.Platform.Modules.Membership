@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     {
         #region Private Fields
 
+        private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
         private DataSourceMock _dataSourceMock = new DataSourceMock();
         private Mock<IRoleManager> _managerMock = new Mock<IRoleManager>();
         private IRoleManager _roleManager;
@@ -39,7 +41,17 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
             _userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
 
-            _roleManager = new RoleManager(_dataSourceMock.Mock.Object, _userMock.Object);
+            var platformConfiguration = new PlatformConfiguration();
+            platformConfiguration.ApplicationName = "StrixIT Membership Tests";
+            var membershipConfiguration = new MembershipConfiguration();
+            membershipConfiguration.UseGroups = true;
+            membershipConfiguration.UsePermissions = true;
+            _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
+            _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+
+            var membershipSettingsMock = new Mock<IMembershipSettings>();
+
+            _roleManager = new RoleManager(_dataSourceMock.Mock.Object, _userMock.Object, _configMock.Object, membershipSettingsMock.Object);
         }
 
         #endregion Public Constructors

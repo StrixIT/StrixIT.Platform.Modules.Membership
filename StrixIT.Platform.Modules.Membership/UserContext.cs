@@ -22,6 +22,7 @@
 
 using Newtonsoft.Json;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,26 +34,44 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Fields
 
         private IMembershipDataSource _dataSource;
+        private Guid? _mainGroupId;
+        private ISessionService _session;
+        private string _userEmail;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public UserContext(IMembershipDataSource dataSource)
+        public UserContext(IMembershipDataSource dataSource, ISessionService session, string userEmail)
         {
             this._dataSource = dataSource;
+            _session = session;
+            _userEmail = userEmail;
+
+            if (!_mainGroupId.HasValue)
+            {
+                _mainGroupId = dataSource.Query<Group>().Where(g => g.Name.ToLower() == Resources.DefaultValues.MainGroupName.ToLower()).Select(g => g.Id).FirstOrDefault();
+            }
         }
 
         #endregion Public Constructors
 
         #region Public Properties
 
+        public string Email
+        {
+            get
+            {
+                return _userEmail;
+            }
+        }
+
         public Guid GroupId
         {
             get
             {
                 var user = this.User;
-                return user != null ? user.GroupId : StrixPlatform.MainGroupId;
+                return user != null ? user.GroupId : _mainGroupId.Value;
             }
             set
             {
@@ -109,7 +128,7 @@ namespace StrixIT.Platform.Modules.Membership
         {
             get
             {
-                return StrixPlatform.MainGroupId == this.GroupId;
+                return _mainGroupId == this.GroupId;
             }
         }
 
@@ -130,18 +149,18 @@ namespace StrixIT.Platform.Modules.Membership
         {
             get
             {
-                var user = StrixPlatform.Environment.GetFromSession<ActiveUser>(PlatformConstants.CURRENTUSER);
+                var user = _session.Get<ActiveUser>(PlatformConstants.CURRENTUSER);
 
                 if (user == null)
                 {
                     // Get the current user's email.
-                    var identityName = StrixPlatform.Environment.CurrentUserEmail;
-                    var email = !string.IsNullOrWhiteSpace(identityName) ? identityName : StrixPlatform.Environment.GetFromSession<string>(PlatformConstants.CURRENTUSEREMAIL);
+                    var identityName = _userEmail;
+                    var email = !string.IsNullOrWhiteSpace(identityName) ? identityName : _session.Get<string>(PlatformConstants.CURRENTUSEREMAIL);
 
                     if (!string.IsNullOrWhiteSpace(email))
                     {
                         // Get the user's current group id, if already set.
-                        var groupId = StrixPlatform.Environment.GetFromSession<Guid?>(PlatformConstants.CURRENTGROUPID);
+                        var groupId = _session.Get<Guid?>(PlatformConstants.CURRENTGROUPID);
 
                         // Determine if the user is an administrator.
                         var isAdmin = this._dataSource.Query<User>().Where(u => u.Email.ToLower() == email.ToLower()).Any(u => u.Roles.Any(r => r.GroupRole.Role.Name.ToLower() == PlatformConstants.ADMINROLE));
@@ -152,7 +171,7 @@ namespace StrixIT.Platform.Modules.Membership
 
                         if (groups.Count == 0)
                         {
-                            groups = new List<ActiveUserGroup> { new ActiveUserGroup { Id = StrixPlatform.MainGroupId, Name = Resources.DefaultValues.MainGroupName } };
+                            groups = new List<ActiveUserGroup> { new ActiveUserGroup { Id = _mainGroupId.Value, Name = Resources.DefaultValues.MainGroupName } };
                         }
 
                         string groupName = null;
@@ -163,7 +182,7 @@ namespace StrixIT.Platform.Modules.Membership
                             // session data from the database and try again.
                             GetSession(email);
 
-                            groupId = StrixPlatform.Environment.GetFromSession<Guid?>(PlatformConstants.CURRENTGROUPID);
+                            groupId = _session.Get<Guid?>(PlatformConstants.CURRENTGROUPID);
 
                             if (!groupId.HasValue)
                             {
@@ -171,7 +190,7 @@ namespace StrixIT.Platform.Modules.Membership
                                 // main group if the user has access to it or the first group in his list.
                                 if (groups.Count > 0)
                                 {
-                                    var mainGroup = groups.FirstOrDefault(g => g.Id == StrixPlatform.MainGroupId);
+                                    var mainGroup = groups.FirstOrDefault(g => g.Id == _mainGroupId);
                                     groupId = mainGroup != null ? mainGroup.Id : groups.First().Id;
                                 }
 
@@ -182,12 +201,12 @@ namespace StrixIT.Platform.Modules.Membership
                                 }
                                 else
                                 {
-                                    groupId = StrixPlatform.MainGroupId;
+                                    groupId = _mainGroupId;
                                     groupName = Resources.DefaultValues.MainGroupName;
                                 }
                             }
 
-                            StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTGROUPID, groupId);
+                            _session.Store(PlatformConstants.CURRENTGROUPID, groupId);
                         }
 
                         groupName = groupName ?? groups.First(g => g.Id == groupId).Name;
@@ -201,8 +220,8 @@ namespace StrixIT.Platform.Modules.Membership
                                 Email = u.Email,
                                 GroupId = groupId.Value,
                                 GroupName = groupName,
-                                Roles = u.Roles.Where(r => r.GroupRoleGroupId == StrixPlatform.MainGroupId && r.GroupRole.Role.Name.ToLower() == PlatformConstants.ADMINROLE.ToLower()).Select(r => new ActiveUserRole { Name = r.GroupRole.Role.Name, StartDate = r.StartDate, EndDate = r.EndDate }).ToList(),
-                                Permissions = u.Roles.Where(r => r.GroupRoleGroupId == StrixPlatform.MainGroupId && r.GroupRole.Role.Name.ToLower() == PlatformConstants.ADMINROLE.ToLower()).SelectMany(r => r.GroupRole.Role.Permissions.Select(p => new ActiveUserPermission { Name = p.Name, StartDate = r.StartDate, EndDate = r.EndDate })).ToList()
+                                Roles = u.Roles.Where(r => r.GroupRoleGroupId == _mainGroupId && r.GroupRole.Role.Name.ToLower() == PlatformConstants.ADMINROLE.ToLower()).Select(r => new ActiveUserRole { Name = r.GroupRole.Role.Name, StartDate = r.StartDate, EndDate = r.EndDate }).ToList(),
+                                Permissions = u.Roles.Where(r => r.GroupRoleGroupId == _mainGroupId && r.GroupRole.Role.Name.ToLower() == PlatformConstants.ADMINROLE.ToLower()).SelectMany(r => r.GroupRole.Role.Permissions.Select(p => new ActiveUserPermission { Name = p.Name, StartDate = r.StartDate, EndDate = r.EndDate })).ToList()
                             }).FirstOrDefault();
                         }
                         else
@@ -224,7 +243,7 @@ namespace StrixIT.Platform.Modules.Membership
                             user.Groups = groups;
                         }
 
-                        StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTUSER, user);
+                        _session.Store(PlatformConstants.CURRENTUSER, user);
                     }
                 }
 
@@ -345,7 +364,7 @@ namespace StrixIT.Platform.Modules.Membership
 
                 foreach (var key in dictionary.Keys)
                 {
-                    StrixPlatform.Environment.StoreInSession(key, dictionary[key]);
+                    _session.Store(key, dictionary[key]);
                 }
             }
         }

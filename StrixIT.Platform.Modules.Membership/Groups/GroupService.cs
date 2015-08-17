@@ -42,9 +42,9 @@ namespace StrixIT.Platform.Modules.Membership
 
         #region Public Constructors
 
-        public GroupService(IMembershipDataSource dataSource, IGroupManager groupManager, IUserManager userManager, IRoleManager roleManager, IUserContext user)
+        public GroupService(IMembershipDataSource dataSource, IGroupManager groupManager, IUserManager userManager, IRoleManager roleManager, IUserContext user, IConfiguration config)
         {
-            if (!StrixMembership.Configuration.UseGroups)
+            if (!config.GetConfiguration<MembershipConfiguration>().UseGroups)
             {
                 throw new InvalidOperationException(Resources.Interface.GroupsNotEnabed);
             }

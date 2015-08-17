@@ -4,8 +4,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using StrixIT.Platform.Web;
 using System;
+using System.Collections.Generic;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
@@ -18,11 +21,15 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
         private Mock<IAccountService> _accountService = new Mock<IAccountService>();
         private Mock<IAuthenticationService> _authService = new Mock<IAuthenticationService>();
+        private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
         private AccountController _controller;
         private Mock<ControllerContext> _controllerContext = new Mock<ControllerContext>();
+        private Mock<ICultureService> _cultureServiceMock = new Mock<ICultureService>();
+        private Mock<IEnvironment> _environmentMock = new Mock<IEnvironment>();
         private Mock<HttpContextBase> _httpContext = new Mock<HttpContextBase>();
         private Mock<IIdentity> _identity = new Mock<IIdentity>();
         private Mock<HttpRequestBase> _request = new Mock<HttpRequestBase>();
+        private Mock<IUserContext> _userMock = new Mock<IUserContext>();
 
         #endregion Private Fields
 
@@ -32,12 +39,25 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         {
             _request.Setup(r => r.Url).Returns(new Uri("http://www.strixit.com"));
             _httpContext.Setup(r => r.Request).Returns(_request.Object);
-            var principal = new Mock<IPrincipal>();
-            principal.Setup(p => p.Identity).Returns(_identity.Object);
-            _httpContext.Setup(r => r.User).Returns(principal.Object);
             _controllerContext.Setup(c => c.HttpContext).Returns(_httpContext.Object);
             _controllerContext.Setup(c => c.IsChildAction).Returns(false);
-            _controller = new AccountController(_authService.Object, _accountService.Object);
+
+            var platformConfiguration = new PlatformConfiguration();
+            platformConfiguration.ApplicationName = "StrixIT Membership Tests";
+            var membershipConfiguration = new MembershipConfiguration();
+            membershipConfiguration.UseGroups = true;
+            membershipConfiguration.AllowUserRegistration = true;
+            membershipConfiguration.AutoApproveUsers = true;
+            _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
+            _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+            _cultureServiceMock.Setup(c => c.Cultures).Returns(new List<CultureData> { new CultureData { Code = "en", Name = "English" }, new CultureData { Code = "nl", Name = "Nederlands" } });
+            _cultureServiceMock.Setup(c => c.DefaultCultureCode).Returns("en");
+            _cultureServiceMock.Setup(c => c.CurrentCultureCode).Returns("en");
+            _userMock.Setup(m => m.Email).Returns(MembershipTestData.GeneralManager.Email);
+            _environmentMock.Setup(e => e.Configuration).Returns(_configMock.Object);
+            _environmentMock.Setup(e => e.Cultures).Returns(_cultureServiceMock.Object);
+            _environmentMock.Setup(e => e.User).Returns(_userMock.Object);
+            _controller = new AccountController(_environmentMock.Object, _authService.Object, _accountService.Object);
             _controller.ControllerContext = _controllerContext.Object;
         }
 

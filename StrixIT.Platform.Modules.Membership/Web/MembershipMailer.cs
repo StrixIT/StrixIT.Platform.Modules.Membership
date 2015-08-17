@@ -5,7 +5,7 @@
 // Copyright 2015 StrixIT. Author R.G. Schurgers MA MSc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -24,7 +24,6 @@ using StrixIT.Platform.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Configuration;
 using System.Web;
 
 namespace StrixIT.Platform.Modules.Membership
@@ -33,7 +32,8 @@ namespace StrixIT.Platform.Modules.Membership
     {
         #region Private Fields
 
-        private IFileSystemWrapper _fileSystemWrapper;
+        private IEnvironment _environment;
+        private IFileSystem _fileSystem;
         private HttpContextBase _httpContext;
         private IMailer _mailer;
 
@@ -41,11 +41,12 @@ namespace StrixIT.Platform.Modules.Membership
 
         #region Public Constructors
 
-        public MembershipMailer(IFileSystemWrapper fileSystemWrapper, IMailer mailer, HttpContextBase httpContext)
+        public MembershipMailer(IEnvironment environment, IFileSystem fileSystem, IMailer mailer, HttpContextBase httpContext)
         {
-            this._fileSystemWrapper = fileSystemWrapper;
-            this._mailer = mailer;
-            this._httpContext = httpContext;
+            _fileSystem = fileSystem;
+            _mailer = mailer;
+            _httpContext = httpContext;
+            _environment = environment;
         }
 
         #endregion Public Constructors
@@ -56,7 +57,7 @@ namespace StrixIT.Platform.Modules.Membership
         {
             var tokens = new Dictionary<string, string>();
             tokens.Add("[[USERNAME]]", userName);
-            var result = this.SendMail(culture, "AccountApprovedMail", email, tokens);
+            var result = SendMail(culture, "AccountApprovedMail", email, tokens);
             return result;
         }
 
@@ -65,7 +66,7 @@ namespace StrixIT.Platform.Modules.Membership
             var tokens = new Dictionary<string, string>();
             tokens.Add("[[USERNAME]]", userName);
             tokens.Add("[[USERID]]", userId.ToString());
-            var result = this.SendMail(culture, "AccountInformationMail", email, tokens);
+            var result = SendMail(culture, "AccountInformationMail", email, tokens);
             return result;
         }
 
@@ -74,7 +75,7 @@ namespace StrixIT.Platform.Modules.Membership
             var tokens = new Dictionary<string, string>();
             tokens.Add("[[USERNAME]]", userName);
             tokens.Add("[[VERIFICATIONID]]", passwordVerificationId.ToString());
-            var result = this.SendMail(culture, "ApprovedAccountMail", email, tokens);
+            var result = SendMail(culture, "ApprovedAccountMail", email, tokens);
             return result;
         }
 
@@ -84,7 +85,7 @@ namespace StrixIT.Platform.Modules.Membership
             tokens.Add("[[USERNAME]]", userName);
             tokens.Add("[[OLDEMAIL]]", oldEmail);
             tokens.Add("[[NEWEMAIL]]", newEmail);
-            var result = this.SendMail(culture, "EmailChangedMail", newEmail, tokens);
+            var result = SendMail(culture, "EmailChangedMail", newEmail, tokens);
             return result;
         }
 
@@ -92,7 +93,7 @@ namespace StrixIT.Platform.Modules.Membership
         {
             var tokens = new Dictionary<string, string>();
             tokens.Add("[[USERNAME]]", userName);
-            var result = this.SendMail(culture, "PasswordSetMail", email, tokens);
+            var result = SendMail(culture, "PasswordSetMail", email, tokens);
             return result;
         }
 
@@ -101,7 +102,7 @@ namespace StrixIT.Platform.Modules.Membership
             var tokens = new Dictionary<string, string>();
             tokens.Add("[[USERNAME]]", userName);
             tokens.Add("[[VERIFICATIONID]]", passwordVerificationId.ToString());
-            var result = this.SendMail(culture, "SetPasswordMail", email, tokens);
+            var result = SendMail(culture, "SetPasswordMail", email, tokens);
             return result;
         }
 
@@ -110,7 +111,7 @@ namespace StrixIT.Platform.Modules.Membership
             var tokens = new Dictionary<string, string>();
             tokens.Add("[[USERNAME]]", userName);
             tokens.Add("[[VERIFICATIONID]]", passwordVerificationId.ToString());
-            var result = this.SendMail(culture, "UnapprovedAccountMail", email, tokens);
+            var result = SendMail(culture, "UnapprovedAccountMail", email, tokens);
             return result;
         }
 
@@ -121,29 +122,29 @@ namespace StrixIT.Platform.Modules.Membership
         private string GetBaseUrl(string cultureCode)
         {
             string url = null;
-            var baseUrl = this._httpContext.Request.Url.AbsoluteUri;
+            var baseUrl = _httpContext.Request.Url.AbsoluteUri;
             var separator = "://";
 
             if (baseUrl.Contains(separator))
             {
                 var index = baseUrl.IndexOf(separator) + 3;
                 url = baseUrl.Substring(index, baseUrl.Length - index);
-                url = url.Replace(this._httpContext.Request.Url.PathAndQuery, string.Empty);
+                url = url.Replace(_httpContext.Request.Url.PathAndQuery, string.Empty);
                 url = baseUrl.Substring(0, index) + url;
             }
 
-            var cultureAddition = cultureCode.ToLower() != StrixPlatform.DefaultCultureCode.ToLower() ? string.Format("/{0}", cultureCode) : string.Empty;
+            var cultureAddition = cultureCode.ToLower() != _environment.Cultures.DefaultCultureCode.ToLower() ? string.Format("/{0}", cultureCode) : string.Empty;
             return url + cultureAddition;
         }
 
         private bool SendMail(string culture, string message, string email, Dictionary<string, string> tokens)
         {
-            tokens.Add("[[SITENAME]]", StrixPlatform.Configuration.ApplicationName);
-            tokens.Add("[[BASEURL]]", this.GetBaseUrl(culture));
-            var templateDir = StrixMembership.Configuration.MailTemplateFolder;
-            var directory = StrixPlatform.Environment.MapPath(templateDir);
-            var template = this._fileSystemWrapper.GetHtmlTemplate(directory, "MailTemplate", culture).FirstOrDefault();
-            var mail = this._fileSystemWrapper.GetHtmlTemplate(directory, message, culture).FirstOrDefault();
+            tokens.Add("[[SITENAME]]", _environment.Configuration.GetConfiguration<PlatformConfiguration>().ApplicationName);
+            tokens.Add("[[BASEURL]]", GetBaseUrl(culture));
+            var templateDir = _environment.Configuration.GetConfiguration<MembershipConfiguration>().MailTemplateFolder;
+            var directory = _environment.MapPath(templateDir);
+            var template = _fileSystem.GetHtmlTemplate(directory, "MailTemplate", culture).FirstOrDefault();
+            var mail = _fileSystem.GetHtmlTemplate(directory, message, culture).FirstOrDefault();
 
             if (template == null)
             {
@@ -159,7 +160,7 @@ namespace StrixIT.Platform.Modules.Membership
             args.Add("Subject", mail.Subject);
             args.Add("Tokens", tokens);
 
-            StrixPlatform.RaiseEvent<GeneralEvent>(new GeneralEvent("SendMembershipMailEvent", args));
+            PlatformEvents.Raise<GeneralEvent>(new GeneralEvent("SendMembershipMailEvent", args));
 
             template.Body = (string)args["Template"];
             mail.Body = (string)args["Body"];
@@ -169,10 +170,7 @@ namespace StrixIT.Platform.Modules.Membership
             template.Body = template.Body.Replace("[[CONTENT]]", mail.Body);
             mail.Subject = Tokenizer.ReplaceTokens(mail.Subject, tokens);
 
-            var mailSettings = Helpers.GetConfigSectionGroup<MailSettingsSectionGroup>("system.net/mailSettings");
-            string from = mailSettings.Smtp.From;
-
-            return this._mailer.SendMail(from, email, mail.Subject, template.Body);
+            return _mailer.SendMail(_environment.Configuration.FromAddress, email, mail.Subject, template.Body);
         }
 
         #endregion Private Methods

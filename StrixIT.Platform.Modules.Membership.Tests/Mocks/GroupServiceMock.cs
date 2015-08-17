@@ -12,6 +12,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     {
         #region Private Fields
 
+        private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
         private Mock<IMembershipDataSource> _dataSourceMock = new Mock<IMembershipDataSource>();
         private Mock<IGroupManager> _groupManagerMock = new Mock<IGroupManager>();
         private IGroupService _groupService;
@@ -27,7 +28,15 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         {
             _userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
             _userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
-            _groupService = new GroupService(_dataSourceMock.Object, _groupManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _userMock.Object);
+
+            var platformConfiguration = new PlatformConfiguration();
+            platformConfiguration.ApplicationName = "StrixIT Membership Tests";
+            var membershipConfiguration = new MembershipConfiguration();
+            membershipConfiguration.UseGroups = true;
+            _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
+            _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+
+            _groupService = new GroupService(_dataSourceMock.Object, _groupManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _userMock.Object, _configMock.Object);
         }
 
         #endregion Public Constructors

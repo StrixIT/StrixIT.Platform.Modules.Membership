@@ -20,7 +20,7 @@
 <ul id="moduleblocks">
     @foreach (IModuleConfiguration module in ViewBag.Modules)
     {
-        var links = module.ModuleLinks.Where(l => l.RequiredPermission == null || User.HasPermission(l.RequiredPermission));
+        var links = module.ModuleLinks.Where(l => l.RequiredPermission == null || Platform.User.HasPermission(l.RequiredPermission));
 
         if (links.Any())
         {

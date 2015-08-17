@@ -5,6 +5,8 @@
 //------------------------------------------------------------------------------
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
+using System.Collections.Generic;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
@@ -13,7 +15,10 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         #region Private Fields
 
         private IAccountService _accountService;
+        private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
+        private Mock<ICultureService> _cultureServiceMock = new Mock<ICultureService>();
         private Mock<IMembershipDataSource> _dataSourceMock = new Mock<IMembershipDataSource>();
+        private Mock<IEnvironment> _environmentMock = new Mock<IEnvironment>();
         private Mock<IMembershipMailer> _mailerMock = new Mock<IMembershipMailer>();
         private Mock<IRoleManager> _roleManagerMock = new Mock<IRoleManager>();
         private Mock<ISecurityManager> _securityManagerMock = new Mock<ISecurityManager>();
@@ -28,7 +33,23 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         {
             _userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
             _userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
-            _accountService = new AccountService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object, _userMock.Object);
+
+            var platformConfiguration = new PlatformConfiguration();
+            platformConfiguration.ApplicationName = "StrixIT Membership Tests";
+            var membershipConfiguration = new MembershipConfiguration();
+            membershipConfiguration.UseGroups = true;
+            membershipConfiguration.AllowUserRegistration = true;
+            membershipConfiguration.AutoApproveUsers = true;
+            _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
+            _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+            _cultureServiceMock.Setup(c => c.Cultures).Returns(new List<CultureData> { new CultureData { Code = "en", Name = "English" }, new CultureData { Code = "nl", Name = "Nederlands" } });
+            _cultureServiceMock.Setup(c => c.DefaultCultureCode).Returns("en");
+            _cultureServiceMock.Setup(c => c.CurrentCultureCode).Returns("en");
+            _environmentMock.Setup(e => e.Configuration).Returns(_configMock.Object);
+            _environmentMock.Setup(e => e.User).Returns(_userMock.Object);
+            _environmentMock.Setup(e => e.Cultures).Returns(_cultureServiceMock.Object);
+
+            _accountService = new AccountService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object, _environmentMock.Object);
         }
 
         #endregion Public Constructors

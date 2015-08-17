@@ -28,6 +28,21 @@ namespace StrixIT.Platform.Modules.Membership
 {
     public class MembershipModuleConfiguration : IModuleConfiguration
     {
+        #region Private Fields
+
+        private IConfiguration _config;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
+        public MembershipModuleConfiguration(IConfiguration config)
+        {
+            _config = config;
+        }
+
+        #endregion Public Constructors
+
         #region Public Properties
 
         public IList<ModuleLink> ModuleLinks
@@ -37,12 +52,12 @@ namespace StrixIT.Platform.Modules.Membership
                 var list = new List<ModuleLink>();
                 list.Add(new ModuleLink(Resources.Interface.UserIndex, MembershipPermissions.ViewUsers, MembershipConstants.USER));
 
-                if (StrixMembership.Configuration.UseGroups)
+                if (_config.GetConfiguration<MembershipConfiguration>().UseGroups)
                 {
                     list.Add(new ModuleLink(Resources.Interface.GroupIndex, MembershipPermissions.ViewGroups, MembershipConstants.GROUP));
                 }
 
-                if (StrixMembership.Configuration.UsePermissions)
+                if (_config.GetConfiguration<MembershipConfiguration>().UsePermissions)
                 {
                     list.Add(new ModuleLink(Resources.Interface.RoleIndex, MembershipPermissions.ViewRoles, MembershipConstants.ROLE));
                 }

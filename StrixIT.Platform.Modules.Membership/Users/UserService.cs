@@ -21,6 +21,7 @@
 #endregion Apache License
 
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,11 +35,10 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Properties
 
         private IMembershipDataSource _dataSource;
-        private IGroupManager _groupManager;
+        private IEnvironment _environment;
         private IMembershipMailer _mailer;
         private IRoleManager _roleManager;
         private ISecurityManager _securityManager;
-        private IUserContext _user;
         private IUserManager _userManager;
 
         #endregion Private Properties
@@ -52,15 +52,14 @@ namespace StrixIT.Platform.Modules.Membership
             IGroupManager groupManager,
             IRoleManager roleManager,
             IMembershipMailer membershipMailer,
-            IUserContext user)
+            IEnvironment environment)
         {
             _dataSource = dataSource;
             _securityManager = securityManager;
             _userManager = userManager;
-            _groupManager = groupManager;
             _roleManager = roleManager;
             _mailer = membershipMailer;
-            _user = user;
+            _environment = environment;
         }
 
         #endregion Constructor
@@ -69,7 +68,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public bool Exists(string email, Guid? id)
         {
-            var groupId = _user.GroupId;
+            var groupId = _environment.User.GroupId;
             var result = _userManager.Query().Any(u => u.Email.ToLower().Equals(email.ToLower()) && u.Roles.Any(r => r.GroupRoleGroupId == groupId) && (!id.HasValue || u.Id != id));
             return result;
         }
@@ -85,9 +84,9 @@ namespace StrixIT.Platform.Modules.Membership
             if (!id.HasValue)
             {
                 model = new UserViewModel();
-                model.PreferredCulture = StrixPlatform.DefaultCultureCode;
-                model.CanEdit = _user.HasPermission(MembershipPermissions.EditUser);
-                model.CanDelete = _user.HasPermission(MembershipPermissions.DeleteUser);
+                model.PreferredCulture = _environment.Cultures.DefaultCultureCode;
+                model.CanEdit = _environment.User.HasPermission(MembershipPermissions.EditUser);
+                model.CanDelete = _environment.User.HasPermission(MembershipPermissions.DeleteUser);
             }
             else
             {
@@ -102,13 +101,13 @@ namespace StrixIT.Platform.Modules.Membership
 
         public dynamic GetProfile(Guid id)
         {
-            var culture = StrixPlatform.CurrentCultureCode;
+            var culture = _environment.Cultures.CurrentCultureCode;
             return CustomFields.GetCustomFieldsList<UserProfileField, UserProfileValue>(_userManager.ProfileQuery().Where(x => x.Culture == culture && x.UserId == id), "UserId").FirstOrDefault();
         }
 
         public IList<dynamic> GetProfileList()
         {
-            var culture = StrixPlatform.CurrentCultureCode;
+            var culture = _environment.Cultures.CurrentCultureCode;
             return CustomFields.GetCustomFieldsList<UserProfileField, UserProfileValue>(_userManager.ProfileQuery().Where(x => x.Culture == culture), "UserId");
         }
 
@@ -170,7 +169,7 @@ namespace StrixIT.Platform.Modules.Membership
             if (model.Id == Guid.Empty)
             {
                 // Check if there are licences remaining before saving the user.
-                var groupId = _user.GroupId;
+                var groupId = _environment.User.GroupId;
                 GroupInRole permissionSet = null;
 
                 if (_roleManager.GroupUsesPermissions(groupId))
@@ -232,7 +231,7 @@ namespace StrixIT.Platform.Modules.Membership
             {
                 foreach (var role in model.Roles.Where(r => r.Selected))
                 {
-                    _roleManager.AddUserToRole(_user.GroupId, user.Id, role.Name, role.StartDate, role.EndDate);
+                    _roleManager.AddUserToRole(_environment.User.GroupId, user.Id, role.Name, role.StartDate, role.EndDate);
                 }
             }
 
@@ -284,7 +283,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
 
             // Todo: refactor isuserinrole for use here, then remove isuserinrole from role manager.
-            if (_user.IsInRole(PlatformConstants.GROUPADMINROLE) && _roleManager.IsUserInRole(id, PlatformConstants.ADMINROLE))
+            if (_environment.User.IsInRole(PlatformConstants.GROUPADMINROLE) && _roleManager.IsUserInRole(id, PlatformConstants.ADMINROLE))
             {
                 var message = string.Format("Group administrators cannot delete administrators.");
                 Logger.LogToAudit(AuditLogType.IllegalOperation.ToString(), message);
@@ -294,7 +293,7 @@ namespace StrixIT.Platform.Modules.Membership
             _userManager.Delete(id);
 
             // Check if there are licences remaining before saving the user.
-            var groupId = _user.GroupId;
+            var groupId = _environment.User.GroupId;
 
             if (_roleManager.GroupUsesPermissions(groupId))
             {
@@ -321,7 +320,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         private void FillRoleData(UserViewModel model)
         {
-            model.Roles = _roleManager.QueryForGroup(_user.GroupId).ToList();
+            model.Roles = _roleManager.QueryForGroup(_environment.User.GroupId).ToList();
 
             var index = 0;
 
@@ -349,7 +348,7 @@ namespace StrixIT.Platform.Modules.Membership
                     }
                 }
 
-                model.IsCompanyManager = _user.IsInRole(PlatformConstants.GROUPADMINROLE);
+                model.IsCompanyManager = _environment.User.IsInRole(PlatformConstants.GROUPADMINROLE);
             }
         }
 

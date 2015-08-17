@@ -18,7 +18,7 @@
 
 @{
     Layout = "~/Areas/Admin/Views/Shared/_ItemLayout.cshtml";
-    var cultureData = Newtonsoft.Json.JsonConvert.SerializeObject(StrixPlatform.Cultures.Select(c => new { name = c.Code, value = c.NativeName }));
+    var cultureData = Newtonsoft.Json.JsonConvert.SerializeObject(Platform.Cultures.Cultures.Select(c => new { name = c.Code, value = c.NativeName }));
 }
 <div ng-controller="membershipcontroller" ng-cloak>
     <h3><span ng-show="isNew(user)">@Interface.CreateUser</span><span ng-show="!isNew(user)" ng-bind-html="'@Interface.EditUser'.replace('{0}', user.name)"></span></h3>

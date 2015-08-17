@@ -32,11 +32,8 @@ namespace StrixIT.Platform.Modules.Membership
     {
         #region Public Constructors
 
-        private IUserContext _user;
-
-        public GroupController(IGroupService service, IUserContext user) : base(service)
+        public GroupController(IEnvironment environment, IGroupService service) : base(environment, service)
         {
-            _user = user;
         }
 
         #endregion Public Constructors
@@ -59,10 +56,10 @@ namespace StrixIT.Platform.Modules.Membership
         [StrixAuthorization(Roles = PlatformConstants.ADMINROLE)]
         public JsonResult ChangeGroup(Guid groupId)
         {
-            if (_user.Groups.ContainsKey(groupId))
+            if (Environment.User.Groups.ContainsKey(groupId))
             {
-                StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTGROUPID, groupId);
-                StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTUSER, null);
+                Environment.Session.Store(PlatformConstants.CURRENTGROUPID, groupId);
+                Environment.Session.Store(PlatformConstants.CURRENTUSER, null);
                 return this.Json(true);
             }
 
@@ -71,7 +68,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public override ActionResult Index()
         {
-            var config = new GroupListConfiguration(_user);
+            var config = new GroupListConfiguration(Environment.User);
             return this.View(config);
         }
 

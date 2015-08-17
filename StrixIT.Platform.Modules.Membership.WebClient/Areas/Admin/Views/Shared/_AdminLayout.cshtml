@@ -19,10 +19,10 @@
 @using System.Web.Optimization;
 @{
     Layout = "~/Views/Shared/_MasterLayout.cshtml";
-    var showLanguagePicker = StrixPlatform.Cultures.Count > 1;
-    var action = Url.Action(MvcConstants.INDEX, "Home", new { area = string.Empty, language = StrixPlatform.CurrentCultureCode }, null);
+    var showLanguagePicker = Platform.Cultures.Cultures.Count > 1;
+    var action = Url.Action(MvcConstants.INDEX, "Home", new { area = string.Empty, language = Platform.Cultures.CurrentCultureCode }, null);
     var adminLink = string.Format("{0}admin", action != "/" ? action + "/" : action).ToLower();
-    var moduleConfigs = ModuleManager.GetObjectList<IWebModuleConfiguration>();
+    var moduleConfigs = DependencyInjector.GetAll<IWebModuleConfiguration>();
 }
 @section css
 {
@@ -40,12 +40,12 @@
     <header>
         <a href="@adminLink" class="pull-left" title="@Interface.StrixCms"><img src="~/Styles/Images/StrixIT_logo.png" /></a>
         <ul id="adminmenu" kendo-menu k-orientation="'horizontal'" style="display: none; min-width: 150px;" class="pull-right" ng-cloak>
-            @if (User.HasPermission(PlatformPermissions.ViewAdminDashboard))
+            @if (Platform.User.HasPermission(PlatformPermissions.ViewAdminDashboard))
             {
                 <li><a href="@adminLink">@Interface.AdminDashboardTitle</a></li>
             }
             <li>
-                @Html.ActionLink(Interface.BackToSite, MvcConstants.INDEX, "Home", new { area = string.Empty, language = StrixPlatform.CurrentCultureCode }, new { target = "_self" })
+                @Html.ActionLink(Interface.BackToSite, MvcConstants.INDEX, "Home", new { area = string.Empty, language = Platform.Cultures.CurrentCultureCode }, new { target = "_self" })
             </li>
             @if (showLanguagePicker)
             {
@@ -82,7 +82,7 @@
 </div>
 @section javascript
 {
-    @if (File.Exists(StrixPlatform.Environment.MapPath("Areas/Cms/TinyMCE/tiny_mce.js")))
+    @if (Platform.CmsActive)
     {
         <script type="text/javascript" src="@Url.Content("~/Areas/Cms/TinyMCE/tiny_mce.js")"></script>
     }

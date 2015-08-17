@@ -20,7 +20,7 @@
 {
     <span id="username">
         <i class="fa fa-user fa-lg fa-fw"></i>
-        @User.Name
+        @Platform.User.Name
     </span>
     <ul>
         <li><i class="fa fa-user fa-lg fa-fw"></i>@Html.ActionLink(Interface.LogOff, "LogOff", MembershipConstants.ACCOUNT, new { area = MembershipConstants.MEMBERSHIP }, new { target = "_self" })</li>
@@ -31,7 +31,7 @@ else
 {
     <p class="loginlinks">
         [ @Html.ActionLink(Interface.LogOn, "LogIn", MembershipConstants.ACCOUNT, new { area = MembershipConstants.MEMBERSHIP }, null)
-        @if (StrixMembership.Configuration.Registration.AllowUserRegistration)
+        @if (Platform.Configuration.GetConfiguration<MembershipConfiguration>().AllowUserRegistration)
         {
             @:| @Html.ActionLink(Interface.Register, "Register", MembershipConstants.ACCOUNT, new { area = MembershipConstants.MEMBERSHIP }, null)
         }]

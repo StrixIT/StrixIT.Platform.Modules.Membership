@@ -24,7 +24,7 @@
     if (type != null)
     {
         typeName = type.Name.ToLower().Replace("viewmodel", string.Empty);
-        var entityType = ModuleManager.GetObjectTypeByName("EntityViewModel");
+        var entityType = DependencyInjector.GetObjectTypeByName("EntityViewModel");
         isEntityType = entityType != null && entityType.IsAssignableFrom(type);
         editText = ResourceHelper.GetResource(typeof(Interface), string.Format("Edit{0}", typeName)) ?? DefaultInterface.Edit;
         url = isEntityType ? "url" : "id";

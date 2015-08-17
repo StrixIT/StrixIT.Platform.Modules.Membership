@@ -21,6 +21,7 @@
 #endregion Apache License
 
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -40,22 +41,26 @@ namespace StrixIT.Platform.Modules.Membership
         private static Dictionary<Guid, Dictionary<Guid, string>> _roleIdsAndNames;
         private static ConcurrentDictionary<Guid, List<Tuple<string, DateTime, DateTime?>>> _userRoles = new ConcurrentDictionary<Guid, List<Tuple<string, DateTime, DateTime?>>>();
 
+        private IConfiguration _config;
         private IMembershipDataSource _dataSource;
+        private IMembershipSettings _membershipSettings;
         private IUserContext _user;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public RoleManager(IMembershipDataSource dataSource, IUserContext user)
+        public RoleManager(IMembershipDataSource dataSource, IUserContext user, IConfiguration config, IMembershipSettings membershipSettings)
         {
             _dataSource = dataSource;
             _user = user;
+            _config = config;
+            _membershipSettings = membershipSettings;
 
             // Get the application id and load the roles dictionaries on first load.
             if (_appId == Guid.Empty)
             {
-                _appId = ApplicationHelper.GetApplicationId(dataSource);
+                _appId = ApplicationHelper.GetApplicationId(dataSource, _config);
                 GetRoleIdsAndNames();
                 GetUserRoles();
             }
@@ -264,7 +269,7 @@ namespace StrixIT.Platform.Modules.Membership
                 }
                 else
                 {
-                    groupEntry = new GroupInRole(StrixPlatform.ApplicationId, roleId);
+                    groupEntry = new GroupInRole(_membershipSettings.ApplicationId, roleId);
                     _dataSource.Save(groupEntry);
                 }
             }
@@ -387,8 +392,8 @@ namespace StrixIT.Platform.Modules.Membership
         private Guid GetRoleId(string roleName, string entity, string action)
         {
             GetRoleIdsAndNames();
-            var usePermissions = StrixMembership.Configuration.UsePermissions;
-            var mainGroupId = StrixPlatform.MainGroupId;
+            var usePermissions = _config.GetConfiguration<MembershipConfiguration>().UsePermissions;
+            var mainGroupId = _membershipSettings.MainGroupId;
             var dictionary = usePermissions ? _roleIdsAndNames[_user.GroupId] : _roleIdsAndNames[mainGroupId];
 
             if (!dictionary.ContainsValue(roleName.ToLower()))

@@ -40,7 +40,7 @@
         @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Email)
     </div>
-    if (StrixMembership.Configuration.Registration.UseRegistrationComment)
+    if (Platform.Configuration.GetConfiguration<MembershipConfiguration>().UseRegistrationComment)
     {
         <div>
             @Html.LabelFor(m => m.RegistrationComment)
@@ -48,7 +48,7 @@
             @Html.ValidationMessageFor(m => m.RegistrationComment)
         </div>
     }
-    if (StrixMembership.Configuration.Registration.UseTerms)
+    if (Platform.Configuration.GetConfiguration<MembershipConfiguration>().UseTerms)
     {
         <div class="checkbox">
             @Html.CheckBoxFor(m => m.AcceptedTerms, new { @class = "checkbox inline" }) @Html.LabelFor(m => m.AcceptedTerms, new { @class = "checkbox-label" })

@@ -38,62 +38,21 @@ namespace StrixIT.Platform.Modules.Membership
         private User _adminUser;
 
         private IMembershipDataSource _dataSource;
+        private IEnvironment _environment;
         private ISecurityManager _securityManager;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public MembershipService(IMembershipDataSource dataSource, ISecurityManager securityManager)
+        public MembershipService(IMembershipDataSource dataSource, ISecurityManager securityManager, IEnvironment environment)
         {
             this._dataSource = dataSource;
             this._securityManager = securityManager;
+            _environment = environment;
         }
 
         #endregion Public Constructors
-
-        #region Public Properties
-
-        public Guid AdminId
-        {
-            get
-            {
-                if (this._adminUser == null)
-                {
-                    this._adminUser = this._dataSource.Query<User>().Where(g => g.Email.ToLower() == Resources.DefaultValues.AdministratorEmail).First();
-                }
-
-                return this._adminUser.Id;
-            }
-        }
-
-        public Guid ApplicationId
-        {
-            get
-            {
-                if (_appId == Guid.Empty)
-                {
-                    _appId = this._dataSource.Query<Application>().Where(g => g.Name.ToLower() == StrixPlatform.Configuration.ApplicationName.ToLower()).Select(a => a.Id).First();
-                }
-
-                return _appId;
-            }
-        }
-
-        public Guid MainGroupId
-        {
-            get
-            {
-                if (_mainGroup == null)
-                {
-                    _mainGroup = this._dataSource.Query<Group>().Where(g => g.Name.ToLower() == Resources.DefaultValues.MainGroupName).First();
-                }
-
-                return _mainGroup.Id;
-            }
-        }
-
-        #endregion Public Properties
 
         #region Public Methods
 
@@ -129,7 +88,7 @@ namespace StrixIT.Platform.Modules.Membership
         {
             if (_appId == Guid.Empty)
             {
-                var appName = StrixPlatform.Configuration.ApplicationName;
+                var appName = _environment.Configuration.GetConfiguration<PlatformConfiguration>().ApplicationName;
                 _appId = this._dataSource.Query<Application>().Where(a => a.Name.ToLower() == appName.ToLower()).Select(a => a.Id).FirstOrDefault();
 
                 if (_appId == Guid.Empty)
@@ -144,16 +103,16 @@ namespace StrixIT.Platform.Modules.Membership
 
         public void Initialize()
         {
-            StrixPlatform.WriteStartupMessage("Check and create the application.");
+            Logger.Log("Check and create the application.");
             this.InitApplication();
 
-            StrixPlatform.WriteStartupMessage("Check and create the main group.");
+            Logger.Log("Check and create the main group.");
             this.InitMainGroup();
 
-            StrixPlatform.WriteStartupMessage("Check and create the admin user.");
+            Logger.Log("Check and create the admin user.");
             this.InitAdminUser();
 
-            StrixPlatform.WriteStartupMessage("Check and create the application permissions.");
+            Logger.Log("Check and create the application permissions.");
             this.InitPermissions();
         }
 
@@ -185,7 +144,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public void InitPermissions()
         {
-            var moduleConfigurations = ModuleManager.GetObjectList<IModuleConfiguration>().OrderBy(e => e.Name).ToList();
+            var moduleConfigurations = DependencyInjector.GetAll<IModuleConfiguration>().OrderBy(e => e.Name).ToList();
             var adminPermissionSet = this.CreateAdminPermissionSet();
             this.CreatePermissions(moduleConfigurations, adminPermissionSet);
             this.CreateAndUpdateRoles(moduleConfigurations);
@@ -225,7 +184,7 @@ namespace StrixIT.Platform.Modules.Membership
             var adminId = Guid.NewGuid();
             string password = this._securityManager.EncodePassword(Resources.DefaultValues.AdministratorPassword);
             var admin = new User(adminId, Resources.DefaultValues.AdministratorEmail, Resources.DefaultValues.AdministratorName);
-            admin.PreferredCulture = StrixPlatform.DefaultCultureCode;
+            admin.PreferredCulture = _environment.Cultures.DefaultCultureCode;
             this._dataSource.Save(admin);
 
             var security = new UserSecurity(admin.Id);

@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = StrixPlatform.Configuration.ApplicationName;
+    ViewBag.Title = Platform.Configuration.GetConfiguration<PlatformConfiguration>().ApplicationName;
     var displayOptions = new DisplayOptions("Cms", "Html", null, "Home", null, Interface.HomePageText);
 }
 <div class="content-wrapper">

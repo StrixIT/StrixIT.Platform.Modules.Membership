@@ -30,10 +30,10 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Fields
 
         private IMembershipDataSource _dataSource;
+        private IEnvironment _environment;
         private IMembershipMailer _mailer;
         private IRoleManager _roleManager;
         private ISecurityManager _securityManager;
-        private IUserContext _user;
         private IUserManager _userManager;
 
         #endregion Private Fields
@@ -46,14 +46,14 @@ namespace StrixIT.Platform.Modules.Membership
             IUserManager userManager,
             IRoleManager roleManager,
             IMembershipMailer mailer,
-            IUserContext user)
+            IEnvironment environment)
         {
             _dataSource = dataSource;
             _securityManager = securityManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _mailer = mailer;
-            _user = user;
+            _environment = environment;
         }
 
         #endregion Public Constructors
@@ -99,7 +99,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
 
             var password = _securityManager.GeneratePassword();
-            User user = _userManager.Create(model.Name, model.Email, StrixPlatform.CurrentCultureCode, password, false, model.AcceptedTerms, model.RegistrationComment);
+            User user = _userManager.Create(model.Name, model.Email, _environment.Cultures.CurrentCultureCode, password, false, model.AcceptedTerms, model.RegistrationComment);
             var result = new SaveResult<UserViewModel>(user != null, user.Map<UserViewModel>());
 
             if (user != null)
@@ -109,10 +109,10 @@ namespace StrixIT.Platform.Modules.Membership
                 SaveChanges();
 
                 // Add the user role to allow logging in.
-                _roleManager.AddUserToRole(_user.GroupId, user.Id, PlatformConstants.USERROLE);
+                _roleManager.AddUserToRole(_environment.User.GroupId, user.Id, PlatformConstants.USERROLE);
                 SaveChanges();
 
-                if (StrixMembership.Configuration.Registration.AutoApproveUsers)
+                if (_environment.Configuration.GetConfiguration<MembershipConfiguration>().AutoApproveUsers)
                 {
                     if (!_mailer.SendApprovedAccountMail(user.PreferredCulture, user.Name, user.Email, verificationId))
                     {

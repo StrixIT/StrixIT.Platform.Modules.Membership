@@ -35,18 +35,18 @@ namespace StrixIT.Platform.Modules.Membership
 
         private static List<User> _loggedInUsers = new List<User>();
         private IMembershipDataSource _dataSource;
+        private IEnvironment _environment;
         private ISecurityManager _securityManager;
-        private IUserContext _user;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public UserManager(IMembershipDataSource dataSource, ISecurityManager securityManager, IUserContext user)
+        public UserManager(IMembershipDataSource dataSource, ISecurityManager securityManager, IEnvironment environment)
         {
             _dataSource = dataSource;
             _securityManager = securityManager;
-            _user = user;
+            _environment = environment;
         }
 
         #endregion Public Constructors
@@ -188,8 +188,8 @@ namespace StrixIT.Platform.Modules.Membership
 
         public IQueryable<User> Query()
         {
-            var getForMainGroup = _user.IsInMainGroup && _user.IsAdministrator;
-            var groupId = _user.GroupId;
+            var getForMainGroup = _environment.User.IsInMainGroup && _environment.User.IsAdministrator;
+            var groupId = _environment.User.GroupId;
             var query = _dataSource.Query<User>("Roles").Where(u => u.Roles.Any(r => r.GroupRoleGroupId == groupId) || (getForMainGroup && !u.Roles.Any()));
             return query;
         }
@@ -214,12 +214,12 @@ namespace StrixIT.Platform.Modules.Membership
                 var encodedPassword = _securityManager.EncodePassword(password);
 
                 user = new User(Guid.NewGuid(), email, name);
-                user.PreferredCulture = string.IsNullOrWhiteSpace(preferredCulture) ? StrixPlatform.CurrentCultureCode : preferredCulture;
+                user.PreferredCulture = string.IsNullOrWhiteSpace(preferredCulture) ? _environment.Cultures.CurrentCultureCode : preferredCulture;
                 user.DateAcceptedTerms = acceptedTerms ? (DateTime?)DateTime.Now : null;
 
                 var security = new UserSecurity(user.Id);
                 security.Password = encodedPassword;
-                security.Approved = isApproved || StrixMembership.Configuration.Registration.AutoApproveUsers;
+                security.Approved = isApproved || _environment.Configuration.GetConfiguration<MembershipConfiguration>().AutoApproveUsers;
                 security.RegistrationComment = registrationComment;
 
                 var session = new UserSessionStorage(user.Id);
@@ -240,7 +240,7 @@ namespace StrixIT.Platform.Modules.Membership
                 args.Add("Id", user.Id);
                 args.Add("UserName", user.Name);
                 args.Add("UserEmail", user.Email);
-                StrixPlatform.RaiseEvent<GeneralEvent>(new GeneralEvent("UserCreateEvent", args));
+                PlatformEvents.Raise<GeneralEvent>(new GeneralEvent("UserCreateEvent", args));
             }
 
             return user;
@@ -269,7 +269,7 @@ namespace StrixIT.Platform.Modules.Membership
             args.Add("Id", user.Id);
             args.Add("UserName", user.Name);
             args.Add("UserEmail", user.Email);
-            StrixPlatform.RaiseEvent<GeneralEvent>(new GeneralEvent("UserUpdateEvent", args));
+            PlatformEvents.Raise<GeneralEvent>(new GeneralEvent("UserUpdateEvent", args));
 
             return user;
         }
@@ -339,14 +339,31 @@ namespace StrixIT.Platform.Modules.Membership
 
         #region Private Methods
 
-        private static void CheckPassword(string password)
+        private void CheckEmailAvailable(string email, Guid? id = null)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentNullException("email");
+            }
+
+            var available = !Query().Any(u => u.Email.ToLower() == email.ToLower() && (id == null || (id.HasValue && id.Value != u.Id)));
+
+            if (!available)
+            {
+                var ex = new StrixMembershipException(string.Format("Email {0} is already in use.", email));
+                Logger.Log(ex.Message, ex, LogLevel.Fatal);
+                throw ex;
+            }
+        }
+
+        private void CheckPassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
             {
                 throw new ArgumentNullException("password");
             }
 
-            if (password.Length < StrixMembership.Configuration.Password.MinRequiredPasswordLength)
+            if (password.Length < _environment.Configuration.GetConfiguration<MembershipConfiguration>().MinRequiredPasswordLength)
             {
                 var ex = new StrixMembershipException();
                 Logger.Log(ex.Message, ex, LogLevel.Fatal);
@@ -363,26 +380,9 @@ namespace StrixIT.Platform.Modules.Membership
                 }
             }
 
-            if (specialChars < StrixMembership.Configuration.Password.MinRequiredNonAlphanumericCharacters)
+            if (specialChars < _environment.Configuration.GetConfiguration<MembershipConfiguration>().MinRequiredNonAlphanumericCharacters)
             {
                 var ex = new StrixMembershipException("The password does not have enough non-alphanumeric characters.");
-                Logger.Log(ex.Message, ex, LogLevel.Fatal);
-                throw ex;
-            }
-        }
-
-        private void CheckEmailAvailable(string email, Guid? id = null)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new ArgumentNullException("email");
-            }
-
-            var available = !Query().Any(u => u.Email.ToLower() == email.ToLower() && (id == null || (id.HasValue && id.Value != u.Id)));
-
-            if (!available)
-            {
-                var ex = new StrixMembershipException(string.Format("Email {0} is already in use.", email));
                 Logger.Log(ex.Message, ex, LogLevel.Fatal);
                 throw ex;
             }

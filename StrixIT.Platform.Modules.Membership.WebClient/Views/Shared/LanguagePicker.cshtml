@@ -17,7 +17,7 @@
 <!-- #endregion -->
 
 @{
-    var list = StrixPlatform.Cultures;
+    var list = Platform.Cultures.Cultures;
 }
 @if (list.Count() > 1)
 {
@@ -27,13 +27,13 @@
         {
             var imagePath = string.Format("Styles\\Images\\flag_{0}.jpg", language.Code);
             var image = System.IO.File.Exists(Server.MapPath("~") + imagePath) ? "/" + imagePath.Replace("\\", "/") : null;
-            <li @if (language.Code == StrixPlatform.CurrentCultureCode)
+            <li @if (language.Code == Platform.Cultures.CurrentCultureCode)
             {
-                    @: class="selected"
+                @: class="selected"
             }>
-                <a ng-href="{{ getUrl('@language.Code.ToLower()', element) }}" target="{{ getTarget() }}" href="#">
-                    <img src="@image" class="@string.Format("culture_{0}", language.Code)" alt="@language.Name" title="@language.NativeName" />
-                </a>
+            <a ng-href="{{ getUrl('@language.Code.ToLower()', element) }}" target="{{ getTarget() }}" href="#">
+            <img src="@image" class="@string.Format("culture_{0}", language.Code)" alt="@language.Name" title="@language.NativeName" />
+            </a>
             </li>
         }
     </ul>

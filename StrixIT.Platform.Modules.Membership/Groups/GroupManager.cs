@@ -79,7 +79,7 @@ namespace StrixIT.Platform.Modules.Membership
                 var args = new Dictionary<string, object>();
                 args.Add("Id", group.Id);
                 args.Add("GroupName", group.Name);
-                StrixPlatform.RaiseEvent<GeneralEvent>(new GeneralEvent("GroupCreateEvent", args));
+                PlatformEvents.Raise<GeneralEvent>(new GeneralEvent("GroupCreateEvent", args));
             }
 
             return group;
@@ -164,7 +164,7 @@ namespace StrixIT.Platform.Modules.Membership
                 var args = new Dictionary<string, object>();
                 args.Add("Id", group.Id);
                 args.Add("GroupName", group.Name);
-                StrixPlatform.RaiseEvent<GeneralEvent>(new GeneralEvent("GroupUpdateEvent", args));
+                PlatformEvents.Raise<GeneralEvent>(new GeneralEvent("GroupUpdateEvent", args));
             }
 
             return group;

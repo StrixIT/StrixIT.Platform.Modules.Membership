@@ -20,6 +20,7 @@
 
 #endregion Apache License
 
+using StrixIT.Platform.Core;
 using System.Web;
 using System.Web.Security;
 
@@ -27,13 +28,28 @@ namespace StrixIT.Platform.Modules.Membership
 {
     public class AuthenticationCookieService : IAuthenticationCookieService
     {
+        #region Private Fields
+
+        private IConfiguration _config;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
+        public AuthenticationCookieService(IConfiguration config)
+        {
+            _config = config;
+        }
+
+        #endregion Public Constructors
+
         #region Public Methods
 
         public void SetAuthCookie(string userName)
         {
             if (HttpContext.Current != null)
             {
-                var createPersistentCookie = !StrixMembership.Configuration.LimitAuthenticationToBrowserSession;
+                var createPersistentCookie = !_config.GetConfiguration<MembershipConfiguration>().LimitAuthenticationToBrowserSession;
                 FormsAuthentication.SetAuthCookie(userName, createPersistentCookie);
             }
         }

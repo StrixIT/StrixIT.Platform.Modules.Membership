@@ -23,11 +23,11 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             DataMapper.CreateMap<GroupInRole, AssignRoleModel>().ForMember(ar => ar.Id, c => c.MapFrom(gr => gr.RoleId));
         }
 
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-        }
+        //[TestInitialize]
+        //public void Init()
+        //{
+        //    StrixPlatform.ApplicationId = MembershipTestData.AppId;
+        //}
 
         #endregion Public Methods
 

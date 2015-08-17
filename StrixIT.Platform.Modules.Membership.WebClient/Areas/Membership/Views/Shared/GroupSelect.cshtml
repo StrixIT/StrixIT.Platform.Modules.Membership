@@ -16,17 +16,17 @@
 *@
 <!-- #endregion -->
 
-@if (StrixMembership.Configuration.UseGroups)
+@if (Platform.Configuration.GetConfiguration<MembershipConfiguration>().UseGroups)
 {
     List<SelectListItem> groupSelectlist = null;
     bool showDropDown = false;
 
-    if (Request.IsAuthenticated && StrixMembership.Configuration.UseGroups)
+    if (Request.IsAuthenticated)
     {
         groupSelectlist = new List<SelectListItem>();
-        var currentId = User.GroupId;
+        var currentId = Platform.User.GroupId;
 
-        foreach (var group in User.Groups)
+        foreach (var group in Platform.User.Groups)
         {
             groupSelectlist.Add(new SelectListItem { Value = group.Key.ToString(), Text = group.Value, Selected = currentId == group.Key });
         }
@@ -38,7 +38,7 @@
     {
         <span id="groupname">
             <i class="fa fa-group fa-lg fa-fw"></i>
-            @Html.RenderEscapedHtml(User.GroupName)
+            @Html.RenderEscapedHtml(Platform.User.GroupName)
         </span>
         <ul>
             @foreach (var item in groupSelectlist)

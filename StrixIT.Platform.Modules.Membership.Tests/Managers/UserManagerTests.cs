@@ -6,6 +6,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.DependencyInjection;
+using StrixIT.Platform.Core.Environment;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,26 +16,26 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass]
     public class UserManagerTests
     {
-        #region Public Methods
+        //#region Public Methods
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-            StrixPlatform.Environment = null;
-            DependencyInjector.Injector = null;
-            Logger.LoggingService = null;
-        }
+        //[TestCleanup]
+        //public void Cleanup()
+        //{
+        //    StrixPlatform.Environment = null;
+        //    DependencyInjector.Injector = null;
+        //    Logger.LoggingService = null;
+        //}
 
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            DependencyInjector.Injector = new Mock<IDependencyInjector>().Object;
-            StrixPlatform.Environment = new DefaultEnvironment();
-            Logger.LoggingService = new Mock<ILoggingService>().Object;
-        }
+        //[TestInitialize]
+        //public void Init()
+        //{
+        //    StrixPlatform.ApplicationId = MembershipTestData.AppId;
+        //    DependencyInjector.Injector = new Mock<IDependencyInjector>().Object;
+        //    StrixPlatform.Environment = new DefaultEnvironment();
+        //    Logger.LoggingService = new Mock<ILoggingService>().Object;
+        //}
 
-        #endregion Public Methods
+        //#endregion Public Methods
 
         #region LoggedInUsers
 
@@ -234,8 +236,9 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var dict = new Dictionary<string, object>();
             dict.Add("CurrentGroupId", MembershipTestData.MainGroupId);
             var environmentMock = new Mock<IEnvironment>();
-            environmentMock.Setup(e => e.GetSessionDictionary()).Returns(dict);
-            StrixPlatform.Environment = environmentMock.Object;
+            var sessionMock = new Mock<ISessionService>();
+            sessionMock.Setup(s => s.GetAll()).Returns(dict);
+            environmentMock.Setup(e => e.Session).Returns(sessionMock.Object);
             mock.UserManager.SaveSession(MembershipTestData.AdminId, null);
             mock.DataSourceMock.Mock.Verify(m => m.Save(It.IsAny<UserSessionStorage>()), Times.Once());
         }

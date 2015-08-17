@@ -6,6 +6,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,22 +16,22 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass()]
     public class GroupManagerTests
     {
-        #region Public Methods
+        //#region Public Methods
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-            DependencyInjector.Injector = null;
-        }
+        //[TestCleanup]
+        //public void Cleanup()
+        //{
+        //    DependencyInjector.Injector = null;
+        //}
 
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            DependencyInjector.Injector = new Mock<IDependencyInjector>().Object;
-        }
+        //[TestInitialize]
+        //public void Init()
+        //{
+        //    StrixPlatform.ApplicationId = MembershipTestData.AppId;
+        //    DependencyInjector.Injector = new Mock<IDependencyInjector>().Object;
+        //}
 
-        #endregion Public Methods
+        //#endregion Public Methods
 
         #region Save
 

@@ -29,22 +29,26 @@ namespace StrixIT.Platform.Modules.Membership
     /// <summary>
     /// A view model for roles.
     /// </summary>
-    public class RoleViewModel : BaseCrudDto
+    public class RoleViewModel : IViewModel
     {
-        #region Public Constructors
-
-        public RoleViewModel() : base(typeof(Role))
-        {
-        }
-
-        #endregion Public Constructors
-
         #region Public Properties
+
+        public bool CanDelete { get; set; }
+
+        public bool CanEdit { get; set; }
 
         /// <summary>
         /// Gets or sets the role description.
         /// </summary>
         public string Description { get; set; }
+
+        public Type EntityType
+        {
+            get
+            {
+                return typeof(Role);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the role id.

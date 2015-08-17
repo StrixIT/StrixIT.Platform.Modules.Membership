@@ -4,6 +4,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 using Moq;
+using StrixIT.Platform.Core;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
@@ -11,6 +12,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     {
         #region Private Fields
 
+        private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
         private DataSourceMock _dataSourceMock = new DataSourceMock();
         private ISecurityManager _securityManager;
         private Mock<ISecurityManager> _securityManagerMock = new Mock<ISecurityManager>();
@@ -24,7 +26,20 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _dataSourceMock.RegisterData<UserSecurity>(MembershipTestData.UserSecurity);
             _dataSourceMock.RegisterData<User>(MembershipTestData.Users);
             _dataSourceMock.RegisterData<Role>(MembershipTestData.Roles);
-            _securityManager = new SecurityManager(_dataSourceMock.Mock.Object);
+
+            var platformConfiguration = new PlatformConfiguration();
+            platformConfiguration.ApplicationName = "StrixIT Membership Tests";
+            var membershipConfiguration = new MembershipConfiguration();
+            membershipConfiguration.MinRequiredPasswordLength = 8;
+            membershipConfiguration.MinRequiredNonAlphanumericCharacters = 1;
+            membershipConfiguration.PasswordHashIterations = 1000;
+            membershipConfiguration.MaxInvalidPasswordAttempts = 5;
+            membershipConfiguration.PasswordAttemptWindow = 10;
+            membershipConfiguration.VerificationIdValidWindow = 120;
+            _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
+            _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+
+            _securityManager = new SecurityManager(_dataSourceMock.Mock.Object, _configMock.Object);
         }
 
         #endregion Public Constructors

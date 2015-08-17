@@ -29,17 +29,21 @@ namespace StrixIT.Platform.Modules.Membership
     /// <summary>
     /// A view model for creating and editing groups.
     /// </summary>
-    public class GroupViewModel : BaseCrudDto
+    public class GroupViewModel : IViewModel
     {
-        #region Public Constructors
-
-        public GroupViewModel() : base(typeof(Group))
-        {
-        }
-
-        #endregion Public Constructors
-
         #region Public Properties
+
+        public bool CanDelete { get; set; }
+
+        public bool CanEdit { get; set; }
+
+        public Type EntityType
+        {
+            get
+            {
+                return typeof(Group);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the id of the group.

@@ -21,6 +21,7 @@
 #endregion Apache License
 
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using StrixIT.Platform.Web;
 using System;
 using System.Collections.Generic;
@@ -34,18 +35,20 @@ namespace StrixIT.Platform.Modules.Membership
         private IAuthenticationCookieService _cookieService;
         private IMembershipDataSource _dataSource;
         private ISecurityManager _securityManager;
+        private ISessionService _session;
         private IUserManager _userManager;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public AuthenticationService(IMembershipDataSource dataSource, IUserManager userManager, ISecurityManager securityManager, IAuthenticationCookieService cookieService)
+        public AuthenticationService(IMembershipDataSource dataSource, IUserManager userManager, ISecurityManager securityManager, IAuthenticationCookieService cookieService, ISessionService session)
         {
             this._dataSource = dataSource;
             this._userManager = userManager;
             this._securityManager = securityManager;
             this._cookieService = cookieService;
+            _session = session;
         }
 
         #endregion Public Constructors
@@ -65,13 +68,13 @@ namespace StrixIT.Platform.Modules.Membership
             {
                 var user = this._userManager.Get(email);
                 this._userManager.RemoveLoggedInUser(user.Id);
-                this._userManager.SaveSession(user.Id, sessionValues != null ? sessionValues : StrixPlatform.Environment.GetSessionDictionary());
+                this._userManager.SaveSession(user.Id, sessionValues != null ? sessionValues : _session.GetAll());
                 this._dataSource.SaveChanges();
                 Logger.LogToAudit(AuditLogType.LoginLogout.ToString(), string.Format("User {0} logged out.", user.Name));
-                StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTUSEREMAIL, null);
+                _session.Store(PlatformConstants.CURRENTUSEREMAIL, null);
             }
 
-            StrixPlatform.Environment.AbandonSession();
+            _session.Abandon();
         }
 
         public LoginUserResult LogOn(string email, string password)
@@ -100,7 +103,7 @@ namespace StrixIT.Platform.Modules.Membership
                 if (validateResult == ValidateUserResult.Valid)
                 {
                     this._cookieService.SetAuthCookie(email);
-                    StrixPlatform.Environment.StoreInSession(PlatformConstants.CURRENTUSEREMAIL, email);
+                    _session.Store(PlatformConstants.CURRENTUSEREMAIL, email);
                     var user = this._userManager.Get(id.Value);
                     this._userManager.UpdateLoggedInUser(user);
                     result.Success = true;

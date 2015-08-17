@@ -17,13 +17,22 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     {
         #region Public Methods
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-            StrixPlatform.Environment = null;
-            Logger.LoggingService = null;
-            StrixPlatform.MainGroupId = MembershipTestData.MainGroupId;
-        }
+        //[TestCleanup]
+        //public void Cleanup()
+        //{
+        //    StrixPlatform.Environment = null;
+        //    Logger.LoggingService = null;
+        //    StrixPlatform.MainGroupId = MembershipTestData.MainGroupId;
+        //}
+
+        //[TestInitialize]
+        //public void Init()
+        //{
+        //    StrixPlatform.ApplicationId = MembershipTestData.AppId;
+        //    StrixPlatform.Environment = new DefaultEnvironment();
+        //    StrixPlatform.MainGroupId = MembershipTestData.MainGroupId;
+        //    Logger.LoggingService = new Mock<ILoggingService>().Object;
+        //}
 
         [TestMethod]
         public void GetPermissionSetForGroupShouldReturnProperPermissionSet()
@@ -45,15 +54,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             group.UsePermissions = true;
             var result = mock.RoleManager.GroupUsesPermissions(MembershipTestData.DivingGroupId);
             Assert.IsTrue(result);
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            StrixPlatform.Environment = new DefaultEnvironment();
-            StrixPlatform.MainGroupId = MembershipTestData.MainGroupId;
-            Logger.LoggingService = new Mock<ILoggingService>().Object;
         }
 
         #endregion Public Methods

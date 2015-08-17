@@ -6,6 +6,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,28 +16,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     [TestClass()]
     public class MembershipMailerTests
     {
-        #region Public Methods
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            StrixPlatform.Environment = null;
-            Logger.LoggingService = null;
-            DependencyInjector.Injector = null;
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            var environmentMock = new Mock<IEnvironment>();
-            StrixPlatform.Environment = new DefaultEnvironment();
-            Logger.LoggingService = new Mock<ILoggingService>().Object;
-            DependencyInjector.Injector = new Mock<IDependencyInjector>().Object;
-        }
-
-        #endregion Public Methods
-
         #region Send Mails
 
         [TestMethod()]
@@ -183,7 +162,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         public void SendMailForDefaultCultureWhenSpecificTemplateExistsShouldSendCorrectMailInfoToMailer()
         {
             var mock = new MembershipMailerMock();
-            var baseName = string.Format("{0}\\Templates\\PasswordSetMail_en", StrixPlatform.Environment.WorkingDirectory);
+            var baseName = string.Format("{0}\\Templates\\PasswordSetMail_en", Core.Helpers.GetWorkingDirectory());
 
             if (File.Exists(baseName + ".html"))
             {

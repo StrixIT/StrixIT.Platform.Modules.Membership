@@ -23,6 +23,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoryQ;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
+using StrixIT.Platform.Framework;
 using StrixIT.Platform.Testing;
 using System;
 using System.Linq;
@@ -86,12 +88,14 @@ namespace StrixIT.Platform.Modules.Membership.Specs
 
         private void CreateUser(string email, string name, string password, bool isApproved, bool isLockedOut, bool createRoles)
         {
+            DependencyInjector.Injector = new StructureMapDependencyInjector();
             var dataSource = DependencyInjector.Get<IMembershipDataSource>();
             var securityService = DependencyInjector.Get<ISecurityManager>();
+            var cultureService = DependencyInjector.Get<ICultureService>();
             var mainGroupId = dataSource.Query<Group>().Where(g => g.Name.ToLower() == Resources.DefaultValues.MainGroupName.ToLower()).Select(a => a.Id).FirstOrDefault();
 
             var user = new User(Guid.NewGuid(), email, name);
-            user.PreferredCulture = StrixPlatform.DefaultCultureCode;
+            user.PreferredCulture = cultureService.DefaultCultureCode;
             var userSecurity = new UserSecurity(user.Id);
             userSecurity.Password = securityService.EncodePassword(password);
             userSecurity.Approved = isApproved;

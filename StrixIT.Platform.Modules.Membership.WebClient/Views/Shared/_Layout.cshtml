@@ -18,10 +18,11 @@
 @using System.Web.Optimization;
 @{
     Layout = "~/Views/Shared/_MasterLayout.cshtml";
-    var showLanguagePicker = StrixPlatform.Cultures.Count > 1;
-    var moduleConfigs = ModuleManager.GetObjectList<IModuleConfiguration>();
-    var webModuleConfigs = ModuleManager.GetObjectList<IWebModuleConfiguration>();
+    var showLanguagePicker = Platform.Cultures.Cultures.Count > 1;
+    var moduleConfigs = DependencyInjector.GetAll<IModuleConfiguration>();
+    var webModuleConfigs = DependencyInjector.GetAll<IWebModuleConfiguration>();
     var hasModuleLinks = moduleConfigs.Any(m => m.ModuleLinks.Any());
+    var appName = Platform.Configuration.GetConfiguration<PlatformConfiguration>().ApplicationName;
 }
 @section css
 {
@@ -38,10 +39,10 @@
 <div ng-app="strixSite">
     <header>
         <nav class="navbar navbar-default navbar-static-top" role="navigation">
-            <a href="@Url.Action(MvcConstants.INDEX, "Home", new { area = string.Empty }, null)" class="navbar-brand" title="@Interface.StrixCms">@StrixPlatform.Configuration.ApplicationName</a>
+            <a href="@Url.Action(MvcConstants.INDEX, "Home", new { area = string.Empty }, null)" class="navbar-brand" title="@Interface.StrixCms">@appName</a>
             <ul class="nav navbar-nav">
-                <li>@Html.ActionLink(Interface.Home, MvcConstants.INDEX, "Home", new { area = string.Empty, language = StrixPlatform.CurrentCultureCode }, null)</li>
-                @if (hasModuleLinks && User.HasPermission(PlatformPermissions.ViewAdminDashboard))
+                <li>@Html.ActionLink(Interface.Home, MvcConstants.INDEX, "Home", new { area = string.Empty, language = Platform.Cultures.CurrentCultureCode }, null)</li>
+                @if (hasModuleLinks && Platform.User.HasPermission(PlatformPermissions.ViewAdminDashboard))
                 {
                     <li>@Html.ActionLink(Interface.AdminDashboardTitle, MvcConstants.INDEX, WebConstants.ADMIN, new { area = string.Empty }, null)</li>
                 }

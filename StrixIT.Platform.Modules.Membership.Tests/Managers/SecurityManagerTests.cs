@@ -67,26 +67,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
         #endregion Public Methods
 
-        #region Settings
-
-        [TestMethod()]
-        public void MinRequiredNonalphanumericCharactersShouldReturnConfiguredValue()
-        {
-            var mock = new SecurityManagerMock();
-            var result = StrixMembership.Configuration.Password.MinRequiredNonAlphanumericCharacters;
-            Assert.AreEqual(1, result);
-        }
-
-        [TestMethod()]
-        public void MinRequiredPasswordLengthShouldReturnConfiguredValue()
-        {
-            var mock = new SecurityManagerMock();
-            var result = StrixMembership.Configuration.Password.MinRequiredPasswordLength;
-            Assert.AreEqual(8, result);
-        }
-
-        #endregion Settings
-
         #region Approve and Unlock User
 
         [TestMethod()]

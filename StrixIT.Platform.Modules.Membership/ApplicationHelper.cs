@@ -37,11 +37,11 @@ namespace StrixIT.Platform.Modules.Membership
 
         #region Public Methods
 
-        public static Guid GetApplicationId(IMembershipDataSource dataSource)
+        public static Guid GetApplicationId(IMembershipDataSource dataSource, IConfiguration config)
         {
             if (_appId == Guid.Empty)
             {
-                var appName = StrixPlatform.Configuration.ApplicationName;
+                var appName = config.GetConfiguration<PlatformConfiguration>().ApplicationName;
                 _appId = dataSource.Query<Application>().Where(a => a.Name.ToLower() == appName.ToLower()).Select(a => a.Id).FirstOrDefault();
             }
 

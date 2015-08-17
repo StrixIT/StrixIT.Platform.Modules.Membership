@@ -22,7 +22,7 @@
 <div ng-controller="membershipcontroller" ng-cloak>
     <h3 ng-bind-html="'@Interface.ViewUser'.replace('{0}', user.name)"></h3>
     <p>@Interface.Email {{ user.email }}</p>
-    @if (StrixMembership.Configuration.Registration.UseTerms)
+    @if (Platform.Configuration.GetConfiguration<MembershipConfiguration>().UseTerms)
     {
         <p>@Interface.DateAcceptedTerms {{ user.dateAcceptedTerms | kendoDate }}</p>
     }

@@ -25,7 +25,7 @@
         <strix-cms-editor editor-label="@DefaultInterface.Name">
             <input type="text" id="name" name="name" class="k-textbox" ng-model="group.name" required maxlength="250" data-required-msg="Enter a name" data-remote data-remote-url="/admin/membership/group/checkname" data-remote-msg="This name is already in use" strix-show-html />
         </strix-cms-editor>
-        @if (StrixMembership.Configuration.UsePermissions)
+        @if (Platform.Configuration.GetConfiguration<MembershipConfiguration>().UsePermissions)
         {
             <strix-cms-editor editor-label="@Interface.UsePermissions">
                 <input type="checkbox" name="usePermissions" ng-model="group.usePermissions" />

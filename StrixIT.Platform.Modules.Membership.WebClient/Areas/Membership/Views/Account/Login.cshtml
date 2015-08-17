@@ -50,7 +50,7 @@
 <p>
     @Html.Raw(string.Format(Interface.ChangePasswordLink, Html.ActionLink(Interface.ResetPassword, "RequestSetPassword"))).
 </p>
-@if (StrixMembership.Configuration.Registration.AllowUserRegistration)
+@if (Platform.Configuration.GetConfiguration<MembershipConfiguration>().AllowUserRegistration)
 {
     <p>
         @Html.Raw(string.Format(Interface.RegisterLink, Html.ActionLink(Interface.Register, "Register"))).

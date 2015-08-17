@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 using System.Linq;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
@@ -13,6 +14,7 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     {
         #region Private Fields
 
+        private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
         private DataSourceMock _dataSourceMock = new DataSourceMock();
         private Mock<ISecurityManager> _securityManagerMock = new Mock<ISecurityManager>();
         private IUserManager _userManager;
@@ -32,11 +34,29 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _dataSourceMock.Mock.Setup(d => d.Save<UserSecurity>(It.IsAny<UserSecurity>())).Returns<UserSecurity>(s => s);
             _dataSourceMock.Mock.Setup(d => d.Save<UserSessionStorage>(It.IsAny<UserSessionStorage>())).Returns<UserSessionStorage>(s => s);
 
-            var user = new Mock<IUserContext>();
-            user.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
-            user.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+            var userMock = new Mock<IUserContext>();
+            userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
 
-            _userManager = new UserManager(_dataSourceMock.Mock.Object, _securityManagerMock.Object, user.Object);
+            var platformConfiguration = new PlatformConfiguration();
+            platformConfiguration.ApplicationName = "StrixIT Membership Tests";
+            platformConfiguration.Cultures = "en,nl";
+            var membershipConfiguration = new MembershipConfiguration();
+            membershipConfiguration.MinRequiredPasswordLength = 8;
+            membershipConfiguration.MinRequiredNonAlphanumericCharacters = 1;
+
+            _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
+            _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+
+            var cultureServiceMock = new Mock<ICultureService>();
+            cultureServiceMock.Setup(c => c.CurrentCultureCode).Returns("en");
+
+            var environmentMock = new Mock<IEnvironment>();
+            environmentMock.Setup(e => e.Configuration).Returns(_configMock.Object);
+            environmentMock.Setup(e => e.User).Returns(userMock.Object);
+            environmentMock.Setup(e => e.Cultures).Returns(cultureServiceMock.Object);
+
+            _userManager = new UserManager(_dataSourceMock.Mock.Object, _securityManagerMock.Object, environmentMock.Object);
         }
 
         #endregion Public Constructors

@@ -27,67 +27,45 @@ namespace StrixIT.Platform.Modules.Membership
 {
     public class MembershipConfiguration
     {
-        #region Private Fields
-
-        private static PasswordConfiguration _password = new PasswordConfiguration();
-        private static RegistrationConfiguration _registration = new RegistrationConfiguration();
-        private static IDictionary<string, string> _settings = ModuleManager.AppSettings.ContainsKey(MembershipConstants.MEMBERSHIP) ? ModuleManager.AppSettings[MembershipConstants.MEMBERSHIP] : ModuleManager.AppSettings[PlatformConstants.PLATFORM];
-
-        #endregion Private Fields
-
         #region Public Properties
+
+        public bool AllowUserRegistration { get; set; }
+
+        public bool AutoApproveUsers { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether the authentication cookie is valid only until the
         /// browser session ends.
         /// </summary>
-        public bool LimitAuthenticationToBrowserSession
-        {
-            get
-            {
-                return bool.Parse(_settings["limitAuthenticationToBrowserSession"]);
-            }
-        }
+        public bool LimitAuthenticationToBrowserSession { get; set; }
 
-        public string MailTemplateFolder
-        {
-            get
-            {
-                return _settings["mailTemplateFolder"] as string;
-            }
-        }
+        public string MailTemplateFolder { get; set; }
 
-        public PasswordConfiguration Password
-        {
-            get
-            {
-                return _password;
-            }
-        }
+        public int MaxInvalidPasswordAttempts { get; set; }
 
-        public RegistrationConfiguration Registration
-        {
-            get
-            {
-                return _registration;
-            }
-        }
+        public int MinRequiredNonAlphanumericCharacters { get; set; }
 
-        public bool UseGroups
-        {
-            get
-            {
-                return bool.Parse(_settings["useGroups"]);
-            }
-        }
+        public int MinRequiredPasswordLength { get; set; }
 
-        public bool UsePermissions
-        {
-            get
-            {
-                return bool.Parse(_settings["usePermissions"]);
-            }
-        }
+        /// <summary>
+        /// Gets the window in minutes in which the maximum number of invalid password attempts is tracked.
+        /// </summary>
+        public int PasswordAttemptWindow { get; set; }
+
+        public int PasswordHashIterations { get; set; }
+
+        public bool UseGroups { get; set; }
+
+        public bool UsePermissions { get; set; }
+
+        public bool UseRegistrationComment { get; set; }
+
+        public bool UseTerms { get; set; }
+
+        /// <summary>
+        /// Gets the window in minutes in which the set password verification id is valid.
+        /// </summary>
+        public int VerificationIdValidWindow { get; set; }
 
         #endregion Public Properties
     }

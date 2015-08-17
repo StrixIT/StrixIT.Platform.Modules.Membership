@@ -6,6 +6,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.DependencyInjection;
+using StrixIT.Platform.Core.Environment;
 using StrixIT.Platform.Web;
 using System;
 using System.Collections.Generic;
@@ -28,23 +30,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
 
         #region Public Methods
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-            DependencyInjector.Injector = null;
-            StrixPlatform.Environment = null;
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            var injectorMock = new Mock<IDependencyInjector>();
-            injectorMock.Setup(i => i.TryGet<IAuthenticationService>()).Returns(_authService.Object);
-            DependencyInjector.Injector = injectorMock.Object;
-            StrixPlatform.Environment = new DefaultEnvironment();
-        }
-
         [TestMethod]
         public void WhenThereIsNoSessionTheUserShouldBeLoggedOutAndRedirectedToLogin()
         {
@@ -55,7 +40,11 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var identity = mocks.First(m => m.GetType() == typeof(Mock<IIdentity>)) as Mock<IIdentity>;
             identity.Setup(i => i.IsAuthenticated).Returns(true);
             identity.Setup(i => i.Name).Returns("Test");
+            var injectorMock = new Mock<IDependencyInjector>();
+            injectorMock.Setup(i => i.TryGet<IAuthenticationService>()).Returns(_authService.Object);
+            DependencyInjector.Injector = injectorMock.Object;
             attribute.OnActionExecuting(context);
+            DependencyInjector.Injector = null;
             var result = context.Result as RedirectToRouteResult;
             _authService.Verify(a => a.LogOff(null), Times.Once());
             Assert.AreEqual("account", result.RouteValues["controller"]);
@@ -96,11 +85,20 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             var routeData = new RouteData();
             var requestContext = new RequestContext(httpContext.Object, routeData);
 
-            var user = new Mock<IUserContext>();
-            user.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
-            user.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
+            var userMock = new Mock<IUserContext>();
+            userMock.Setup(m => m.Id).Returns(MembershipTestData.AdminId);
+            userMock.Setup(m => m.GroupId).Returns(MembershipTestData.MainGroupId);
 
-            var controller = new UserController(new Mock<IUserService>().Object, user.Object);
+            var environmentMock = new Mock<IEnvironment>();
+            environmentMock.Setup(m => m.User).Returns(userMock.Object);
+
+            var cultureServiceMock = new Mock<ICultureService>();
+            cultureServiceMock.Setup(c => c.Cultures).Returns(new List<CultureData> { new CultureData { Code = "en", Name = "English" }, new CultureData { Code = "nl", Name = "Nederlands" } });
+            cultureServiceMock.Setup(c => c.DefaultCultureCode).Returns("en");
+            cultureServiceMock.Setup(c => c.CurrentCultureCode).Returns("en");
+            environmentMock.Setup(e => e.Cultures).Returns(cultureServiceMock.Object);
+
+            var controller = new UserController(environmentMock.Object, new Mock<IUserService>().Object);
             var controllerContext = new ControllerContext(requestContext, controller);
             var controllerDescriptor = new Mock<ControllerDescriptor>();
             controllerDescriptor.Setup(c => c.ControllerType).Returns(typeof(AccountController));

@@ -6,6 +6,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.DependencyInjection;
+using StrixIT.Platform.Core.Environment;
 using StrixIT.Platform.Web;
 using System;
 using System.Collections.Generic;
@@ -22,20 +24,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     public class AuthorizationAttributeTests
     {
         #region Public Methods
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            StrixPlatform.Environment = null;
-            DependencyInjector.Injector = null;
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
-            StrixPlatform.Environment = new DefaultEnvironment();
-        }
 
         [TestMethod]
         public void SkipAuthorizationShouldNotSkipWhenNotAnonymousAllowed()
@@ -183,7 +171,15 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             mocks.Add(httpContext);
             var routeData = new RouteData();
             var requestContext = new RequestContext(httpContext.Object, routeData);
-            var controller = new UserController(new Mock<IUserService>().Object, new Mock<IUserContext>().Object);
+
+            var cultureServiceMock = new Mock<ICultureService>();
+            cultureServiceMock.Setup(c => c.Cultures).Returns(new List<CultureData> { new CultureData { Code = "en", Name = "English" }, new CultureData { Code = "nl", Name = "Nederlands" } });
+            cultureServiceMock.Setup(c => c.DefaultCultureCode).Returns("en");
+            cultureServiceMock.Setup(c => c.CurrentCultureCode).Returns("en");
+            var environmentMock = new Mock<IEnvironment>();
+            environmentMock.Setup(e => e.Cultures).Returns(cultureServiceMock.Object);
+
+            var controller = new UserController(environmentMock.Object, new Mock<IUserService>().Object);
             var controllerContext = new ControllerContext(requestContext, controller);
             var controllerDescriptor = new Mock<ControllerDescriptor>();
             mocks.Add(controllerDescriptor);

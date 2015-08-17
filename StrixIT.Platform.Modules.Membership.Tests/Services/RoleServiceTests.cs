@@ -16,6 +16,12 @@ namespace StrixIT.Platform.Modules.Membership.Tests
     {
         #region Public Methods
 
+        //[TestInitialize]
+        //public void Init()
+        //{
+        //    StrixPlatform.ApplicationId = MembershipTestData.AppId;
+        //}
+
         [ClassInitialize]
         public static void Init(TestContext context)
         {
@@ -45,12 +51,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             Assert.AreEqual(0, result.Permissions.First().Index);
             Assert.AreEqual(3, result.Permissions.Last().Index);
             Assert.AreEqual(true, result.Permissions.ElementAt(1).Selected);
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            StrixPlatform.ApplicationId = MembershipTestData.AppId;
         }
 
         #endregion Public Methods
