@@ -30,6 +30,7 @@ namespace StrixIT.Platform.Modules.Membership
     {
         #region Public Methods
 
+        // I need to inject the user context each time because it is not a static dependency.
         public void Initialize()
         {
             DataMapper.CreateMap<User, UserViewModel>().AfterMap((x, y) =>
