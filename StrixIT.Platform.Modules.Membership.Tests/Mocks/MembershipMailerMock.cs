@@ -50,13 +50,9 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _cultureServiceMock.Setup(c => c.CurrentCultureCode).Returns("en");
             _environmentMock.Setup(e => e.Cultures).Returns(_cultureServiceMock.Object);
             _environmentMock.Setup(e => e.Configuration).Returns(_configMock.Object);
-
             _wrapperMock.Setup(w => w.GetHtmlTemplate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns<string, string, string>((x, y, z) => new FileSystem(_environmentMock.Object).GetHtmlTemplate(string.Format("{0}\\Templates", Core.Helpers.GetWorkingDirectory()), y, z));
-            _httpRequestMock.Setup(m => m.Url).Returns(new Uri("http://www.strixit.com"));
-            _httpRequestMock.Setup(m => m.ApplicationPath).Returns("/");
-            _httpMock.Setup(m => m.Request).Returns(_httpRequestMock.Object);
 
-            _membershipMailer = new MembershipMailer(_environmentMock.Object, _wrapperMock.Object, _mailerMock.Object, _httpMock.Object);
+            _membershipMailer = new MembershipMailer(_environmentMock.Object, _wrapperMock.Object, _mailerMock.Object, new Uri("http://www.strixit.com"));
         }
 
         #endregion Public Constructors

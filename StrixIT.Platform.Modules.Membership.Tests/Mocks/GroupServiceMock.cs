@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 using Moq;
 using StrixIT.Platform.Core;
+using StrixIT.Platform.Core.Environment;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
@@ -35,8 +36,16 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             membershipConfiguration.UseGroups = true;
             _configMock.Setup(m => m.GetConfiguration<PlatformConfiguration>()).Returns(platformConfiguration);
             _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
+            var membershipSettingsMock = new Mock<IMembershipSettings>();
+            membershipSettingsMock.Setup(m => m.ApplicationId).Returns(MembershipTestData.AppId);
+            membershipSettingsMock.Setup(m => m.MainGroupId).Returns(MembershipTestData.MainGroupId);
 
-            _groupService = new GroupService(_dataSourceMock.Object, _groupManagerMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _userMock.Object, _configMock.Object);
+            var environmentMock = new Mock<IEnvironment>();
+            environmentMock.Setup(e => e.Configuration).Returns(_configMock.Object);
+            environmentMock.Setup(e => e.User).Returns(_userMock.Object);
+            environmentMock.Setup(e => e.Membership).Returns(membershipSettingsMock.Object);
+
+            _groupService = new GroupService(_dataSourceMock.Object, _groupManagerMock.Object, _roleManagerMock.Object, environmentMock.Object);
         }
 
         #endregion Public Constructors

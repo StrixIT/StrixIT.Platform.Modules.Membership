@@ -33,21 +33,17 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Fields
 
         private IAuthenticationCookieService _cookieService;
-        private IMembershipDataSource _dataSource;
-        private ISecurityManager _securityManager;
+        private IMembershipData _membershipData;
         private ISessionService _session;
-        private IUserManager _userManager;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public AuthenticationService(IMembershipDataSource dataSource, IUserManager userManager, ISecurityManager securityManager, IAuthenticationCookieService cookieService, ISessionService session)
+        public AuthenticationService(IMembershipData membershipData, IAuthenticationCookieService cookieService, ISessionService session)
         {
-            this._dataSource = dataSource;
-            this._userManager = userManager;
-            this._securityManager = securityManager;
-            this._cookieService = cookieService;
+            _membershipData = membershipData;
+            _cookieService = cookieService;
             _session = session;
         }
 
@@ -57,19 +53,19 @@ namespace StrixIT.Platform.Modules.Membership
 
         public void LogOff(string email)
         {
-            this.LogOff(email, null);
+            LogOff(email, null);
         }
 
         public void LogOff(string email, IDictionary<string, object> sessionValues)
         {
-            this._cookieService.SignOut();
+            _cookieService.SignOut();
 
             if (!string.IsNullOrWhiteSpace(email))
             {
-                var user = this._userManager.Get(email);
-                this._userManager.RemoveLoggedInUser(user.Id);
-                this._userManager.SaveSession(user.Id, sessionValues != null ? sessionValues : _session.GetAll());
-                this._dataSource.SaveChanges();
+                var user = _membershipData.UserManager.Get(email);
+                _membershipData.UserManager.RemoveLoggedInUser(user.Id);
+                _membershipData.UserManager.SaveSession(user.Id, sessionValues != null ? sessionValues : _session.GetAll());
+                _membershipData.DataSource.SaveChanges();
                 Logger.LogToAudit(AuditLogType.LoginLogout.ToString(), string.Format("User {0} logged out.", user.Name));
                 _session.Store(PlatformConstants.CURRENTUSEREMAIL, null);
             }
@@ -89,23 +85,23 @@ namespace StrixIT.Platform.Modules.Membership
 
             try
             {
-                var id = this._userManager.GetId(email);
+                var id = _membershipData.UserManager.GetId(email);
 
                 if (id == null)
                 {
                     return result;
                 }
 
-                var name = this._userManager.GetName(id.Value);
-                var validateResult = this._securityManager.ValidateUser(id.Value, password);
-                this._dataSource.SaveChanges();
+                var name = _membershipData.UserManager.GetName(id.Value);
+                var validateResult = _membershipData.SecurityManager.ValidateUser(id.Value, password);
+                _membershipData.DataSource.SaveChanges();
 
                 if (validateResult == ValidateUserResult.Valid)
                 {
-                    this._cookieService.SetAuthCookie(email);
+                    _cookieService.SetAuthCookie(email);
                     _session.Store(PlatformConstants.CURRENTUSEREMAIL, email);
-                    var user = this._userManager.Get(id.Value);
-                    this._userManager.UpdateLoggedInUser(user);
+                    var user = _membershipData.UserManager.Get(id.Value);
+                    _membershipData.UserManager.UpdateLoggedInUser(user);
                     result.Success = true;
                     result.PreferredCulture = user.PreferredCulture;
                     Logger.LogToAudit(AuditLogType.LoginLogout.ToString(), string.Format("User {0} logged in.", name));

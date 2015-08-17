@@ -33,27 +33,27 @@ namespace StrixIT.Platform.Modules.Membership
         #region Private Fields
 
         private IMembershipDataSource _dataSource;
+        private IEnvironment _environment;
         private IGroupManager _groupManager;
         private IRoleManager _roleManager;
         private IUserContext _user;
-        private IUserManager _userManager;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public GroupService(IMembershipDataSource dataSource, IGroupManager groupManager, IUserManager userManager, IRoleManager roleManager, IUserContext user, IConfiguration config)
+        public GroupService(IMembershipDataSource dataSource, IGroupManager groupManager, IRoleManager roleManager, IEnvironment environment)
         {
-            if (!config.GetConfiguration<MembershipConfiguration>().UseGroups)
+            if (!environment.Configuration.GetConfiguration<MembershipConfiguration>().UseGroups)
             {
                 throw new InvalidOperationException(Resources.Interface.GroupsNotEnabed);
             }
 
             _dataSource = dataSource;
             _groupManager = groupManager;
-            _userManager = userManager;
             _roleManager = roleManager;
-            _user = user;
+            _user = environment.User;
+            _environment = environment;
         }
 
         #endregion Public Constructors
@@ -103,7 +103,7 @@ namespace StrixIT.Platform.Modules.Membership
 
         public IEnumerable List(FilterOptions filter)
         {
-            var groupId = ApplicationHelper.GetMainGroupId(_dataSource);
+            var groupId = _environment.Membership.MainGroupId;
             return _groupManager.Query().Where(g => g.Id != groupId).Filter(filter).Map<GroupListModel>().ToList();
         }
 
@@ -199,8 +199,8 @@ namespace StrixIT.Platform.Modules.Membership
 
         private void FillRoleData(GroupViewModel model)
         {
-            var groupId = model.Id == Guid.Empty ? ApplicationHelper.GetMainGroupId(_dataSource) : model.Id;
-            var mainGroupId = model.Id == Guid.Empty ? groupId : ApplicationHelper.GetMainGroupId(_dataSource);
+            var groupId = model.Id == Guid.Empty ? _environment.Membership.MainGroupId : model.Id;
+            var mainGroupId = model.Id == Guid.Empty ? groupId : _environment.Membership.MainGroupId;
 
             model.Roles = _roleManager.Query().Where(r => r.Name.ToLower() != PlatformConstants.ADMINROLE.ToLower() && (r.GroupId == groupId || r.GroupId == mainGroupId)).Select(r => new AssignRoleModel { Id = r.Id, Name = r.Name }).ToList();
             model.Permissions = _roleManager.PermissionQuery().Map<AssignPermissionModel>().ToList();

@@ -41,23 +41,27 @@ namespace StrixIT.Platform.Modules.Membership
 
                 Func<string> userEmailFunc = () =>
                 {
-                    //try
-                    //{
                     return HttpContext.Current != null && HttpContext.Current.User != null ? HttpContext.Current.User.Identity.Name : null;
-                    //}
-                    //catch
-                    //{
-                    //    return true;
-                    //}
                 };
 
-                var constructorValues = new List<ConstructorValue<string>>()
+                var emailValue = new ConstructorValue<string>("userEmail", Helpers.FuncToExpression(userEmailFunc));
+
+                serviceList.Add(new ServiceDescriptorWithConstructorValue<string>(typeof(IUserContext), typeof(UserContext), emailValue));
+
+                Func<Uri> urlFunc = () =>
                 {
-                    new ConstructorValue<string>("userEmail", Helpers.FuncToExpression(userEmailFunc))
+                    try
+                    {
+                        return HttpContext.Current != null && HttpContext.Current.Request != null ? HttpContext.Current.Request.Url : null;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
                 };
 
-                var configServiceDescriptor = new ServiceDescriptorWithConstructorValues<string>(typeof(IUserContext), typeof(UserContext), constructorValues);
-                serviceList.Add(configServiceDescriptor);
+                var urlValue = new ConstructorValue<Uri>("url", Helpers.FuncToExpression(urlFunc));
+                serviceList.Add(new ServiceDescriptorWithConstructorValue<Uri>(typeof(IMembershipMailer), typeof(MembershipMailer), urlValue));
 
                 return serviceList;
             }

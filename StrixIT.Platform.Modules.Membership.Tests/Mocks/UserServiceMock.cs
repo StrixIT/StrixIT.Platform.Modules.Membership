@@ -59,7 +59,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _environmentMock.Setup(e => e.User).Returns(_userMock.Object);
             _environmentMock.Setup(e => e.Cultures).Returns(_cultureServiceMock.Object);
 
-            _userService = new UserService(_dataSourceMock.Object, _securityManagerMock.Object, _userManagerMock.Object, _groupManagerMock.Object, _roleManagerMock.Object, _mailerMock.Object, _environmentMock.Object);
+            var membershipDataMock = new Mock<IMembershipData>();
+            membershipDataMock.Setup(m => m.GroupManager).Returns(_groupManagerMock.Object);
+            membershipDataMock.Setup(m => m.DataSource).Returns(_dataSourceMock.Object);
+            membershipDataMock.Setup(m => m.RoleManager).Returns(_roleManagerMock.Object);
+            membershipDataMock.Setup(m => m.UserManager).Returns(_userManagerMock.Object);
+            membershipDataMock.Setup(m => m.SecurityManager).Returns(_securityManagerMock.Object);
+
+            _userService = new UserService(membershipDataMock.Object, _mailerMock.Object, _environmentMock.Object);
         }
 
         #endregion Public Constructors

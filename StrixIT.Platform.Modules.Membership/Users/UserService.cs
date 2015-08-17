@@ -34,30 +34,20 @@ namespace StrixIT.Platform.Modules.Membership
     {
         #region Private Properties
 
-        private IMembershipDataSource _dataSource;
         private IEnvironment _environment;
         private IMembershipMailer _mailer;
-        private IRoleManager _roleManager;
-        private ISecurityManager _securityManager;
-        private IUserManager _userManager;
+        private IMembershipData _membershipData;
 
         #endregion Private Properties
 
         #region Constructor
 
         public UserService(
-            IMembershipDataSource dataSource,
-            ISecurityManager securityManager,
-            IUserManager userManager,
-            IGroupManager groupManager,
-            IRoleManager roleManager,
+            IMembershipData membershipData,
             IMembershipMailer membershipMailer,
             IEnvironment environment)
         {
-            _dataSource = dataSource;
-            _securityManager = securityManager;
-            _userManager = userManager;
-            _roleManager = roleManager;
+            _membershipData = membershipData;
             _mailer = membershipMailer;
             _environment = environment;
         }
@@ -69,7 +59,7 @@ namespace StrixIT.Platform.Modules.Membership
         public bool Exists(string email, Guid? id)
         {
             var groupId = _environment.User.GroupId;
-            var result = _userManager.Query().Any(u => u.Email.ToLower().Equals(email.ToLower()) && u.Roles.Any(r => r.GroupRoleGroupId == groupId) && (!id.HasValue || u.Id != id));
+            var result = _membershipData.UserManager.Query().Any(u => u.Email.ToLower().Equals(email.ToLower()) && u.Roles.Any(r => r.GroupRoleGroupId == groupId) && (!id.HasValue || u.Id != id));
             return result;
         }
 
@@ -90,7 +80,7 @@ namespace StrixIT.Platform.Modules.Membership
             }
             else
             {
-                var user = _userManager.Get(id.Value);
+                var user = _membershipData.UserManager.Get(id.Value);
                 model = user.Map<UserViewModel>();
                 FillAccountData(model);
             }
@@ -102,18 +92,18 @@ namespace StrixIT.Platform.Modules.Membership
         public dynamic GetProfile(Guid id)
         {
             var culture = _environment.Cultures.CurrentCultureCode;
-            return CustomFields.GetCustomFieldsList<UserProfileField, UserProfileValue>(_userManager.ProfileQuery().Where(x => x.Culture == culture && x.UserId == id), "UserId").FirstOrDefault();
+            return CustomFields.GetCustomFieldsList<UserProfileField, UserProfileValue>(_membershipData.UserManager.ProfileQuery().Where(x => x.Culture == culture && x.UserId == id), "UserId").FirstOrDefault();
         }
 
         public IList<dynamic> GetProfileList()
         {
             var culture = _environment.Cultures.CurrentCultureCode;
-            return CustomFields.GetCustomFieldsList<UserProfileField, UserProfileValue>(_userManager.ProfileQuery().Where(x => x.Culture == culture), "UserId");
+            return CustomFields.GetCustomFieldsList<UserProfileField, UserProfileValue>(_membershipData.UserManager.ProfileQuery().Where(x => x.Culture == culture), "UserId");
         }
 
         public IEnumerable List(FilterOptions filter)
         {
-            var query = _userManager.Query();
+            var query = _membershipData.UserManager.Query();
 
             if (filter != null)
             {
@@ -133,7 +123,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             var modelList = query.Map<UserListModel>().ToList();
             var ids = modelList.Select(m => m.Id).ToArray();
-            var accountData = _securityManager.GetAccountStatusData(ids);
+            var accountData = _membershipData.SecurityManager.GetAccountStatusData(ids);
 
             foreach (var data in accountData)
             {
@@ -172,9 +162,9 @@ namespace StrixIT.Platform.Modules.Membership
                 var groupId = _environment.User.GroupId;
                 GroupInRole permissionSet = null;
 
-                if (_roleManager.GroupUsesPermissions(groupId))
+                if (_membershipData.RoleManager.GroupUsesPermissions(groupId))
                 {
-                    permissionSet = _roleManager.GetPermissionSetForGroup(groupId);
+                    permissionSet = _membershipData.RoleManager.GetPermissionSetForGroup(groupId);
 
                     if (permissionSet.MaxNumberOfUsers.HasValue && permissionSet.MaxNumberOfUsers.Value <= permissionSet.CurrentNumberOfUsers)
                     {
@@ -182,8 +172,8 @@ namespace StrixIT.Platform.Modules.Membership
                     }
                 }
 
-                var password = _securityManager.GeneratePassword();
-                user = _userManager.Create(model.Name, model.Email, model.PreferredCulture, password, true, false, null);
+                var password = _membershipData.SecurityManager.GeneratePassword();
+                user = _membershipData.UserManager.Create(model.Name, model.Email, model.PreferredCulture, password, true, false, null);
 
                 if (user == null)
                 {
@@ -199,8 +189,8 @@ namespace StrixIT.Platform.Modules.Membership
             }
             else
             {
-                oldEmail = _userManager.GetEmail(model.Id);
-                user = _userManager.Update(model.Id, model.Name, model.Email, model.PreferredCulture);
+                oldEmail = _membershipData.UserManager.GetEmail(model.Id);
+                user = _membershipData.UserManager.Update(model.Id, model.Name, model.Email, model.PreferredCulture);
 
                 if (user == null)
                 {
@@ -209,19 +199,19 @@ namespace StrixIT.Platform.Modules.Membership
 
                 if (model.Approved)
                 {
-                    _securityManager.ApproveUser(model.Id);
+                    _membershipData.SecurityManager.ApproveUser(model.Id);
                 }
 
                 if (!model.LockedOut)
                 {
-                    _securityManager.UnlockUser(model.Id);
+                    _membershipData.SecurityManager.UnlockUser(model.Id);
                 }
 
-                var roleNames = _roleManager.QueryForUser(user.Id).Select(r => r.Name).ToArray();
+                var roleNames = _membershipData.RoleManager.QueryForUser(user.Id).Select(r => r.Name).ToArray();
 
                 if (!roleNames.IsEmpty())
                 {
-                    _roleManager.RemoveUsersFromRoles(new Guid[] { user.Id }, roleNames);
+                    _membershipData.RoleManager.RemoveUsersFromRoles(new Guid[] { user.Id }, roleNames);
                 }
             }
 
@@ -231,7 +221,7 @@ namespace StrixIT.Platform.Modules.Membership
             {
                 foreach (var role in model.Roles.Where(r => r.Selected))
                 {
-                    _roleManager.AddUserToRole(_environment.User.GroupId, user.Id, role.Name, role.StartDate, role.EndDate);
+                    _membershipData.RoleManager.AddUserToRole(_environment.User.GroupId, user.Id, role.Name, role.StartDate, role.EndDate);
                 }
             }
 
@@ -259,7 +249,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (saveChanges)
             {
-                _dataSource.SaveChanges();
+                _membershipData.DataSource.SaveChanges();
             }
 
             result.Entity = user;
@@ -283,27 +273,27 @@ namespace StrixIT.Platform.Modules.Membership
             }
 
             // Todo: refactor isuserinrole for use here, then remove isuserinrole from role manager.
-            if (_environment.User.IsInRole(PlatformConstants.GROUPADMINROLE) && _roleManager.IsUserInRole(id, PlatformConstants.ADMINROLE))
+            if (_environment.User.IsInRole(PlatformConstants.GROUPADMINROLE) && _membershipData.RoleManager.IsUserInRole(id, PlatformConstants.ADMINROLE))
             {
                 var message = string.Format("Group administrators cannot delete administrators.");
                 Logger.LogToAudit(AuditLogType.IllegalOperation.ToString(), message);
                 throw new StrixMembershipException(message);
             }
 
-            _userManager.Delete(id);
+            _membershipData.UserManager.Delete(id);
 
             // Check if there are licences remaining before saving the user.
             var groupId = _environment.User.GroupId;
 
-            if (_roleManager.GroupUsesPermissions(groupId))
+            if (_membershipData.RoleManager.GroupUsesPermissions(groupId))
             {
-                var permissionSet = _roleManager.GetPermissionSetForGroup(groupId);
+                var permissionSet = _membershipData.RoleManager.GetPermissionSetForGroup(groupId);
                 permissionSet.CurrentNumberOfUsers--;
             }
 
             if (saveChanges)
             {
-                _dataSource.SaveChanges();
+                _membershipData.DataSource.SaveChanges();
             }
         }
 
@@ -313,14 +303,14 @@ namespace StrixIT.Platform.Modules.Membership
 
         private void FillAccountData(UserViewModel model)
         {
-            var accountData = _securityManager.GetAccountStatusData(new Guid[] { model.Id }).First();
+            var accountData = _membershipData.SecurityManager.GetAccountStatusData(new Guid[] { model.Id }).First();
             model.LockedOut = accountData.LockedOut;
             model.Approved = accountData.Approved;
         }
 
         private void FillRoleData(UserViewModel model)
         {
-            model.Roles = _roleManager.QueryForGroup(_environment.User.GroupId).ToList();
+            model.Roles = _membershipData.RoleManager.QueryForGroup(_environment.User.GroupId).ToList();
 
             var index = 0;
 
@@ -334,7 +324,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (model.Id != Guid.Empty)
             {
-                var userRoles = _roleManager.QueryForUser(model.Id).Select(r => new { Id = r.Id, StartDate = r.StartDate, EndDate = r.EndDate }).ToArray();
+                var userRoles = _membershipData.RoleManager.QueryForUser(model.Id).Select(r => new { Id = r.Id, StartDate = r.StartDate, EndDate = r.EndDate }).ToArray();
 
                 foreach (var role in model.Roles)
                 {
@@ -386,7 +376,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (approved.HasValue || lockedOut.HasValue)
             {
-                query = query.Join(_dataSource.Query<UserSecurity>(), u => u.Id, s => s.Id, (u, s) => new { User = u, Security = s })
+                query = query.Join(_membershipData.DataSource.Query<UserSecurity>(), u => u.Id, s => s.Id, (u, s) => new { User = u, Security = s })
                     .Where(u => (approved == null || u.Security.Approved == approved.Value) && (lockedOut == null || u.Security.LockedOut == lockedOut.Value)).Select(u => u.User);
             }
 
@@ -414,7 +404,7 @@ namespace StrixIT.Platform.Modules.Membership
 
             if (approvedSort != null || lockedOutSort != null)
             {
-                var tempQuery = query.Join(_dataSource.Query<UserSecurity>(), u => u.Id, s => s.Id, (u, s) => new { User = u, Security = s });
+                var tempQuery = query.Join(_membershipData.DataSource.Query<UserSecurity>(), u => u.Id, s => s.Id, (u, s) => new { User = u, Security = s });
 
                 if (approvedSort != null)
                 {

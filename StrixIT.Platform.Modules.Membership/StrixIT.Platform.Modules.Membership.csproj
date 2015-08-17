@@ -76,7 +76,6 @@
   <ItemGroup>
     <Compile Include="ActiveUser.cs" />
     <Compile Include="Application.cs" />
-    <Compile Include="ApplicationHelper.cs" />
     <Compile Include="Areas\MembershipAreaRegistration.cs" />
     <Compile Include="AuditLogType.cs" />
     <Compile Include="Data Access\IMembershipDataSource.cs" />
@@ -90,9 +89,11 @@
     <Compile Include="Groups\GroupViewModel.cs" />
     <Compile Include="Groups\IGroupManager.cs" />
     <Compile Include="Groups\IGroupService.cs" />
+    <Compile Include="IMembershipData.cs" />
     <Compile Include="Mailing\IMembershipMailer.cs" />
     <Compile Include="MembershipCacheAndSessionKeys.cs" />
     <Compile Include="MembershipConstants.cs" />
+    <Compile Include="MembershipData.cs" />
     <Compile Include="MembershipService.cs" />
     <Compile Include="MembershipSettings.cs" />
     <Compile Include="Migrations\201505211323541_UpdateStringPropertyLengths.cs" />
@@ -166,12 +167,12 @@
     <Compile Include="Users\UserSessionStorage.cs" />
     <Compile Include="Users\UserViewModel.cs" />
     <Compile Include="Web\AuthenticationCookieService.cs" />
-    <Compile Include="Web\AuthenticationService.cs" />
+    <Compile Include="Security\AuthenticationService.cs" />
     <Compile Include="Web\Controllers\AccountController.cs" />
     <Compile Include="Web\Controllers\GroupController.cs" />
     <Compile Include="Web\Controllers\RoleController.cs" />
     <Compile Include="Web\Controllers\UserController.cs" />
-    <Compile Include="Web\MembershipMailer.cs" />
+    <Compile Include="Mailing\MembershipMailer.cs" />
     <Compile Include="Web\MembershipModuleConfiguration.cs" />
     <Compile Include="Web\MembershipServiceConfiguration.cs" />
     <Compile Include="Web\ViewModels\LoginViewModel.cs" />

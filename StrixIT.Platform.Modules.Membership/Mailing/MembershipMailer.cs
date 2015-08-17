@@ -34,18 +34,18 @@ namespace StrixIT.Platform.Modules.Membership
 
         private IEnvironment _environment;
         private IFileSystem _fileSystem;
-        private HttpContextBase _httpContext;
         private IMailer _mailer;
+        private Uri _url;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public MembershipMailer(IEnvironment environment, IFileSystem fileSystem, IMailer mailer, HttpContextBase httpContext)
+        public MembershipMailer(IEnvironment environment, IFileSystem fileSystem, IMailer mailer, Uri url)
         {
             _fileSystem = fileSystem;
             _mailer = mailer;
-            _httpContext = httpContext;
+            _url = url;
             _environment = environment;
         }
 
@@ -122,14 +122,14 @@ namespace StrixIT.Platform.Modules.Membership
         private string GetBaseUrl(string cultureCode)
         {
             string url = null;
-            var baseUrl = _httpContext.Request.Url.AbsoluteUri;
+            var baseUrl = _url.AbsoluteUri;
             var separator = "://";
 
             if (baseUrl.Contains(separator))
             {
                 var index = baseUrl.IndexOf(separator) + 3;
                 url = baseUrl.Substring(index, baseUrl.Length - index);
-                url = url.Replace(_httpContext.Request.Url.PathAndQuery, string.Empty);
+                url = url.Replace(_url.PathAndQuery, string.Empty);
                 url = baseUrl.Substring(0, index) + url;
             }
 

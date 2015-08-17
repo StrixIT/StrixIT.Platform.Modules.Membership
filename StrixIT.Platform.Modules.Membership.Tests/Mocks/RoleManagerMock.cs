@@ -50,8 +50,14 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             _configMock.Setup(m => m.GetConfiguration<MembershipConfiguration>()).Returns(membershipConfiguration);
 
             var membershipSettingsMock = new Mock<IMembershipSettings>();
+            membershipSettingsMock.Setup(m => m.ApplicationId).Returns(MembershipTestData.AppId);
 
-            _roleManager = new RoleManager(_dataSourceMock.Mock.Object, _userMock.Object, _configMock.Object, membershipSettingsMock.Object);
+            var environmentMock = new Mock<IEnvironment>();
+            environmentMock.Setup(e => e.Configuration).Returns(_configMock.Object);
+            environmentMock.Setup(e => e.User).Returns(_userMock.Object);
+            environmentMock.Setup(e => e.Membership).Returns(membershipSettingsMock.Object);
+
+            _roleManager = new RoleManager(_dataSourceMock.Mock.Object, environmentMock.Object);
         }
 
         #endregion Public Constructors
