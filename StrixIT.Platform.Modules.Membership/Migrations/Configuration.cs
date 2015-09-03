@@ -7,7 +7,7 @@ namespace StrixIT.Platform.Modules.Membership.Migrations
 {
     using System.Data.Entity.Migrations;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<StrixIT.Platform.Modules.Membership.MembershipDataSource>
+    internal sealed class Configuration : DbMigrationsConfiguration<MembershipDataSource>
     {
         #region Public Constructors
 
@@ -20,7 +20,7 @@ namespace StrixIT.Platform.Modules.Membership.Migrations
 
         #region Protected Methods
 
-        protected override void Seed(StrixIT.Platform.Modules.Membership.MembershipDataSource context)
+        protected override void Seed(MembershipDataSource context)
         {
         }
 

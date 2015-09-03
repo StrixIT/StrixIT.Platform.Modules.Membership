@@ -7,13 +7,13 @@ namespace StrixIT.Platform.Modules.Membership.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class UpdateStringPropertyLengths : IMigrationMetadata
+    public sealed partial class initial : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(UpdateStringPropertyLengths));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(initial));
         
         string IMigrationMetadata.Id
         {
-            get { return "201505211323541_UpdateStringPropertyLengths"; }
+            get { return "201509031358109_initial"; }
         }
         
         string IMigrationMetadata.Source

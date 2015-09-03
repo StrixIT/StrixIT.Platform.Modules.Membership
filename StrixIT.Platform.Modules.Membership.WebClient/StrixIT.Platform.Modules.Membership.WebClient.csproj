@@ -382,6 +382,12 @@
   <ItemGroup>
     <Folder Include="Libraries\nl\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StrixIT.Platform.Modules.Membership\StrixIT.Platform.Modules.Membership.csproj">
+      <Project>{63cbf5f3-8d3b-4b3d-a4ba-f1c932736dea}</Project>
+      <Name>StrixIT.Platform.Modules.Membership</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

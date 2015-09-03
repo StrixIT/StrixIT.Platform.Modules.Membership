@@ -9,10 +9,6 @@ using StrixIT.Platform.Core.Environment;
 using StrixIT.Platform.Framework;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Dynamic;
-using System.Net.Configuration;
-using System.Web;
 
 namespace StrixIT.Platform.Modules.Membership.Tests
 {
@@ -23,8 +19,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
         private Mock<IConfiguration> _configMock = new Mock<IConfiguration>();
         private Mock<ICultureService> _cultureServiceMock = new Mock<ICultureService>();
         private Mock<IEnvironment> _environmentMock = new Mock<IEnvironment>();
-        private Mock<HttpContextBase> _httpMock = new Mock<HttpContextBase>();
-        private Mock<HttpRequestBase> _httpRequestMock = new Mock<HttpRequestBase>();
         private Mock<IMailer> _mailerMock = new Mock<IMailer>();
         private IMembershipMailer _membershipMailer;
         private Mock<IFileSystem> _wrapperMock = new Mock<IFileSystem>();
@@ -64,14 +58,6 @@ namespace StrixIT.Platform.Modules.Membership.Tests
             get
             {
                 return _wrapperMock;
-            }
-        }
-
-        public Mock<HttpContextBase> HttpContextMock
-        {
-            get
-            {
-                return _httpMock;
             }
         }
 

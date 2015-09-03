@@ -1,0 +1,3 @@
+﻿Add migration: add-migration [name] -AppDomainBaseDirectory "C:\Development\GitHub\Main\StrixIT.Platform.Modules.Membership\StrixIT.Platform.Modules.Membership.WebClient\bin"
+update-database: update-database -AppDomainBaseDirectory "C:\Development\GitHub\Main\StrixIT.Platform.Modules.Membership\StrixIT.Platform.Modules.Membership.WebClient\bin"
+generate scripts: update-database -script -sourcemigration: $initialdatabase -AppDomainBaseDirectory "C:\Development\GitHub\Main\StrixIT.Platform.Modules.Membership\StrixIT.Platform.Modules.Membership.WebClient\bin"
