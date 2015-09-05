@@ -16,6 +16,7 @@
 (function(f, define){
     define([ "./kendo.core" ], f);
 })(function(){
+
 (function ($, undefined) {
     var kendo = window.kendo,
         support = kendo.support,
@@ -593,4 +594,5 @@
  })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

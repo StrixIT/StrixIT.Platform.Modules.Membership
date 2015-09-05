@@ -16,6 +16,7 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.binder", "./kendo.fx" ], f);
 })(function(){
+
 (function($, undefined) {
     var kendo = window.kendo,
         Observable = kendo.Observable,
@@ -234,6 +235,7 @@
                 if (root.is(selector)) {
                     element = root;
                 } else {
+
                     throw new Error("can't find a container with the specified " + selector + " selector");
                 }
             }
@@ -375,7 +377,9 @@
     kendo.Layout = Layout;
     kendo.View = View;
     kendo.ViewClone = ViewClone;
+
 })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -16,6 +16,7 @@
 (function(f, define){
     define([ "./kendo.core" ], f);
 })(function(){
+
 (function($, undefined) {
     var kendo = window.kendo,
         support = kendo.support,
@@ -516,6 +517,7 @@
                         to.unwrap();
 
                         that._focusView(active);
+
                     }
                 });
 
@@ -875,11 +877,14 @@
                 adjustDST(today, 0);
                 today = +today;
 
+                start = new DATE(start.getFullYear(), start.getMonth(), start.getDate());
+                adjustDST(start, 0);
+
                 return view({
                     cells: 42,
                     perRow: 7,
                     html: html += '</tr></thead><tbody><tr role="row">',
-                    start: new DATE(start.getFullYear(), start.getMonth(), start.getDate()),
+                    start: start,
                     min: new DATE(min.getFullYear(), min.getMonth(), min.getDate()),
                     max: new DATE(max.getFullYear(), max.getMonth(), max.getDate()),
                     content: options.content,
@@ -1321,4 +1326,5 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

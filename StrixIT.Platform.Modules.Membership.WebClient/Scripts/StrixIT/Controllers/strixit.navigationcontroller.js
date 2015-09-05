@@ -38,10 +38,16 @@
 
         function getUrl(language) {
             if ($location.$$url != baseUrl && baseUrl != '/') {
-                baseUrl = $location.$$url;
+                if ($location.$$absUrl.indexOf('#') == -1) {
+                    baseUrl = $location.$$url;
+                }
 
                 if (!baseUrl) {
                     baseUrl = $location.$$absUrl.replace($location.$$protocol + '://' + $location.$$host, '');
+
+                    if (baseUrl.indexOf('#') > -1) {
+                        baseUrl = baseUrl.substring(0, baseUrl.indexOf('#'));
+                    }
 
                     var port = $location.$$port;
 

@@ -16,6 +16,7 @@
 (function(f, define){
     define([ "./kendo.draganddrop" ], f);
 })(function(){
+
 (function($, undefined) {
     var kendo = window.kendo,
         Widget = kendo.ui.Widget,
@@ -391,6 +392,7 @@
 
         setOptions: function(options) {
             Widget.fn.setOptions.call(this, options);
+            this.restore();
             this._animations();
             this._dimensions();
             this._position();
@@ -583,8 +585,13 @@
 
         _object: function(element) {
             var content = element.children(KWINDOWCONTENT);
+            var widget = kendo.widgetInstance(content);
 
-            return content.data("kendoWindow") || content.data("kendo" + this.options.name);
+            if (widget instanceof Window) {
+                return widget;
+            }
+
+            return undefined;
         },
 
         center: function () {
@@ -692,7 +699,8 @@
                 options = that.options,
                 showOptions = options.animation.open,
                 contentElement = wrapper.children(KWINDOWCONTENT),
-                overlay;
+                overlay,
+                doc = $(document);
 
             if (!that.trigger(OPEN)) {
                 if (that._closing) {
@@ -737,7 +745,8 @@
             }
 
             if (options.isMaximized) {
-                that._documentScrollTop = $(document).scrollTop();
+                that._documentScrollTop = doc.scrollTop();
+                that._documentScrollLeft = doc.scrollLeft();
                 $("html, body").css(OVERFLOW, HIDDEN);
             }
 
@@ -778,7 +787,8 @@
                 wrapper = that.wrapper,
                 options = that.options,
                 showOptions = options.animation.open,
-                hideOptions = options.animation.close;
+                hideOptions = options.animation.close,
+                doc = $(document);
 
             if (wrapper.is(VISIBLE) && !that.trigger(CLOSE, { userTriggered: !systemTriggered })) {
                 if (that._closing) {
@@ -810,17 +820,23 @@
             if (that.options.isMaximized) {
                 $("html, body").css(OVERFLOW, "");
                 if (that._documentScrollTop && that._documentScrollTop > 0) {
-                    $(document).scrollTop(that._documentScrollTop);
+                    doc.scrollTop(that._documentScrollTop);
+                }
+                if (that._documentScrollLeft && that._documentScrollLeft > 0) {
+                    doc.scrollLeft(that._documentScrollLeft);
                 }
             }
         },
 
-        _deactivate: function() {
-            this.wrapper.hide().css("opacity","");
-            this.trigger(DEACTIVATE);
-            var lastModal = this._object(this._modals().last());
-            if (lastModal) {
-                lastModal.toFront();
+        _deactivate: function () {
+            var that = this;
+            that.wrapper.hide().css("opacity", "");
+            that.trigger(DEACTIVATE);
+            if (that.options.modal) {
+                var lastModal = that._object(that._modals().last());
+                if (lastModal) {
+                    lastModal.toFront();
+                }
             }
         },
 
@@ -905,6 +921,7 @@
             var options = that.options;
             var minHeight = options.minHeight;
             var restoreOptions = that.restoreOptions;
+            var doc = $(document);
 
             if (!options.isMaximized && !options.isMinimized) {
                 return that;
@@ -933,7 +950,10 @@
 
             $("html, body").css(OVERFLOW, "");
             if (this._documentScrollTop && this._documentScrollTop > 0) {
-                $(document).scrollTop(this._documentScrollTop);
+                doc.scrollTop(this._documentScrollTop);
+            }
+            if (this._documentScrollLeft && this._documentScrollLeft > 0) {
+                doc.scrollLeft(this._documentScrollLeft);
             }
 
             options.isMaximized = options.isMinimized = false;
@@ -946,7 +966,8 @@
         maximize: sizingAction("maximize", function() {
             var that = this,
                 wrapper = that.wrapper,
-                position = wrapper.position();
+                position = wrapper.position(),
+                doc = $(document);
 
             extend(that.restoreOptions, {
                 left: position.left,
@@ -960,7 +981,8 @@
                 })
                 .addClass(MAXIMIZEDSTATE);
 
-            this._documentScrollTop = $(document).scrollTop();
+            this._documentScrollTop = doc.scrollTop();
+            this._documentScrollLeft = doc.scrollLeft();
             $("html, body").css(OVERFLOW, HIDDEN);
 
             that.options.isMaximized = true;
@@ -1134,36 +1156,38 @@
             }, options));
         },
 
-        destroy: function () {
-            var that = this;
-
-            if (that.resizing) {
-                that.resizing.destroy();
+        _destroy: function() {
+            if (this.resizing) {
+                this.resizing.destroy();
             }
 
-            if (that.dragging) {
-                that.dragging.destroy();
+            if (this.dragging) {
+                this.dragging.destroy();
             }
 
-            that.wrapper.off(NS)
+            this.wrapper.off(NS)
                 .children(KWINDOWCONTENT).off(NS).end()
                 .find(".k-resize-handle,.k-window-titlebar").off(NS);
 
-            $(window).off("resize" + NS + that._marker);
+            $(window).off("resize" + NS + this._marker);
 
-            clearTimeout(that._loadingIconTimeout);
+            clearTimeout(this._loadingIconTimeout);
 
-            Widget.fn.destroy.call(that);
+            Widget.fn.destroy.call(this);
 
-            that.unbind(undefined);
+            this.unbind(undefined);
 
-            kendo.destroy(that.wrapper);
+            kendo.destroy(this.wrapper);
 
-            that._removeOverlay(true);
+            this._removeOverlay(true);
+        },
 
-            that.wrapper.empty().remove();
+        destroy: function() {
+            this._destroy();
 
-            that.wrapper = that.appendTo = that.element = $();
+            this.wrapper.empty().remove();
+
+            this.wrapper = this.appendTo = this.element = $();
         },
 
         _createWindow: function() {
@@ -1236,6 +1260,7 @@
         ),
         resizeHandle: template("<div class='k-resize-handle k-resize-#= data #'></div>")
     };
+
 
     function WindowResizing(wnd) {
         var that = this;
@@ -1459,7 +1484,9 @@
     };
 
     kendo.ui.plugin(Window);
+
 })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

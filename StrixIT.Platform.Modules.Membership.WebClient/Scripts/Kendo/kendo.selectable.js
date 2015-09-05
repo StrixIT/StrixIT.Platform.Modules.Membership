@@ -16,6 +16,7 @@
 (function(f, define){
     define([ "./kendo.core", "./kendo.userevents" ], f);
 })(function(){
+
 (function ($, undefined) {
     var kendo = window.kendo,
         Widget = kendo.ui.Widget,
@@ -29,7 +30,7 @@
         CHANGE = "change",
         NS = ".kendoSelectable",
         UNSELECTING = "k-state-unselecting",
-        INPUTSELECTOR = "input,a,textarea,.k-multiselect-wrap,select,button,a.k-button>.k-icon,span.k-icon.k-i-expand,span.k-icon.k-i-collapse",
+        INPUTSELECTOR = "input,a,textarea,.k-multiselect-wrap,select,button,a.k-button>.k-icon,button.k-button>.k-icon,span.k-icon.k-i-expand,span.k-icon.k-i-collapse",
         msie = kendo.support.browser.msie,
         supportEventDelegation = false;
 
@@ -220,6 +221,7 @@
             that._unselect(that.element
                 .find(that.options.filter + "." + UNSELECTING))
                 .removeClass(UNSELECTING);
+
 
             var target = that.element.find(that.options.filter + "." + ACTIVE);
             target = target.add(that.relatedTarget(target));
@@ -422,7 +424,9 @@
     }
 
     kendo.ui.plugin(Selectable);
+
 })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

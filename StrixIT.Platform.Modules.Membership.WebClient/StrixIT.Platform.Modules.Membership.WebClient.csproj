@@ -44,13 +44,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoMapper.Net4, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.0.4\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -161,6 +157,8 @@
     <Content Include="Areas\Membership\Templates\SetPasswordMail_nl.html" />
     <Content Include="Areas\Membership\Templates\UnapprovedAccountMail.html" />
     <Content Include="Areas\Membership\Templates\UnapprovedAccountMail_nl.html" />
+    <Content Include="Libraries\nl\StrixIT.Platform.Core.resources.dll" />
+    <Content Include="Libraries\nl\StrixIT.Platform.Web.resources.dll" />
     <Content Include="Libraries\StrixIT.Platform.Core.dll" />
     <Content Include="Libraries\StrixIT.Platform.Framework.dll" />
     <Content Include="Libraries\StrixIT.Platform.Testing.dll" />
@@ -169,20 +167,140 @@
     <Content Include="Libraries\StructureMap.Web.dll" />
     <Content Include="License.txt" />
     <Content Include="ReadMe.txt" />
+    <Content Include="Scripts\Angular\angular.js" />
+    <Content Include="Scripts\Angular\Services\angular-cookies.js" />
+    <Content Include="Scripts\Angular\Services\angular-route.js" />
+    <Content Include="Scripts\Angular\Services\angular-sanitize.js" />
+    <Content Include="Scripts\JQuery\jquery.js" />
+    <Content Include="Scripts\Kendo\kendo.angular.js" />
+    <Content Include="Scripts\Kendo\kendo.binder.js" />
+    <Content Include="Scripts\Kendo\kendo.calendar.js" />
+    <Content Include="Scripts\Kendo\kendo.core.js" />
+    <Content Include="Scripts\Kendo\kendo.data.js" />
+    <Content Include="Scripts\Kendo\kendo.data.odata.js" />
+    <Content Include="Scripts\Kendo\kendo.data.signalr.js" />
+    <Content Include="Scripts\Kendo\kendo.fx.js" />
+    <Content Include="Scripts\Kendo\kendo.list.js" />
+    <Content Include="Scripts\Kendo\kendo.popup.js" />
+    <Content Include="Scripts\Kendo\kendo.selectable.js" />
+    <Content Include="Scripts\Kendo\kendo.userevents.js" />
+    <Content Include="Scripts\Kendo\kendo.validator.js" />
+    <Content Include="Scripts\Kendo\kendo.view.js" />
+    <Content Include="Scripts\Kendo\Localization\kendo.culture.de.js" />
+    <Content Include="Scripts\Kendo\Localization\kendo.culture.de.min.js" />
+    <Content Include="Scripts\Kendo\Localization\kendo.culture.en.js" />
+    <Content Include="Scripts\Kendo\Localization\kendo.culture.en.min.js" />
+    <Content Include="Scripts\Kendo\Localization\kendo.culture.nl.js" />
+    <Content Include="Scripts\Kendo\Localization\kendo.culture.nl.min.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.autocomplete.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.button.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.datepicker.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.draganddrop.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.dropdownlist.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.listview.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.menu.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.notification.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.numerictextbox.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.pager.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.sortable.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.tabstrip.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.tooltip.js" />
+    <Content Include="Scripts\Kendo\Widgets\kendo.window.js" />
     <Content Include="Scripts\license.js" />
+    <Content Include="Scripts\StrixIT\Controllers\strixit.adminshellcontroller.js" />
+    <Content Include="Scripts\StrixIT\Controllers\strixit.navigationcontroller.js" />
+    <Content Include="Scripts\StrixIT\Directives\CmsEditor\cms-editor.html" />
+    <Content Include="Scripts\StrixIT\Directives\CmsEditor\strixit.cmseditor.js" />
     <Content Include="Scripts\StrixIT\Directives\EnumDropDown\enum-drop-down.html" />
     <Content Include="Scripts\StrixIT\Directives\EnumDropDown\strixit.enumdropdown.js" />
+    <Content Include="Scripts\StrixIT\Directives\Search\strixit.search.js" />
     <Content Include="Scripts\StrixIT\Directives\ShowInputHtml\strixit.showinputhtml.js" />
     <Content Include="Scripts\StrixIT\Filters\strixit.bytes.js" />
+    <Content Include="Scripts\StrixIT\Filters\strixit.kendodate.js" />
+    <Content Include="Scripts\StrixIT\Modules\strixit.adminmoduleconfig.js" />
+    <Content Include="Scripts\StrixIT\Modules\strixit.adminmoduleroutes.js" />
+    <Content Include="Scripts\StrixIT\Modules\strixit.moduleconfig.js" />
+    <Content Include="Scripts\StrixIT\Services\strixit.dataservice.js" />
     <Content Include="Scripts\StrixIT\Services\strixit.entityservice.js" />
     <Content Include="Scripts\StrixIT\Services\strixit.exceptionhandler.js" />
-    <Content Include="Styles\fonts\fontawesome-webfont.eot" />
-    <Content Include="Styles\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Styles\fonts\fontawesome-webfont.woff" />
-    <Content Include="Styles\fonts\fontawesome-webfont.woff2" />
-    <Content Include="Styles\fonts\FontAwesome.otf" />
-    <Content Include="Styles\Kendo\images\kendoui.ttf" />
-    <Content Include="Styles\Kendo\images\kendoui.woff" />
+    <Content Include="Scripts\StrixIT\Services\strixit.responseinterceptor.js" />
+    <Content Include="Scripts\StrixIT\strixit.configuration.js" />
+    <Content Include="Scripts\StrixIT\strixit.jquerysetup.js" />
+    <Content Include="Scripts\StrixIT\strixit.kendoextensions.js" />
+    <Content Include="Scripts\StrixIT\strixit.modules.js" />
+    <Content Include="Scripts\Utilities\script.js" />
+    <Content Include="Styles\Bootstrap\bootstrap.css" />
+    <Content Include="Styles\FontAwesome\font-awesome.css" />
+    <Content Include="Styles\fonts\fontawesome-webfont.svg" />
+    <Content Include="Styles\Images\flag_en.jpg" />
+    <Content Include="Styles\Images\flag_nl.jpg" />
+    <Content Include="Styles\Images\StrixIT_logo.png" />
+    <Content Include="Styles\Kendo\Bootstrap\editor.png" />
+    <Content Include="Styles\Kendo\Bootstrap\imagebrowser.png" />
+    <Content Include="Styles\Kendo\Bootstrap\indeterminate.gif" />
+    <Content Include="Styles\Kendo\Bootstrap\loading-image.gif" />
+    <Content Include="Styles\Kendo\Bootstrap\loading.gif" />
+    <Content Include="Styles\Kendo\Bootstrap\loading_2x.gif" />
+    <Content Include="Styles\Kendo\Bootstrap\markers.png" />
+    <Content Include="Styles\Kendo\Bootstrap\markers_2x.png" />
+    <Content Include="Styles\Kendo\Bootstrap\slider-h.gif" />
+    <Content Include="Styles\Kendo\Bootstrap\slider-v.gif" />
+    <Content Include="Styles\Kendo\Bootstrap\sprite.png" />
+    <Content Include="Styles\Kendo\Bootstrap\sprite_2x.png" />
+    <Content Include="Styles\Kendo\Bootstrap\sprite_kpi.png" />
+    <Content Include="Styles\Kendo\Bootstrap\sprite_kpi_2x.png" />
+    <Content Include="Styles\Kendo\images\back.png" />
+    <Content Include="Styles\Kendo\images\kendoui.svg" />
+    <Content Include="Styles\Kendo\images\wp8_icons.png" />
+    <Content Include="Styles\Kendo\images\wp8_inverseicons.png" />
+    <Content Include="Styles\Kendo\kendo.bootstrap.min.css" />
+    <Content Include="Styles\Kendo\kendo.common-bootstrap.min.css" />
+    <Content Include="Styles\Kendo\kendo.moonlight.min.css" />
+    <Content Include="Styles\Kendo\Moonlight\editor.png" />
+    <Content Include="Styles\Kendo\Moonlight\imagebrowser.png" />
+    <Content Include="Styles\Kendo\Moonlight\indeterminate.gif" />
+    <Content Include="Styles\Kendo\Moonlight\loading-image.gif" />
+    <Content Include="Styles\Kendo\Moonlight\loading.gif" />
+    <Content Include="Styles\Kendo\Moonlight\loading_2x.gif" />
+    <Content Include="Styles\Kendo\Moonlight\markers.png" />
+    <Content Include="Styles\Kendo\Moonlight\markers_2x.png" />
+    <Content Include="Styles\Kendo\Moonlight\slider-h.gif" />
+    <Content Include="Styles\Kendo\Moonlight\slider-v.gif" />
+    <Content Include="Styles\Kendo\Moonlight\sprite.png" />
+    <Content Include="Styles\Kendo\Moonlight\sprite_2x.png" />
+    <Content Include="Styles\Kendo\Moonlight\sprite_kpi.png" />
+    <Content Include="Styles\Kendo\Moonlight\sprite_kpi_2x.png" />
+    <Content Include="Styles\Kendo\textures\brushed-metal.png" />
+    <Content Include="Styles\Kendo\textures\dots1.png" />
+    <Content Include="Styles\Kendo\textures\dots10.png" />
+    <Content Include="Styles\Kendo\textures\dots11.png" />
+    <Content Include="Styles\Kendo\textures\dots12.png" />
+    <Content Include="Styles\Kendo\textures\dots13.png" />
+    <Content Include="Styles\Kendo\textures\dots2.png" />
+    <Content Include="Styles\Kendo\textures\dots3.png" />
+    <Content Include="Styles\Kendo\textures\dots4.png" />
+    <Content Include="Styles\Kendo\textures\dots5.png" />
+    <Content Include="Styles\Kendo\textures\dots6.png" />
+    <Content Include="Styles\Kendo\textures\dots7.png" />
+    <Content Include="Styles\Kendo\textures\dots8.png" />
+    <Content Include="Styles\Kendo\textures\dots9.png" />
+    <Content Include="Styles\Kendo\textures\glass-lighter.png" />
+    <Content Include="Styles\Kendo\textures\glass.png" />
+    <Content Include="Styles\Kendo\textures\highlight.png" />
+    <Content Include="Styles\Kendo\textures\hsv-gradient.png" />
+    <Content Include="Styles\Kendo\textures\hue.png" />
+    <Content Include="Styles\Kendo\textures\leather1.png" />
+    <Content Include="Styles\Kendo\textures\leather2.png" />
+    <Content Include="Styles\Kendo\textures\noise.png" />
+    <Content Include="Styles\Kendo\textures\stripe1.png" />
+    <Content Include="Styles\Kendo\textures\stripe2.png" />
+    <Content Include="Styles\Kendo\textures\stripe3.png" />
+    <Content Include="Styles\Kendo\textures\stripe4.png" />
+    <Content Include="Styles\Kendo\textures\stripe5.png" />
+    <Content Include="Styles\Kendo\textures\stripe6.png" />
+    <Content Include="Styles\Kendo\textures\transparency.png" />
+    <Content Include="Styles\Kendo\textures\transtexture.png" />
+    <Content Include="Styles\site.css" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
@@ -235,6 +353,13 @@
     </None>
     <None Include="Properties\PublishProfiles\Web deploy to file system.pubxml" />
     <Content Include="Views\Shared\LanguagePicker.cshtml" />
+    <Content Include="Styles\fonts\fontawesome-webfont.eot" />
+    <Content Include="Styles\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Styles\fonts\fontawesome-webfont.woff" />
+    <Content Include="Styles\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Styles\fonts\FontAwesome.otf" />
+    <Content Include="Styles\Kendo\images\kendoui.ttf" />
+    <Content Include="Styles\Kendo\images\kendoui.woff" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -248,127 +373,6 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Scripts\Angular\angular.js" />
-    <Content Include="Scripts\Angular\Services\angular-cookies.js" />
-    <Content Include="Scripts\Angular\Services\angular-route.js" />
-    <Content Include="Scripts\Angular\Services\angular-sanitize.js" />
-    <Content Include="Scripts\JQuery\jquery-2.1.3.js" />
-    <Content Include="Scripts\Kendo\kendo.angular.js" />
-    <Content Include="Scripts\Kendo\kendo.binder.js" />
-    <Content Include="Scripts\Kendo\kendo.calendar.js" />
-    <Content Include="Scripts\Kendo\kendo.core.js" />
-    <Content Include="Scripts\Kendo\kendo.data.js" />
-    <Content Include="Scripts\Kendo\kendo.data.odata.js" />
-    <Content Include="Scripts\Kendo\kendo.data.signalr.js" />
-    <Content Include="Scripts\Kendo\kendo.fx.js" />
-    <Content Include="Scripts\Kendo\kendo.list.js" />
-    <Content Include="Scripts\Kendo\kendo.popup.js" />
-    <Content Include="Scripts\Kendo\kendo.selectable.js" />
-    <Content Include="Scripts\Kendo\kendo.userevents.js" />
-    <Content Include="Scripts\Kendo\kendo.validator.js" />
-    <Content Include="Scripts\Kendo\kendo.view.js" />
-    <Content Include="Scripts\Kendo\Localization\kendo.culture.de.js" />
-    <Content Include="Scripts\Kendo\Localization\kendo.culture.en.js" />
-    <Content Include="Scripts\Kendo\Localization\kendo.culture.nl.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.autocomplete.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.button.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.datepicker.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.draganddrop.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.dropdownlist.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.listview.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.menu.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.notification.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.numerictextbox.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.pager.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.sortable.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.tabstrip.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.tooltip.js" />
-    <Content Include="Scripts\Kendo\Widgets\kendo.window.js" />
-    <Content Include="Scripts\StrixIT\Controllers\strixit.adminshellcontroller.js" />
-    <Content Include="Scripts\StrixIT\Controllers\strixit.navigationcontroller.js" />
-    <Content Include="Scripts\StrixIT\Directives\CmsEditor\cms-editor.html" />
-    <Content Include="Scripts\StrixIT\Directives\CmsEditor\strixit.cmseditor.js" />
-    <Content Include="Scripts\StrixIT\Directives\Search\strixit.search.js" />
-    <Content Include="Scripts\StrixIT\Filters\strixit.kendodate.js" />
-    <Content Include="Scripts\StrixIT\Modules\strixit.adminmoduleconfig.js" />
-    <Content Include="Scripts\StrixIT\Modules\strixit.adminmoduleroutes.js" />
-    <Content Include="Scripts\StrixIT\Modules\strixit.moduleconfig.js" />
-    <Content Include="Scripts\StrixIT\Services\strixit.dataservice.js" />
-    <Content Include="Scripts\StrixIT\Services\strixit.responseinterceptor.js" />
-    <Content Include="Scripts\StrixIT\Services\strixit.sanitize.js" />
-    <Content Include="Scripts\StrixIT\strixit.configuration.js" />
-    <Content Include="Scripts\StrixIT\strixit.jquerysetup.js" />
-    <Content Include="Scripts\StrixIT\strixit.kendoextensions.js" />
-    <Content Include="Scripts\StrixIT\strixit.modules.js" />
-    <Content Include="Scripts\Utilities\script.js" />
-    <Content Include="Styles\Bootstrap\bootstrap.css" />
-    <Content Include="Styles\FontAwesome\font-awesome.css" />
-    <Content Include="Styles\fonts\fontawesome-webfont.svg" />
-    <Content Include="Styles\Images\flag_en.jpg" />
-    <Content Include="Styles\Images\flag_nl.jpg" />
-    <Content Include="Styles\Images\StrixIT_logo.png" />
-    <Content Include="Styles\Kendo\Bootstrap\editor.png" />
-    <Content Include="Styles\Kendo\Bootstrap\imagebrowser.png" />
-    <Content Include="Styles\Kendo\Bootstrap\indeterminate.gif" />
-    <Content Include="Styles\Kendo\Bootstrap\loading-image.gif" />
-    <Content Include="Styles\Kendo\Bootstrap\loading.gif" />
-    <Content Include="Styles\Kendo\Bootstrap\loading_2x.gif" />
-    <Content Include="Styles\Kendo\Bootstrap\slider-h.gif" />
-    <Content Include="Styles\Kendo\Bootstrap\slider-v.gif" />
-    <Content Include="Styles\Kendo\Bootstrap\sprite.png" />
-    <Content Include="Styles\Kendo\Bootstrap\sprite_2x.png" />
-    <Content Include="Styles\Kendo\Bootstrap\sprite_kpi.png" />
-    <Content Include="Styles\Kendo\Bootstrap\sprite_kpi_2x.png" />
-    <Content Include="Styles\Kendo\images\back.png" />
-    <Content Include="Styles\Kendo\images\kendoui.svg" />
-    <Content Include="Styles\Kendo\images\wp8_icons.png" />
-    <Content Include="Styles\Kendo\images\wp8_inverseicons.png" />
-    <Content Include="Styles\Kendo\kendo.bootstrap.min.css" />
-    <Content Include="Styles\Kendo\kendo.common-bootstrap.min.css" />
-    <Content Include="Styles\Kendo\kendo.moonlight.min.css" />
-    <Content Include="Styles\Kendo\Moonlight\editor.png" />
-    <Content Include="Styles\Kendo\Moonlight\imagebrowser.png" />
-    <Content Include="Styles\Kendo\Moonlight\indeterminate.gif" />
-    <Content Include="Styles\Kendo\Moonlight\loading-image.gif" />
-    <Content Include="Styles\Kendo\Moonlight\loading.gif" />
-    <Content Include="Styles\Kendo\Moonlight\loading_2x.gif" />
-    <Content Include="Styles\Kendo\Moonlight\slider-h.gif" />
-    <Content Include="Styles\Kendo\Moonlight\slider-v.gif" />
-    <Content Include="Styles\Kendo\Moonlight\sprite.png" />
-    <Content Include="Styles\Kendo\Moonlight\sprite_2x.png" />
-    <Content Include="Styles\Kendo\Moonlight\sprite_kpi.png" />
-    <Content Include="Styles\Kendo\Moonlight\sprite_kpi_2x.png" />
-    <Content Include="Styles\Kendo\textures\brushed-metal.png" />
-    <Content Include="Styles\Kendo\textures\dots1.png" />
-    <Content Include="Styles\Kendo\textures\dots10.png" />
-    <Content Include="Styles\Kendo\textures\dots11.png" />
-    <Content Include="Styles\Kendo\textures\dots12.png" />
-    <Content Include="Styles\Kendo\textures\dots13.png" />
-    <Content Include="Styles\Kendo\textures\dots2.png" />
-    <Content Include="Styles\Kendo\textures\dots3.png" />
-    <Content Include="Styles\Kendo\textures\dots4.png" />
-    <Content Include="Styles\Kendo\textures\dots5.png" />
-    <Content Include="Styles\Kendo\textures\dots6.png" />
-    <Content Include="Styles\Kendo\textures\dots7.png" />
-    <Content Include="Styles\Kendo\textures\dots8.png" />
-    <Content Include="Styles\Kendo\textures\dots9.png" />
-    <Content Include="Styles\Kendo\textures\glass-lighter.png" />
-    <Content Include="Styles\Kendo\textures\glass.png" />
-    <Content Include="Styles\Kendo\textures\highlight.png" />
-    <Content Include="Styles\Kendo\textures\hsv-gradient.png" />
-    <Content Include="Styles\Kendo\textures\hue.png" />
-    <Content Include="Styles\Kendo\textures\leather1.png" />
-    <Content Include="Styles\Kendo\textures\leather2.png" />
-    <Content Include="Styles\Kendo\textures\noise.png" />
-    <Content Include="Styles\Kendo\textures\stripe1.png" />
-    <Content Include="Styles\Kendo\textures\stripe2.png" />
-    <Content Include="Styles\Kendo\textures\stripe3.png" />
-    <Content Include="Styles\Kendo\textures\stripe4.png" />
-    <Content Include="Styles\Kendo\textures\stripe5.png" />
-    <Content Include="Styles\Kendo\textures\stripe6.png" />
-    <Content Include="Styles\Kendo\textures\transparency.png" />
-    <Content Include="Styles\Kendo\textures\transtexture.png" />
-    <Content Include="Styles\site.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -379,9 +383,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Libraries\nl\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\StrixIT.Platform.Modules.Membership\StrixIT.Platform.Modules.Membership.csproj">
       <Project>{63cbf5f3-8d3b-4b3d-a4ba-f1c932736dea}</Project>
@@ -425,7 +427,6 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y /E /F /I "$(TargetPath)\..\..\Areas\Membership" "c:\builds\Modules\Membership\Membership\"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

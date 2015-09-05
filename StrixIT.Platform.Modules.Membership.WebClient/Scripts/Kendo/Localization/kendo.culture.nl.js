@@ -16,6 +16,7 @@
 (function(f, define){
     define([], f);
 })(function(){
+
 (function( window, undefined ) {
     var kendo = window.kendo || (window.kendo = { cultures: {} });
     kendo.cultures["nl"] = {
@@ -51,8 +52,8 @@
                     namesShort: ["zo","ma","di","wo","do","vr","za"]
                 },
                 months: {
-                    names: ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december",""],
-                    namesAbbr: ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec",""]
+                    names: ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"],
+                    namesAbbr: ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"]
                 },
                 AM: [""],
                 PM: [""],
@@ -79,5 +80,7 @@
     }
 })(this);
 
+
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

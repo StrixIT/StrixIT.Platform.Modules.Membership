@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Rutger Schurgers, StrixIT: fix to show custom error first if defined, lines 422 - 429.
- */
 (function(f, define){
     define([ "./kendo.core" ], f);
 })(function(){
+
 /* jshint eqnull: true */
 (function($, undefined) {
     var kendo = window.kendo,
@@ -155,7 +153,8 @@
                 step: "{0} is not valid",
                 email: "{0} is not valid email",
                 url: "{0} is not valid URL",
-                date: "{0} is not valid date"
+                date: "{0} is not valid date",
+                dateCompare: "End date should be greater than or equal to the start date"
             },
             rules: {
                 required: function(input) {
@@ -337,6 +336,7 @@
                     }
 
                     return true;
+
                 })).hide(),
                 messageText;
 
@@ -417,14 +417,9 @@
                 customMessage = that.options.messages[ruleKey],
                 fieldName = input.attr(NAME);
 
-            //customMessage = kendo.isFunction(customMessage) ? customMessage(input) : customMessage;
-            //return kendo.format(input.attr(kendo.attr(ruleKey + "-msg")) || input.attr("validationMessage") || input.attr("title") || customMessage || "", fieldName, input.attr(ruleKey));
+            customMessage = kendo.isFunction(customMessage) ? customMessage(input) : customMessage;
 
-            var isMessageFunction = kendo.isFunction(customMessage);
-            var customMessage = isMessageFunction ? customMessage(input) : customMessage;
-
-            // RS: fix to show custom error first if defined, needed for showing the "Checking" message with remote validation.
-            return kendo.format((isMessageFunction ? customMessage : input.attr(kendo.attr(ruleKey + "-msg"))) || input.attr("validationMessage") || input.attr("title") || customMessage || "", fieldName, input.attr(ruleKey));
+            return kendo.format(input.attr(kendo.attr(ruleKey + "-msg")) || input.attr("validationMessage") || input.attr("title") || customMessage || "", fieldName, input.attr(ruleKey));
         },
 
         _checkValidity: function(input) {
@@ -456,4 +451,5 @@
 })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -16,6 +16,7 @@
 (function(f, define){
     define([ "./kendo.popup" ], f);
 })(function(){
+
 (function ($, undefined) {
     var kendo = window.kendo,
         ui = kendo.ui,
@@ -103,6 +104,7 @@
         },
 
         rendering = {
+
             wrapperCssClass: function (group, item) {
                 var result = "k-item",
                     index = item.index;
@@ -564,6 +566,7 @@
                         popup;
 
                     if (ul[0] && that._triggerEvent({ item: li[0], type: OPEN }) === false) {
+
                         if (!ul.find(".k-menu-group")[0] && ul.children(".k-item").length > 1) {
                             var windowHeight = $(window).height(),
                                 setScrolling = function(){
@@ -632,6 +635,7 @@
                         ul.removeAttr("aria-hidden");
                         popup.open();
                     }
+
                 }, that.options.hoverDelay));
             });
 
@@ -1133,6 +1137,7 @@
                 options.animation = { open: { effects: {} }, close: { hide: true, effects: {} } };
             }
         }
+
     });
 
     // client-side rendering
@@ -1407,7 +1412,9 @@
 
     ui.plugin(Menu);
     ui.plugin(ContextMenu);
+
 })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

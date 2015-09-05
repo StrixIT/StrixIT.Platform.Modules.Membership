@@ -16,6 +16,7 @@
 (function(f, define){
     define([ "./kendo.core" ], f);
 })(function(){
+
 (function ($, undefined) {
     var kendo = window.kendo,
         Widget = kendo.ui.Widget,
@@ -58,12 +59,12 @@
 
             kendo.notify(that);
         },
-
+        
         destroy: function() {
 			var that = this;
-
+			
 			that.wrapper.off(NS);
-
+			
 			Widget.fn.destroy.call(that);
 		},
 
@@ -188,7 +189,9 @@
     });
 
     kendo.ui.plugin(Button);
+
 })(window.kendo.jQuery);
 
 return window.kendo;
+
 }, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });
