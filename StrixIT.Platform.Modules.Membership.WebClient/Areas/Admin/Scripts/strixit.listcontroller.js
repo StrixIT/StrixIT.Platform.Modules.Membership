@@ -19,7 +19,9 @@
 (function () {
     'use strict';
 
-    angular.module('strixAdmin').controller('listcontroller', ['$scope', '$filter', '$route', 'entityService', function ($scope, $filter, $route, entityService) {
+    angular.module('strixAdmin').controller('listcontroller', ['$scope', '$filter', '$route', '$timeout', 'entityService', function ($scope, $filter, $route, $timeout, entityService) {
+        var dataType = $route.current.data.type;
+
         $scope.getName = getName;
         $scope.getImage = getImage;
         $scope.hasImage = hasImage;
@@ -27,6 +29,9 @@
         $scope.getValue = getValue;
         $scope.delete = $scope.deleteEntity;
         $scope.confirmDelete = $scope.confirmDeleteEntity;
+
+        $scope[dataType + 's'] = null;
+
         $scope.pagerOptions = {
             //input: true,
             pageSizes: [10, 25, 50],
@@ -35,14 +40,23 @@
         }
 
         $scope.$on("$routeChangeSuccess", function (event, params) {
-            var type = $route.current.data.type;
-            var source = entityService.getOrCreateList();
-            $scope[type + 'stemplate'] = $('#' + type + 'stemplate').html();
+            var source = entityService.getOrCreateList({ readCallBack: updatePager });
 
-            if (!$scope[type + 's']) {
-                $scope.storeData(type + 's', source);
+            if (!$scope[dataType + 's']) {
+                $scope.storeData(dataType + 's', source);
+                $scope[dataType + 's'] = source;
+                $scope[dataType + 's'].read();
             }
         });
+
+        function updatePager(data) {
+            // Nasty workaround to update pagers.
+            $("div[kendo-pager]").each(function () {
+                var pager = $(this).data('kendoPager');
+                pager.dataSource = $scope[dataType + 's'];
+                pager.refresh();
+            });
+        }
 
         function getName(item) {
             return name = item.name ? item.name : item.title ? item.title : item.entityKey;

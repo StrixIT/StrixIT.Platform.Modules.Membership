@@ -38,6 +38,7 @@ namespace StrixIT.Platform.Modules.Membership
         /// </summary>
         public bool Approved { get; set; }
 
+        public CultureData[] AvailableCultures { get; set; }
         public bool CanDelete { get; set; }
 
         public bool CanEdit { get; set; }

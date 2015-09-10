@@ -227,3 +227,17 @@ legend {
     font-size: 60px;
     margin-top: 20px;
 }
+
+strix-drop-down select, strix-drop-down select option {
+    color: rgb(98, 70, 1);
+    border: 1px solid rgb(35, 45, 54);
+    border-radius: 2px;
+    font-size: 14px;
+    padding: 2px 4.2px;
+    text-indent: 6px;
+    vertical-align: middle;
+    line-height: 22px;
+    height: 30px;
+    width: 174px;
+    margin: 1px 0;
+}

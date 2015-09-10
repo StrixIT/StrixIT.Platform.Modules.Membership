@@ -33,67 +33,6 @@
 }
 @RenderSection("css", false)
 @RenderSection("JavaScript", false)
-<script type="text/x-kendo-angular-template" id="@(typeName + "stemplate")">
-    <tr>
-        @if (hasImage)
-        {
-            <td>
-                <a class="imagelink" ng-href="{{ '@((Url.AdminLink(MvcConstants.DETAILS, typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}">
-                    <img class="entityfile" ng-show="{{ hasImage(dataItem, '@imageName') }}" ng-src="{{ getImage(dataItem, '@imageName') }}" title="{{ getName(dataItem) }}" alt="{{ getName(dataItem) }}" />
-                    <div class="fileicon" ng-show="{{ !hasImage(dataItem, '@imageName') }}"><i ng-class="'{{ getIcon(dataItem, '@imageName') }}'"></i></div>
-                </a>
-            </td>
-        }
-        @if (!Model.HideNameColumn)
-        {
-            <td>
-                <a ng-href="{{ '@((Url.AdminLink(MvcConstants.DETAILS, typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}" ng-bind-html="dataItem['@nameProperty']"></a>
-            </td>
-        }
-        @foreach (var field in Model.Fields)
-        {
-
-            var fieldName = field.Name.Substring(0, 1).ToLower() + field.Name.Substring(1);
-
-            <td>
-                @if (field.FilterName == "bool")
-                {
-                    <input type="checkbox" ng-checked="{{ getValue(null, '@fieldName', dataItem) == true }}" disabled="disabled" />
-                }
-                else
-                {
-                    if (field.DisplayHtml)
-                    {
-                        <span ng-bind-html="getValue('@field.FilterName', '@fieldName', dataItem)"></span>
-                    }
-                    else
-                    {
-                        @: {{ getValue('@field.FilterName', '@fieldName', dataItem) }}
-                    }
-                }
-            </td>
-        }
-        }
-        @if (Model.HideNameColumn)
-        {
-            <td>
-                <a ng-href="{{ '@((Url.AdminLink("Details", typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}">@DefaultInterface.Details</a>
-            </td>
-        }
-        @if (Model.CanEdit)
-        {
-            <td class="button-cell">
-                <a class="pull-right" ng-href="{{ '@((Url.AdminLink("Edit", typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}">@DefaultInterface.Edit</a>
-            </td>
-        }
-        @if (Model.CanDelete)
-        {
-            <td class="button-cell">
-                <kendo-button class="pull-right" ng-click="delete(dataItem)">@DefaultInterface.Delete</kendo-button>
-            </td>
-        }
-    </tr>
-</script>
 @RenderSection("Navigation", false)
 @if (Model.CanCreate)
 {
@@ -102,7 +41,7 @@
 <h1>@RenderSection("Title", true)</h1>
 <div id="@(typeName + "-content")" ng-controller="listcontroller">
     <div class="table-responsive">
-        <div kendo-pager k-options="pagerOptions" k-data-source="@string.Format("{0}s", typeName)"></div>
+        <div kendo-pager k-options="pagerOptions"></div>
         <table id="@(typeName + "table")" class="table table-striped table-hover strix-cms-list-table" ng-cloak>
             <thead strix-search k-data-source="@string.Format("{0}s", typeName)">
                 <tr class="sort">
@@ -175,9 +114,68 @@
                     }
                 </tr>
             </thead>
-            <tbody kendo-listview id="@(typeName + "list")" k-data-source="@(typeName + "s")" k-template="@(typeName + "stemplate")"></tbody>
+            <tbody>
+                <tr ng-repeat="dataItem in @(typeName + "s").data()">
+                    @if (hasImage)
+                    {
+                        <td>
+                            <a class="imagelink" ng-href="{{ '@((Url.AdminLink(MvcConstants.DETAILS, typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}">
+                                <img class="entityfile" ng-show="{{ hasImage(dataItem, '@imageName') }}" ng-src="{{ getImage(dataItem, '@imageName') }}" title="{{ getName(dataItem) }}" alt="{{ getName(dataItem) }}" />
+                                <div class="fileicon" ng-show="{{ !hasImage(dataItem, '@imageName') }}"><i ng-class="'{{ getIcon(dataItem, '@imageName') }}'"></i></div>
+                            </a>
+                        </td>
+                    }
+                    @if (!Model.HideNameColumn)
+                    {
+                        <td>
+                            <a ng-href="{{ '@((Url.AdminLink(MvcConstants.DETAILS, typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}" ng-bind-html="dataItem['@nameProperty']"></a>
+                        </td>
+                    }
+                    @foreach (var field in Model.Fields)
+                    {
+
+                        var fieldName = field.Name.Substring(0, 1).ToLower() + field.Name.Substring(1);
+
+                        <td>
+                            @if (field.FilterName == "bool")
+                            {
+                                <input type="checkbox" ng-checked="{{ getValue(null, '@fieldName', dataItem) == true }}" disabled="disabled" />
+                            }
+                            else
+                            {
+                                if (field.DisplayHtml)
+                                {
+                                    <span ng-bind-html="getValue('@field.FilterName', '@fieldName', dataItem)"></span>
+                                }
+                                else
+                                {
+                                    @: {{ getValue('@field.FilterName', '@fieldName', dataItem) }}
+                                }
+                            }
+                        </td>
+                    }
+                    @if (Model.HideNameColumn)
+                    {
+                        <td>
+                            <a ng-href="{{ '@((Url.AdminLink("Details", typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}">@DefaultInterface.Details</a>
+                        </td>
+                    }
+                    @if (Model.CanEdit)
+                    {
+                        <td class="button-cell">
+                            <a class="pull-right" ng-href="{{ '@((Url.AdminLink("Edit", typeName) + "/").Replace("//", "/"))' + dataItem['@idProperty'] }}">@DefaultInterface.Edit</a>
+                        </td>
+                    }
+                    @if (Model.CanDelete)
+                    {
+                        <td class="button-cell">
+                            <button class="k-button pull-right" ng-click="delete(dataItem)">@DefaultInterface.Delete</button>
+                        </td>
+                    }
+                </tr>
+            </tbody>
         </table>
-        <div kendo-pager k-options="pagerOptions" k-data-source="@string.Format("{0}s", typeName)"></div>
+        <div kendo-pager k-options="pagerOptions"></div>
     </div>
     @Html.Partial("ConfirmationModal", new ConfirmationConfig { Id = "confirmdelete", Body = confirmMessage })
 </div>

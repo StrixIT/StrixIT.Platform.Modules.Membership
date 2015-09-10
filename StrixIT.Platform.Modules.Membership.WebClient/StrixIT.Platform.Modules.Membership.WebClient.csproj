@@ -211,8 +211,7 @@
     <Content Include="Scripts\StrixIT\Controllers\strixit.navigationcontroller.js" />
     <Content Include="Scripts\StrixIT\Directives\CmsEditor\cms-editor.html" />
     <Content Include="Scripts\StrixIT\Directives\CmsEditor\strixit.cmseditor.js" />
-    <Content Include="Scripts\StrixIT\Directives\EnumDropDown\enum-drop-down.html" />
-    <Content Include="Scripts\StrixIT\Directives\EnumDropDown\strixit.enumdropdown.js" />
+    <Content Include="Scripts\StrixIT\Directives\DropDown\strixit.dropdown.js" />
     <Content Include="Scripts\StrixIT\Directives\Search\strixit.search.js" />
     <Content Include="Scripts\StrixIT\Directives\ShowInputHtml\strixit.showinputhtml.js" />
     <Content Include="Scripts\StrixIT\Filters\strixit.bytes.js" />

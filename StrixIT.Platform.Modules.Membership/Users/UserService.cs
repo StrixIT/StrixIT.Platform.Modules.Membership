@@ -85,6 +85,7 @@ namespace StrixIT.Platform.Modules.Membership
                 FillAccountData(model);
             }
 
+            model.AvailableCultures = _environment.Cultures.Cultures.Select(c => new CultureData { Code = c.Code, Name = c.NativeName }).ToArray();
             FillRoleData(model);
             return model;
         }

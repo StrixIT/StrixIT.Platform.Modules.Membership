@@ -56,7 +56,7 @@
             var data = params.data || null;
 
             if (!dataStore[listName]) {
-                dataStore[listName] = dataService.createDataSource({ url: strixIT.config.rootUrl + strixIT.config.routePrefix + $route.current.data.baseRoute + url, data: data });
+                dataStore[listName] = dataService.createDataSource({ url: strixIT.config.rootUrl + strixIT.config.routePrefix + $route.current.data.baseRoute + url, data: data, readCallBack: params.readCallBack });
             }
 
             return dataStore[listName];
